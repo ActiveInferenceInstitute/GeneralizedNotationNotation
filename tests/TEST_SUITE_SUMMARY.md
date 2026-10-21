@@ -1,317 +1,50 @@
-# GNN Pipeline Test Suite - Comprehensive Summary
+# Test suite guide
 
-**Last Updated**: 2026-09-10 (SCOPE-2026-09-09 execution wave: markers `ollama`
-and `env_heavy` registered; collect command uses `-m "not ollama"`)
-**Status**: Production Ready
-**Test Infrastructure Version**: 2.0.1
+The suite exercises public GNN behavior, scientific contracts, native adapters,
+installation boundaries and repository tooling. Test outcomes belong to the
+exact source, environment and selection that produced them.
 
----
+## Choose the owning profile
 
-## Executive Summary
+| Task | Owner |
+| --- | --- |
+| Ordinary Python matrix, quality and pipeline contracts | [CI workflow](../.github/workflows/ci.yml) |
+| Per-interpreter comprehensive native coverage | [Native coverage guide](../docs/development/native_comprehensive_coverage.md) |
+| Installed wheel and container behavior | [Installed-platform guide](../docs/development/installed_platform_acceptance.md) |
+| Optional-package acceptance | [All-extras workflow](../.github/workflows/full-extras.yml) |
+| Julia/RxInfer model tests | [RxInfer workflow](../.github/workflows/rxinfer.yml) |
+| Documentation and repository gates | [Workflow guide](../.github/workflows/README.md) |
+| Local selections and release verification | [Verification commands](../TO-DO.md#verification-and-execution-rules) |
 
-The GNN Processing Pipeline test suite provides comprehensive coverage across all 25 pipeline steps and the maintained source modules under `src/`. Tests prioritize real code paths, representative data, and explicit skip behavior for unavailable optional services.
+The workflows define their markers, dependencies, toolchains, timeouts and
+coverage floors. Preserve each profile's selection and denominator. Record
+optional-runtime skips and unsupported scientific cases with their actual
+reasons; passing a focused selection does not qualify a broader environment.
 
-### Key Metrics
+## Run a focused check
 
-- **Live file inventory**: `rg --files tests -g 'test_*.py'`
-- **Live collected inventory**: `uv run --extra dev python -m pytest --collect-only tests/ -q --tb=no -m "not ollama"`
-- **Latest full-run receipt**: the dated command-of-record evidence in the
-  root [`README.md`](../../README.md); do not copy that changing total here.
+After installing the locked development profile:
 
----
-
-## Test Infrastructure Architecture
-
-### Component Structure
-
-```
-src/gnn/2_tests.py        # Thin orchestrator (CLI entry point)
-tests/
-├── runner.py               # run_tests() mode routing + re-exports
-├── test_runner_modular.py  # _ModularTestRunner (category execution)
-├── test_runner_modes.py    # fast / comprehensive / reliable mode implementations
-├── categories.py           # MODULAR_TEST_CATEGORIES routing table (typed)
-├── infrastructure/         # canonical TestRunner, config, monitoring, reports, parsing
-├── helpers/                # script_loader, gnn_samples, mcp_stubs, render_recovery
-├── conftest.py             # Pytest fixtures and marker registration
-├── __init__.py             # Module exports and utilities
-├── tests/                  # Shared-plumbing regression tests
-├── <module>/test_*.py      # Per-module test directories mirroring src/gnn/<module>/
-└── test_*.py               # Cross-cutting root test files
-```
-
-### Execution Modes
-
-1. **Fast Tests** (`--fast-only`): Default for pipeline
-   - Duration: 1-3 minutes
-   - Coverage: Essential functionality
-   - Use case: Quick validation during development
-
-2. **Comprehensive Tests** (`--comprehensive`): Full suite
-   - Duration: 5-15 minutes
-   - Coverage: All tests including slow/performance
-   - Use case: Pre-release validation, CI/CD
-
-3. **Reliable Tests** (recovery): Essential only
-   - Duration: ~90 seconds
-   - Coverage: Critical path validation
-   - Use case: Emergency validation
-
----
-
-## Test Quality Standards
-
-### Real Usage Policy
-
-All tests follow strict real-implementation policy:
-- No replacement of production behavior for core paths
-- Real code paths executed in module and integration tests
-- Real data or representative fixtures used throughout
-- Real dependencies are used when available; optional integrations skip cleanly when unavailable
-- File-based assertions on real artifacts
-
-### Real Implementation Testing
-
-- **Real Methods**: All tests execute actual module functions
-- **Real Data**: Tests use representative GNN files and data structures
-- **Real Dependencies**: Tests validate actual API responses and service interactions
-- **Real File I/O**: Tests assert on real file outputs in `output/` directories
-- **Real Subprocesses**: Pipeline tests run actual numbered scripts via subprocess
-
-### Comprehensive Error Handling
-
-- **Error Scenarios**: Tests cover all error conditions with real failure modes
-- **Graceful Degradation**: Tests validate recovery behavior when dependencies unavailable
-- **Recovery Testing**: Tests verify error recovery mechanisms
-- **Timeout Handling**: Tests include timeout scenarios and resource limits
-
-### Skip Inventory (SC-29, measured 2026-09-10)
-
-The default suite is zero-skip by contract (`tests/test_zero_skip_contracts.py`);
-every remaining skip is an environment/toolchain gate enumerated in
-`DEFAULT_SKIP_ALLOWLIST`. Measured profile: **16 env-skips** (was 17 before the
-SC-29 empty-parametrize fix in `tests/render/test_framework_availability.py`,
-whose empty `INTENTIONALLY_UNAVAILABLE` parametrize reported a misleading skip
-and is now a loud registry cross-check).
-
-| # | Condition | Location |
-|---|-----------|----------|
-| 1-11 | `could not import 'sklearn'` (optional `ml-ai` extra) | `tests/ml_integration/test_ml_integration_inference.py:123`, `:162`, `:181`, `:199`, `:213` (x4), `:234` (x2), `:251` |
-| 12 | `could not import 'torch'` (`torch` extra, GHSA-rrmf-rvhw-rf47 lock policy) | `tests/render/test_continuous_renderers.py:109` |
-| 13-14 | `D2 CLI not available` (system `d2` binary) | `tests/visualization/test_d2_visualizer.py:262`, `:384` |
-| 15-16 | `Julia backend packages not installed; skipping live execution` | `tests/render/test_stigmergic_multi_agent.py:379`, `:393` |
-
-Rendering is always asserted; only the execution half skips when the toolchain
-is absent. No skip in the default suite is unconditional.
-
----
-
-## Coverage Layout
-
-The suite mirrors the source tree: module-focused tests live in `tests/<module>/`, while root-level `tests/test_*.py` files cover cross-cutting environment, coverage, and runner behavior. Mechanical AGENTS/README coverage for maintained test subdirectories is enforced by `docs/development/docs_audit.py --strict`.
-
----
-
-## Test Categories and Markers
-
-### Test Categories (20+)
-
-Organized by module and functionality:
-- `gnn` - GNN processing and validation
-- `render` - Code generation for simulation frameworks
-- `mcp` - Model Context Protocol integration
-- `audio` - Audio generation and sonification
-- `visualization` - Graph and matrix visualization
-- `pipeline` - Pipeline orchestration and infrastructure
-- `export` - Multi-format export
-- `execute` - Simulation execution
-- `llm` - LLM-enhanced analysis
-- `ontology` - Active Inference ontology processing
-- And 10+ more categories...
-
-### Test Markers
-
-Registered in `pytest.ini` (single source of truth). For selective execution:
-- `@pytest.mark.fast` - Fast tests (< 1 second)
-- `@pytest.mark.slow` - Slow tests (minutes)
-- `@pytest.mark.unit` - Unit tests
-- `@pytest.mark.integration` - Integration tests
-- `@pytest.mark.performance` - Auto-applied to slow tests for dashboarding
-- `@pytest.mark.uv` / `@pytest.mark.jax_stack` / `@pytest.mark.mcp` / `@pytest.mark.ollama` / `@pytest.mark.env_heavy` - Toolchain, MCP-audit, and environment gates (pytest.ini; `xfail` is NOT registered and not used in the tree)
-
-The full registry (pytest.ini `markers`, 13 entries — conftest registers
-none) is the authority; unregistered markers fail collection under
-`--strict-markers`.
-
----
-
-## Test Execution Examples
-
-### Run Fast Tests (Default)
 ```bash
-python src/gnn/2_tests.py --fast-only --verbose
+uv sync --frozen --extra dev --python 3.14
+uv run --frozen --no-sync python -m pytest tests/docs -q --no-cov
 ```
 
-### Run Comprehensive Test Suite
-```bash
-python src/gnn/2_tests.py --comprehensive --verbose
-```
+Choose the real test directory for the changed module and follow
+[AGENTS.md](AGENTS.md) and the [testing rules](../.agent_rules/testing.md).
+Public imports use `gnn.*`; tests should exercise concrete inputs, failures and
+consumer contracts. [pytest.ini](../pytest.ini) owns registered markers and
+[pyproject.toml](../pyproject.toml) owns development dependencies.
 
-### Run Specific Module Tests
-```bash
-uv run --extra dev python -m pytest tests/gnn/test_gnn_overall.py -v
-uv run --extra dev python -m pytest tests/render/test_render_overall.py -v
-```
+## Report results accurately
 
-### Run by Marker
-```bash
-pytest -m fast  # Run only fast tests
-pytest -m integration  # Run only integration tests
-pytest -m "not slow"  # Exclude slow tests
-```
+Record the full commit, Python/native package versions, command, selected tests,
+terminal exit status and retained logs or receipts. Keep ordinary CI, focused
+native tests, installed-package checks and comprehensive coverage separate;
+overlapping selections are not additive. Link current hosted results from the
+[Actions page](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/actions)
+and historical qualification from the appropriate [release](../CHANGELOG.md).
 
-### Run with Coverage
-```bash
-pytest --cov=gnn --cov-report=html
-```
-
----
-
-## Test Results and Reporting
-
-### Output Structure
-
-```
-output/2_tests_output/
-├── test_execution_report.json      # Structured test results
-├── pytest_comprehensive_output.txt # Full pytest output
-├── test_summary.md                 # Human-readable summary
-├── coverage.xml                    # Coverage data (if enabled)
-└── test_details/                   # Detailed per-category results
-    ├── gnn_tests.json
-    ├── render_tests.json
-    └── ...
-```
-
-### Report Formats
-
-- **JSON**: Machine-readable structured data
-- **Markdown**: Human-readable summaries
-- **HTML**: Coverage reports (if enabled)
-- **Text**: Full pytest output for debugging
-
----
-
-## Performance Characteristics
-
-### Execution Times
-
-- **Fast Tests**: 1-3 minutes (default)
-- **Comprehensive Tests**: 5-15 minutes
-- **Reliable Tests**: ~90 seconds (recovery)
-- **Individual Test**: < 1 second average
-
-### Resource Usage
-
-- **Memory**: ~100-300MB during execution
-- **CPU**: Parallel execution supported
-- **Disk**: Temporary test artifacts cleaned up automatically
-
-### Scalability
-
-- **Test Discovery**: Handles 433 files efficiently (all `tests/**/test_*.py`, counted 2026-09-10)
-- **Parallel Execution**: Category-based parallelization
-- **Timeout Handling**: Per-category timeouts prevent hangs
-- **Resource Monitoring**: Built-in memory and CPU tracking
-
----
-
-## Best Practices
-
-### Writing Tests
-
-1. **Real Implementations**: Always use real code paths
-2. **Real Data**: Use representative test data
-3. **Comprehensive Assertions**: Test both success and failure cases
-4. **Error Handling**: Wrap optional dependencies in try/except
-5. **Documentation**: Include clear docstrings explaining test purpose
-
-### Test Organization
-
-1. **Module-Based**: One test file per module (`test_MODULE_overall.py`)
-2. **Specialized**: Additional files for specific areas
-3. **Integration**: Separate files for cross-module testing
-4. **Naming**: Follow `test_*.py` convention
-
-### Test Execution
-
-1. **Fast First**: Run fast tests during development
-2. **Comprehensive Before Release**: Run full suite before releases
-3. **Selective Execution**: Use markers to run specific test subsets
-4. **Parallel Execution**: Use parallel execution for faster results
-
----
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Collection Errors**: Check for missing dependencies or syntax errors
-2. **Import Errors**: Verify `src/` is in Python path
-3. **Timeout Errors**: Increase timeout or run fast tests only
-4. **Memory Errors**: Run tests sequentially or reduce test scope
-5. **Test Failures**: Review `pytest_comprehensive_output.txt` for details
-
-### Getting Help
-
-1. Check test output files in `output/2_tests_output/`
-2. Review `test_execution_report.json` for execution summary
-3. Check `pytest_comprehensive_output.txt` for detailed error messages
-4. Verify environment variables are set correctly
-5. Ensure all dependencies are installed
-
----
-
-## Future Enhancements
-
-### Planned Improvements
-
-1. **Coverage Analysis**: Enhanced code coverage tracking and reporting
-2. **Performance Benchmarking**: Automated performance regression detection
-3. **CI/CD Integration**: Automated test execution in CI/CD pipelines
-4. **Test Data Management**: Centralized test data fixtures
-5. **Visual Test Reports**: Enhanced HTML reporting with visualizations
-
-### Module Expansion
-
-- Additional tests for new modules as they're added
-- Enhanced integration tests for cross-module workflows
-- Expanded performance tests for scalability validation
-- Additional error recovery scenarios
-
----
-
-## References
-
-- **Test Documentation**: `tests/README.md`
-- **API Documentation**: `tests/AGENTS.md`
-- **Pipeline Documentation**: `README.md`
-- **Architecture Guide**: `ARCHITECTURE.md`
-- **Project Overview**: `DOCS.md`
-
----
-
-## Conclusion
-
-The GNN Processing Pipeline test suite provides comprehensive, production-ready testing infrastructure with:
-
-- Test files span root and module-specific directories; enumerate them with
-  `rg --files tests -g 'test_*.py'`
-- Collect and execute the command of record above for current totals; the root
-  [`README.md`](../../README.md) owns the latest dated receipt
-- Real data and real implementations throughout core paths
-- Comprehensive error handling and recovery testing
-- Module coverage for all 25 pipeline steps
-- AGENTS/README documentation coverage for maintained test subdirectories
-
-The test infrastructure is mature, comprehensive, and ready for production use.
+Changes that affect manuscript counts or scientific owners follow the
+[custody procedure](../.agent_rules/release.md). Review the
+[handoff checklist](../docs/development/contributor_handoff.md) before integration.

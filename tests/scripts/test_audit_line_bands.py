@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for scripts/audit_line_bands.py (SCOPE M-13 band audit).
+"""Tests for the deterministic line-count band audit.
 
 Fixtures are tmp_path trees exercising the band contract: the reporting
 band (>1200 lines or >40960 bytes) selects table rows, the hard band

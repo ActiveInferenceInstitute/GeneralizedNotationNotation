@@ -13,51 +13,25 @@ GNN is a human-readable, machine-parsable **Markdown notation** for
 describe model assumptions in text, check their structure and run supported
 models through framework-specific implementations.
 
-[![GNN: categorical and continuous model specifications move through Specify, Validate, Render, Execute and Inspect, with source identity, configuration and traceable artifacts connecting the workflow.](gnn-overview-2026-10-21.png)](#from-model-source-to-evidence)
-
-*Conceptual workflow. Backend admission depends on the model contract;
-the diagram illustrates stages rather than numerical results or step dependencies.*
-
 [Quick start](#quick-start) · [Examples](#choose-a-model) ·
 [Backends](#render-and-execute-backends) · [Documentation](#documentation-map) ·
 [Release & paper](#release-artifacts-and-citation) · [Roadmap](#next-steps) ·
 [Contribute](#contributing-and-support)
+
+[![GNN: categorical and continuous model specifications move through Specify, Validate, Render, Execute and Inspect, with source identity, configuration and traceable artifacts connecting the workflow.](gnn-overview-2026-10-21.png)](#from-model-source-to-evidence)
+
+*Five conceptual stages in the 25-step workflow. Backend admission depends on
+the model contract; the illustration contains no measured results.*
 
 This repository provides the notation, curated model sources and a **25-step
 scientific workflow** spanning parsing, validation, visualization, simulation,
 analysis and publication. Start with the CLI below, or explore the
 [Python and service interfaces](#interfaces).
 
-**Current software version:** [GNN 4.2.0](../CHANGELOG.md#420---2026-10-21). Its [GitHub release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0) records exact tag/source/check/artifact identities; version metadata alone does not establish acceptance. Historical releases retain their own checks and assets in [CHANGELOG.md](../CHANGELOG.md).
-**Page updated:** 2026-10-21. Package metadata is canonical in
-[pyproject.toml](../pyproject.toml); release history is in [CHANGELOG.md](../CHANGELOG.md).
-
-## What GNN 4 delivers
-
-- **Model assumptions you can read.** Declare state spaces, connections,
-  parameters, equations, time and ontology annotations for categorical POMDP
-  and linear-Gaussian models.
-- **Checks before simulation.** Validate dimensions, probabilities, covariance
-  assumptions and scientific contracts, with explicit unsupported outcomes.
-- **Native backend workflows.** Render code in Step 11 and supervise native
-  scripts in Step 12 using the selected backend's packages and toolchain.
-- **Evidence tied to its source.** Bind model identities, source hashes,
-  configuration and artifact indexes to the current run. Required unfinished
-  work prevents success. See the [v4 run-ownership guide](../docs/development/run_ownership_migration.md).
-- **Inspectable outputs.** Produce graphs, matrix views, statistics, reports
-  and static websites. Numerical comparisons require compatible model sources,
-  inference semantics, inputs and precision.
-- **Several ways to work.** Use CLI, Python, REST, MCP, editor/LSP or GUI;
-  optional LLM, audio and ML integrations extend selected workflows.
-  [Durable runs](../docs/development/durable-runs.md) support longer sessions.
-
-The **4.2.0 release** updates RxInfer to 6.1.0 / ReactiveMP 7, refreshes
-compatible dependencies and security fixes, and adds a fast local release preflight
-and exact-source workflow collection. Independent Python tests and quality checks
-run concurrently; native, manuscript and paired acceptance retain their full scope.
-Read the [release notes](../CHANGELOG.md#420---2026-10-21),
-[migration guide](../docs/development/run_ownership_migration.md) and
-[workflow guide](workflows/README.md).
+**Current release:** [4.2.0](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0).
+[Release notes](../CHANGELOG.md#420---2026-10-21) describe the changes;
+[package metadata](../pyproject.toml) owns version and dependency requirements.
+**Page updated:** 2026-10-21.
 
 ## Start here
 
@@ -129,6 +103,33 @@ provision those dependencies and resource budgets for the steps you select.
 Configuration starts in [input/config.yaml](../input/config.yaml). LLM work
 reports coverage and context refusals; completion is accepted only for the
 source/prompt requests actually executed.
+
+## What GNN 4 delivers
+
+- **Model assumptions you can read.** Declare state spaces, connections,
+  parameters, equations, time and ontology annotations for categorical POMDP
+  and linear-Gaussian models.
+- **Checks before simulation.** Validate dimensions, probabilities, covariance
+  assumptions and scientific contracts, with explicit unsupported outcomes.
+- **Native backend workflows.** Render code in Step 11 and supervise native
+  scripts in Step 12 using the selected backend's packages and toolchain.
+- **Evidence tied to its source.** Bind model identities, source hashes,
+  configuration and artifact indexes to the current run. Required unfinished
+  work prevents success. See the [v4 run-ownership guide](../docs/development/run_ownership_migration.md).
+- **Inspectable outputs.** Produce graphs, matrix views, statistics, reports
+  and static websites. Numerical comparisons require compatible model sources,
+  inference semantics, inputs and precision.
+- **Several ways to work.** Use CLI, Python, REST, MCP, editor/LSP or GUI;
+  optional LLM, audio and ML integrations extend selected workflows.
+  [Durable runs](../docs/development/durable-runs.md) support longer sessions.
+
+The **4.2.0 release** updates RxInfer to 6.1.0 / ReactiveMP 7, refreshes
+compatible dependencies and security fixes, and adds a fast local release preflight
+and exact-source workflow collection. Independent Python tests and quality checks
+run concurrently; native, manuscript and paired acceptance retain their full scope.
+Read the [release notes](../CHANGELOG.md#420---2026-10-21),
+[migration guide](../docs/development/run_ownership_migration.md) and
+[workflow guide](workflows/README.md).
 
 ## From model source to evidence
 
@@ -326,6 +327,8 @@ Effort size and release version are separate decisions.
 Start with [CONTRIBUTING.md](../CONTRIBUTING.md) and the
 [agent/contributor guide](../AGENTS.md). Propose focused changes with a source
 baseline and acceptance evidence; use current CI for test outcomes and timings.
+The [handoff checklist](../docs/development/contributor_handoff.md) helps make
+completed work reviewable.
 
 - [Issues](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/issues): reproducible bugs and scoped work.
 - [Discussions](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/discussions): modeling questions and ideas.

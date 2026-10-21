@@ -571,7 +571,6 @@ MAINTAINED_ROOT_DOC_FILES = (
     "TO-DO.md",
     "SETUP_GUIDE.md",
     "CLAUDE.md",
-    "SKILL.md",
 )
 
 # Historical release-note files — exempt from stale-version/prose checks.

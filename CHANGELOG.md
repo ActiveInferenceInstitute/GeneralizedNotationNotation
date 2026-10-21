@@ -393,7 +393,7 @@ and failures retain their original scope in the
 **Current-run Reliability.** The 25-step pipeline now binds selection,
 configuration, source identity, output ownership and deadlines to one invocation.
 See [the migration guide](docs/development/run_ownership_migration.md) and
-[SCOPE-2026-10-01.md](SCOPE-2026-10-01.md) for evidence and remaining acceptance.
+[the archived implementation notes](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/blob/56f26e1243ddd5c08f30206d5bee94391aa03ec2/SCOPE-2026-10-01.md) for evidence and remaining acceptance.
 Publication and paired custody are recorded in the linked post-publication receipt.
 
 ### Changed

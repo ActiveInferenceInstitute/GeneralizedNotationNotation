@@ -199,8 +199,8 @@ refusals protect against the released stock sampler's inactive-padding and
 all-invalid-logit hazards. Installed-wheel acceptance runs outside the checkout
 without `PYTHONPATH` and exercises the real pipeline route.
 
-The [scope ledger](../../../SCOPE-2026-10-01.md) and
-[verification ledger](../../development/verification_2026_10_01.json) distinguish
+The [verification ledger](../../development/verification_2026_10_01.json) and
+[4.0.0 publication receipt](../../development/gnn_4_0_0_post_publication.json) distinguish
 library probes, generated/native acceptance, installed-package checks, hosted
 CI, and remaining release custody. Consult those receipts before making an
 operational claim about an environment or model.

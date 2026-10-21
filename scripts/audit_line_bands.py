@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Line-count band audit for the GNN pipeline (SCOPE-2026-09-23 M-13 / M-01).
+"""Deterministic line-count band audit for the GNN pipeline.
 
 Walks ``src/gnn/**/*.py`` and emits a deterministic table (path, lines,
 bytes) for every file above the reporting band: >1200 physical lines OR

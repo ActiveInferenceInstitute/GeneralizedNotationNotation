@@ -4,7 +4,7 @@
 
 All **25** numbered entrypoints **`src/gnn/N_*.py`** (steps **0–24**) follow the **thin orchestrator** pattern: parse CLI args, configure logging and output dirs, delegate to **`src/gnn/<module>/`**, return standard exit codes (0=success, 1=error, 2=success with warnings/skipped). Domain logic lives in modules, not in the numbered scripts.
 
-**Authoritative step matrix** (timeouts, dependencies, recovery): [`src/gnn/STEP_INDEX.md`](../src/gnn/STEP_INDEX.md). **Canonical step registry** (single source of truth for all 25 steps): [`src/gnn/pipeline/step_registry.py`](../src/gnn/pipeline/step_registry.py). **Commands and test notes**: [`CLAUDE.md`](../CLAUDE.md).
+**Authoritative step matrix** (timeouts, dependencies, recovery): [`src/gnn/STEP_INDEX.md`](../src/gnn/STEP_INDEX.md). **Canonical step registry** (single source of truth for all 25 steps): [`src/gnn/pipeline/step_registry.py`](../src/gnn/pipeline/step_registry.py). **Commands and test notes**: [verification commands](../TO-DO.md#verification-and-execution-rules).
 
 Run from **repository root** with:
 

@@ -14,7 +14,7 @@ This folder hosts the explicit, stateless developer workflow validation agents r
 | `check_maintained_doc_terms.py` | Scans maintained Markdown for stale framework terms | ✅ `--strict` |
 | `check_gnn_doc_patterns.py` | Scans `docs/` + `src/gnn/` for stale import paths, retired routing, and banned patterns | ✅ `--strict` |
 | `check_doc_contracts.py` | Contract check for enforced quickstart sections, current CLI flag spellings, `input/config.yaml` naming, and live render/execute inventory owners and explicit experimental selection | ✅ `--strict` |
-| `check_external_links.py` | Scans maintained docs for dead external (http/https) URLs — informational, not CI-wired | ⚪ no (flaky external checks) |
+| `check_external_links.py` | Records external-link observations; the docs workflow runs `--fail-on-dead` on scheduled/tag/manual selections | Workflow-selected; blocked/transient requests remain inconclusive |
 | `check_mcp_skills_health.py` | Executes every registered MCP tool and verifies every SKILL.md documents a resolvable surface | ✅ `--strict` (local-gates.yml) |
 | `check_capability_contracts.py` | Validates capability-contract claims against measured codebase state | ✅ exit 1 on mismatch |
 | `check_manuscript_tokens.py` | Manuscript integrity gate: unknown `{{TOKEN}}`s, dangling `[@key]` citations, hard-coded counts, contradicted `input/...` path claims | ✅ hard gate (`--strict` also fails count warnings) |

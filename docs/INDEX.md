@@ -71,7 +71,7 @@ short audience map, use [START_HERE.md](START_HERE.md). For curricula, use
 ## Maintainer references
 
 - [Documentation specification](SPEC.md)
-- [Documentation improvement workflow](DOCS_TO_IMPROVE.md)
+- [Documentation review workflow](development/documentation_review.md)
 - [Style guide](style_guide.md)
 - [Expected top-level directories](expected_dirs.txt)
 - [Changelog](CHANGELOG.md)

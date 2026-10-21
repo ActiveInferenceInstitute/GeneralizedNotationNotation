@@ -39,7 +39,8 @@ Writes [docs_audit_report.md](docs_audit_report.md): broken relative links, `AGE
 uv run python docs/development/rewrite_gnn_doc_links.py
 ```
 
-Source: [docs_audit.py](docs_audit.py), [rewrite_gnn_doc_links.py](rewrite_gnn_doc_links.py), [../../scripts/check_maintained_doc_terms.py](../../scripts/check_maintained_doc_terms.py). Documentation improvement tracker: [../DOCS_TO_IMPROVE.md](../DOCS_TO_IMPROVE.md).
+Source: [docs_audit.py](docs_audit.py), [rewrite_gnn_doc_links.py](rewrite_gnn_doc_links.py), [../../scripts/check_maintained_doc_terms.py](../../scripts/check_maintained_doc_terms.py). See the [documentation review workflow](documentation_review.md) and
+[contributor handoff checklist](contributor_handoff.md).
 
 ## Quick Start for Developers
 

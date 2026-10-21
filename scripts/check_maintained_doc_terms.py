@@ -23,7 +23,6 @@ ROOT_MARKDOWN = {
     "ARCHITECTURE.md",
     "CLAUDE.md",
     "SPEC.md",
-    "SKILL.md",
 }
 MAINTAINED_DIRS = (".agent_rules", ".github", "docs", "input", "scripts", "src")
 SKIP_PARTS = {

@@ -24,6 +24,11 @@ GNN is a human-readable, machine-parsable notation for
 provides the language, curated model sources, an installed Python package and a
 25-step workflow for validation, visualization, simulation, analysis and publication.
 
+[![GNN: categorical and continuous model specifications move through Specify, Validate, Render, Execute and Inspect, with source identity, configuration and traceable artifacts connecting the workflow.](.github/gnn-overview-2026-10-21.png)](#project-architecture)
+
+*Five conceptual stages in the 25-step workflow. Backend admission depends on
+the model contract; the illustration contains no measured results.*
+
 The current release includes RxInfer 6.1 / ReactiveMP 7 support, secure aiohttp
 and Pillow profiles, installed-wheel acceptance across Linux, macOS and Windows,
 and independent qualification of source, native execution, manuscript and companion

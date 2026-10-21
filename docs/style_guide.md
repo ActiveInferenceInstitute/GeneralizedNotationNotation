@@ -12,7 +12,10 @@ This style guide ensures consistency, quality, and accessibility across all GNN 
 
 ### Commands in examples
 
-Use **`uv run python`** from the **repository root** for `src/gnn/main.py` and `src/N_*.py` invocations (see [CLAUDE.md](../CLAUDE.md)). Avoid bare `python src/...` in new doc unless illustrating a non-uv environment.
+Use the installed `gnn` CLI through `uv run --frozen --no-sync gnn` after
+the documented frozen setup. Numbered source scripts live under `src/gnn/`;
+use `uv run --frozen --no-sync python` when a task specifically needs one.
+See the [setup guide](../SETUP_GUIDE.md) and [CLI reference](../src/gnn/cli/README.md).
 
 ### Model kinds in examples
 

@@ -31,7 +31,7 @@ source identities. The [v4.0.0 publication receipt](../docs/development/gnn_4_0_
 records its completed release. The [v4.0.1 publication receipt](../docs/development/gnn_4_0_1_post_publication.json)
 records the accepted patch, exact hosted test selections and the full local
 7,789 passes plus ten subtests and 57 optional-tool skips. The historical
-[2026-10-06 snapshot](../SCOPE-2026-10-01.md) records 18 successful hosted checks
+[2026-10-06 snapshot](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/blob/56f26e1243ddd5c08f30206d5bee94391aa03ec2/SCOPE-2026-10-01.md) records 18 successful hosted checks
 at GNN `951dc7d3f58cfd3ef7106caa321c1d3c7d2ad51a`, the completed provisioned
 local suite and the independently accepted numerical/namespace scope. A3/W2/H5
 evidence remains historical in the

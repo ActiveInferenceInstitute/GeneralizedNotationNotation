@@ -90,7 +90,7 @@ Keep local, hosted, numerical and native-proof receipts separate.
 - [THRML](../docs/gnn/implementations/thrml.md)
 - [cpomdp](../docs/gnn/implementations/cpomdp.md)
 - [v4 migration](../docs/development/run_ownership_migration.md)
-- [Verification ledger](../SCOPE-2026-10-01.md)
+- [Scientific acceptance and release receipts](../docs/development/verification_2026_10_01.json)
 
 Reviewed for the current v4 contract on 2026-10-08.
 

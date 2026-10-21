@@ -232,12 +232,12 @@ thermodynamic processor, and empirical marginals do not prove Gibbs convergence.
 - Agent/module coverage is tracked in `src/gnn/AGENTS.md`
 - Complete MCP integration across all applicable modules
 - Repository coverage is enforced by the live `pyproject.toml` policy
-  (`fail_under = 50`); use the generated coverage report for per-module detail
+  and workflow-specific profiles; use the generated coverage report for per-module detail
 
 **Documentation:**
 
 - `AGENTS.md` - Master agent scaffolding documentation
-- `AGENTS_TEMPLATE.md` - Template for new modules
+- [.agent_rules/module_patterns.md](.agent_rules/module_patterns.md) - Module ownership and interfaces
 - `.agent_rules` - Development guidelines
 - `.env` (optional local file) - local environment values when needed
 - `.gitignore` - Comprehensive ignore patterns for scientific computing
@@ -405,7 +405,7 @@ Each agent implements comprehensive performance monitoring:
 - **Pipeline Documentation**: [docs/PIPELINE_SCRIPTS.md](docs/PIPELINE_SCRIPTS.md) — Detailed step-by-step descriptions
 - **Development Rules**: [.agent_rules](.agent_rules) — Canonical rules for scripts and modules
 - **Agent Registry**: [AGENTS.md](AGENTS.md) — Master agent scaffolding and module registry
-- **Template Guide**: [AGENTS_TEMPLATE.md](AGENTS_TEMPLATE.md) — Template for new modules
+- **Module Guide**: [.agent_rules/module_patterns.md](.agent_rules/module_patterns.md) — Module ownership and interfaces
 - **Doc link checks**: [DOCS.md](DOCS.md) — “Documentation maintenance” (`docs/development/docs_audit.py`)
 
 ---

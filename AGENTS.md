@@ -381,7 +381,8 @@ remain separate from focused consumer counts.
   hashes, inference semantics, inputs and declared precision. Native Gaussian
   uncertainty comes from covariance; unbound or incompatible comparisons retain
   refusal reasons through JSON, Markdown and plotting.
-- The [scope ledger](SCOPE-2026-10-01.md) records acceptance and deferred checks.
+- The [4.0.0 publication receipt](docs/development/gnn_4_0_0_post_publication.json)
+  records that release's acceptance; [TO-DO.md](TO-DO.md) owns remaining work.
   Publication requires final repository gates, manuscript rendering, paired
   custody, hosted results, and remote commit parity; implementation prose is not
   a substitute for those receipts.

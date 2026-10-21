@@ -2,7 +2,7 @@
 
 - **Status:** Accepted (first slice landed)
 - **Date:** 2026-09-10
-- **Scope item:** SCOPE-2026-09-10 / S2-11 (V4-STAGE)
+- **Original proposal:** [S2-11 (V4-STAGE), archived source](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/blob/56f26e1243ddd5c08f30206d5bee94391aa03ec2/SCOPE-2026-09-10.md)
 
 ## Context
 

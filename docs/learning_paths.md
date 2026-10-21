@@ -4,7 +4,7 @@
 
 This document outlines structured learning paths for users of varying expertise levels in Generalized Notation Notation (GNN) and Active Inference. Each path includes key resources, prerequisites, and progression steps. Paths are designed to be modular, example-driven, and tied to the project's pipeline for reproducibility.
 
-**See also**: [docs/SPEC.md](SPEC.md) (how `docs/` versioning relates to the GNN language and the Python package), [CLAUDE.md](../CLAUDE.md) (commands and measured test expectations).
+**See also**: [docs/SPEC.md](SPEC.md) (how `docs/` versioning relates to the GNN language and the Python package), [verification commands](../TO-DO.md#verification-and-execution-rules) (declared selections and evidence requirements).
 
 ## Research-focused path
 

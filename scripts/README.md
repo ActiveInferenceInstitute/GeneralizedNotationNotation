@@ -10,6 +10,8 @@ The `scripts/` directory is the repository's hub for standalone maintenance, lin
 - `check_maintained_doc_terms.py`: A maintained-document terminology audit that catches retired PyMDP surface references and stale policy phrases while skipping generated and archive Markdown.
 - `check_mcp_skills_health.py`: Executes every registered MCP tool (schema-minimal arguments, no crashes) and verifies every `src/<module>/SKILL.md` API import, Key Export, MCP-tool claim, and Key Command resolves against the live codebase. Informational gate.
 - `scripts/experiments/run_pymdp_gnn_scaling_analysis.py`: A thin orchestrator that programmatically generates configured GNN specs and triggers the main pipeline to conduct a PyMDP scaling study. It uses `scripts/experiments/pymdp_scaling_config.yaml` for central configuration.
+- [run_autoresearch_bench.py](run_autoresearch_bench.py): Deterministic parse, serialization, MCP dispatch and subprocess-envelope benchmark with asserted workload contracts.
+- [bench_render_backends.py](bench_render_backends.py): Backend-specific conformance measurements. General benchmark recipes live in [justfile](../justfile); [performance guidance](../.agent_rules/performance.md) defines evidence and comparison rules.
 
 ## Execution
 Tools are designed to be executed via `uv run`:

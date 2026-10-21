@@ -8,7 +8,7 @@ These version strings refer to **different things**:
 |------|--------|---------|
 | **GNN language / syntax** | [docs/gnn/reference/gnn_syntax.md](gnn/reference/gnn_syntax.md) | Language rules (e.g. v1.1). |
 | **GNN documentation bundle** | Front matter on major [docs/gnn/](gnn/) pages | Human-oriented hub revision (e.g. v2.0.0). |
-| **Python package** | [pyproject.toml](../pyproject.toml) `version` | Installable distribution (currently **3.2.0**). |
+| **Python package** | [pyproject.toml](../pyproject.toml) `version` | Installable distribution; the linked package metadata owns its current version. |
 
 Leaf `SPEC.md` files under experimental or research subtrees may omit bundle version; they should still link **up** to a parent SPEC or state scope.
 
@@ -19,7 +19,7 @@ Leaf `SPEC.md` files under experimental or research subtrees may omit bundle ver
 - **`docs/`** is the static documentation tree; it does not execute pipeline steps. Runtime behavior lives under `src/`.
 - **Top-level folder list**: [expected_dirs.txt](expected_dirs.txt) is the canonical list of `docs/<name>/` directories for tooling; update it when adding or renaming a top-level doc subtree. Do not copy a directory count into prose; derive it from this file when needed.
 - **Mechanical completeness** is enforced by [development/docs_audit.py](development/docs_audit.py) (`uv run --extra dev python docs/development/docs_audit.py --strict` from repo root). With `--strict` and failures, the tool prints every issue to stderr by default; use `-q` for summary only. Optional: `--check-anchors` validates `#fragments` against heading slugs (heuristic).
-- **GNN authority** for syntax and pipeline narrative: [docs/gnn/README.md](gnn/README.md), [docs/gnn/SPEC.md](gnn/SPEC.md), [CLAUDE.md](../CLAUDE.md), [src/gnn/AGENTS.md](../src/gnn/AGENTS.md).
+- **GNN authority** for syntax and pipeline narrative: [docs/gnn/README.md](gnn/README.md), [docs/gnn/SPEC.md](gnn/SPEC.md), [AGENTS.md](../AGENTS.md), [src/gnn/AGENTS.md](../src/gnn/AGENTS.md).
 
 ## Components
 
@@ -29,4 +29,4 @@ Leaf `SPEC.md` files under experimental or research subtrees may omit bundle ver
 ## Interfaces
 
 - Cross-links use repo-relative Markdown paths from the linking file.
-- For current test commands and pass counts, use [CLAUDE.md](../CLAUDE.md) (measured in CI / local `uv run --extra dev python -m pytest`); do not treat stale inline numbers as ground truth.
+- For current test commands and environments, use [TO-DO.md](../TO-DO.md#verification-and-execution-rules) and the [workflow guide](../.github/workflows/README.md). Report measured outcomes at their exact source.
