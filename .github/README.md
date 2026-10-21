@@ -8,7 +8,7 @@ render framework-specific code, execute admitted models and inspect the evidence
 [![CI Python: 3.11–3.14](https://img.shields.io/badge/CI%20Python-3.11%E2%80%933.14-3776ab.svg)](workflows/ci.yml)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-lightgrey.svg)](../LICENSE.md)
 
-![GNN 4 architecture: categorical and Gaussian model specifications feed a generative model, the 25-step validation/render/execution/reporting workflow, and source-bound artifacts with frozen selections, bounded execution and FEP/GEO interchange.](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.2.0/GNN-4.2.0-release-overview.png)
+![GNN 4.2.0 overview: one text specification passes through parsing, validation, code generation, supervised execution, analysis and pinned cross-repository interchange.](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.2.0/GNN-4.2.0-release-overview.png)
 
 *GNN 4.2.0 release overview. Exact-source qualification and acceptance limits
 are recorded with the release assets.*
