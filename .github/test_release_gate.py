@@ -3,7 +3,7 @@
 import copy
 import unittest
 
-from release_gate import evaluate
+from release_gate import evaluate, filter_runs
 
 
 class ReleaseGateControls(unittest.TestCase):
@@ -43,6 +43,28 @@ class ReleaseGateControls(unittest.TestCase):
     def test_wrong_source(self):
         self.run["head_sha"] = "b" * 40
         self.assertEqual(self.state(), "wrong_source")
+
+    def test_same_commit_main_and_tag_cannot_qualify_each_other(self):
+        main = dict(self.run, head_branch="main", event="push")
+        tag = dict(
+            self.run,
+            head_branch="v4.2.0",
+            event="push",
+            run_number=9,
+            conclusion="failure",
+        )
+        self.assertEqual(
+            self.state(runs=filter_runs([main, tag], "main", "push")), "success"
+        )
+        self.assertEqual(
+            self.state(runs=filter_runs([main, tag], "v4.2.0", "push")), "failed"
+        )
+        self.assertEqual(filter_runs([main], "v4.2.0", "push"), [])
+
+    def test_manual_run_cannot_fill_push_only_qualification(self):
+        manual = dict(self.run, head_branch="v4.2.0", event="workflow_dispatch")
+        self.assertEqual(filter_runs([manual], "v4.2.0", "push"), [])
+        self.assertEqual(filter_runs([manual], "v4.2.0", None), [manual])
 
     def test_every_job_must_finish_successfully(self):
         for conclusion in ["skipped", "cancelled", "failure", None]:

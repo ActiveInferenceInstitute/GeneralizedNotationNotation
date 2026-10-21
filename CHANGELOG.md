@@ -29,6 +29,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 - Add `just release-preflight` to catch documentation, flag, thin-script,
   scheduling and direct-entrypoint failures before expensive hosted lanes.
+- Allow main and candidate-tag qualification to overlap after a normal merge
+  with exact qualified-tree equality. Publication still requires independent
+  successful main/tag checks and artifacts. The collector separates ref/event
+  identities even when they share a commit, with negative controls.
 - Add a bounded, paginated workflow-status collector that dispatches only missing
   workflows, retains exact revision/attempt/job identities and refuses pending,
   failed, skipped or missing jobs. Independent artifact and manuscript review

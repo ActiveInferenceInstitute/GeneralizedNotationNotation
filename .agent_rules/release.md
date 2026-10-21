@@ -41,7 +41,12 @@ Resolve repository/version/tag/metadata/assets from accepted main and its releas
 procedure. Check existing version/tag/release; report conflicts instead of overwriting.
 Require applicable source, native, installed-platform, security, manuscript,
 companion, PR/main and tag gates at their exact sources. Pending/missing required
-checks keep publication pending. Build ordinary wheel/sdist from a clean,
+checks keep publication pending. After the final qualified PR merges normally,
+verify exact Git-tree equality and retained producer ancestry before making an
+annotated candidate tag at that main commit. Main and tag qualification may run
+concurrently; each ref/event needs its own successful terminal checks and actual
+artifact acceptance before publishing. Never move a tag or borrow one ref's
+results for another. Build ordinary wheel/sdist from a clean,
 task-owned accepted-source checkout, and retain source-bound manuscript/visual/
 evidence assets. Generated developer caches cannot enter release archives.
 

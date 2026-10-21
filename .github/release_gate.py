@@ -88,13 +88,24 @@ def evaluate(runs: list[dict], jobs: list[dict], revision: str) -> dict:
     return result
 
 
-def inspect(workflow: str, revision: str, event: str | None) -> tuple[str, dict]:
+def filter_runs(runs: list[dict], ref: str, event: str | None) -> list[dict]:
+    """Main and tag workflows at one commit remain independent qualifications."""
+    return [
+        run
+        for run in runs
+        if run["head_branch"] == ref and (event is None or run["event"] == event)
+    ]
+
+
+def inspect(
+    workflow: str, revision: str, ref: str, event: str | None
+) -> tuple[str, dict]:
     endpoint = (
         f"repos/{REPOSITORY}/actions/workflows/{workflow}/runs?head_sha={revision}"
     )
     if event:
         endpoint += f"&event={event}"
-    runs = pages(endpoint, "workflow_runs")
+    runs = filter_runs(pages(endpoint, "workflow_runs"), ref, event)
     if not runs:
         return workflow, evaluate([], [], revision)
     latest = max(runs, key=lambda item: (item["run_number"], item["run_attempt"]))
@@ -134,7 +145,8 @@ def main() -> int:
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
         observations = dict(
             executor.map(
-                lambda name: inspect(name, args.revision, args.event), WORKFLOWS
+                lambda name: inspect(name, args.revision, args.ref, args.event),
+                WORKFLOWS,
             )
         )
     dispatches = []

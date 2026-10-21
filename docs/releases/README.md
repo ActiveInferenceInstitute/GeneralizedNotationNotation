@@ -214,13 +214,23 @@ remain errors. Every latest run/attempt and all its paginated jobs must succeed.
 The collector does not equate PR synthetic-merge tests with native artifact
 source identity. Inspect each source-bound artifact independently.
 
-After accepted main, create an annotated version tag at its exact commit. All
-sixteen release workflows run automatically on version tags. Collect with
-`--event push --ref vVERSION` to exclude earlier manual and PR runs. Retain failed
+After the accepted PR is merged normally, verify main has exactly the qualified
+Git tree and preserve its producer ancestry. Create the annotated candidate tag
+at that exact main commit. Main and tag qualification may run concurrently;
+publication stays blocked until both have terminal successful checks and their
+actual artifacts are independently accepted. Never move the tag or count a
+main run as tag evidence. All sixteen release workflows run automatically on
+version tags. Collect each ref separately with
+`--event push --ref main` and `--event push --ref vVERSION`; the collector
+filters the actual run ref and event, even when both point to one commit. Retain failed
 attempts; repair functional failures and only retry classified infrastructure
 failures with evidence. Do not lower test selections, coverage or warning policy.
 External links run at tag qualification with dead links blocking and transient
 or blocked responses remaining inconclusive.
+
+A companion's actual main qualification may similarly overlap GNN's final
+candidate checks after the companion merges and GNN pins its exact merge.
+Both must finish and pass independent acceptance before merging GNN.
 
 Build ordinary wheel and sdist from a clean accepted checkout using the pinned
 uv tool. Verify metadata/version, all source/archive members and wheel RECORD;
