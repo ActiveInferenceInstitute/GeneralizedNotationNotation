@@ -26,6 +26,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   actual model passes scientific render admission and native PyMDP execution.
   Add a production-render regression and distinguish fixed-model inference
   from parameter learning or guaranteed optimal trajectories.
+- Link every maintained top-level topic hub from the flat index and enforce
+  those routes against the actual tree. Add research-topic navigation without
+  promoting historical experiment results into current package acceptance.
 - Repair broken relative paths and table-of-contents fragments. Replace unsupported
   configuration recipes with implemented CLI examples; fix moved documentation
   test paths and remove false test timings and blanket success claims.

@@ -30,6 +30,7 @@ def test_repository_documentation_contracts_pass(
         "docs/gnn/tutorials/quickstart_tutorial.md",
         "docs/configuration/README.md",
         "docs/README.md",
+        "docs/INDEX.md",
         "docs/pipeline/README.md",
     ):
         target = tmp_path / relative
@@ -93,3 +94,20 @@ def test_quickstart_authored_model_renders_through_real_pymdp_path(
     b = np.asarray(model.B_matrix)
     assert b.shape == (4, 4, 4)
     assert np.allclose(b.sum(axis=0), 1.0)
+
+
+def test_topic_index_requires_routes_to_existing_maintained_hubs(
+    tmp_path: Path,
+) -> None:
+    checker = _load_checker()
+    topic = tmp_path / "docs" / "new_topic"
+    topic.mkdir(parents=True)
+    (topic / "README.md").write_text("# New topic\n")
+    index = tmp_path / "docs" / "INDEX.md"
+    assert checker.missing_topic_routes(tmp_path) == ["documentation index is missing"]
+    index.write_text("# Index\n")
+    assert checker.missing_topic_routes(tmp_path) == [
+        "documentation index is missing topic route new_topic/README.md"
+    ]
+    index.write_text("# Index\n[New topic](new_topic/README.md)\n")
+    assert checker.missing_topic_routes(tmp_path) == []

@@ -78,9 +78,23 @@ def _is_explanatory_line(line: str) -> bool:
     )
 
 
+def missing_topic_routes(root: Path) -> list[str]:
+    """Every maintained top-level topic needs a route in the flat index."""
+    index = root / "docs" / "INDEX.md"
+    if not index.is_file():
+        return ["documentation index is missing"]
+    text = index.read_text(encoding="utf-8")
+    return [
+        f"documentation index is missing topic route {hub.relative_to(root / 'docs').as_posix()}"
+        for hub in sorted((root / "docs").glob("*/README.md"))
+        if hub.parent.name != "other"
+        and hub.relative_to(root / "docs").as_posix() not in text
+    ]
+
+
 def scan() -> list[str]:
     """Return human-readable contract violations."""
-    issues: list[str] = []
+    issues: list[str] = missing_topic_routes(ROOT)
     quickstart = ROOT / "docs" / "gnn" / "tutorials" / "quickstart_tutorial.md"
     text = quickstart.read_text(encoding="utf-8")
     positions = [text.find(f"## {section}") for section in REQUIRED_QUICKSTART_SECTIONS]

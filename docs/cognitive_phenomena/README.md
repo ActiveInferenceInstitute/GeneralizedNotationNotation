@@ -18,6 +18,19 @@ The blocks below are partial research sketches, not runnable or empirically vali
 models. Use the [complete exemplar index](../../input/gnn_files/INDEX.md) and
 [backend admission guide](../execution/FRAMEWORK_AVAILABILITY.md) for execution.
 
+## Research topic navigation
+
+- [Attention](attention/README.md), [perception](perception/README.md), [memory](memory/README.md)
+- [Learning and adaptation](learning_adaptation/README.md), [executive control](executive_control/README.md)
+- [Effort](effort/README.md), [emotion and affect](emotion_affect/README.md)
+- [Language processing](language_processing/README.md), [consciousness](consciousness/README.md)
+- [Meta-awareness study](meta-awareness/README.md), [standalone Meta-Aware-2 implementation](meta-aware-2/README.md)
+
+The study subtrees contain independent research scripts and retained results.
+Their historical claims and local prerequisites do not establish current pipeline
+backend support or reproduce a paper by themselves. Use the complete exemplars
+and accepted release receipts for current package behavior.
+
 ## Table of Contents
 
 1. [Introduction to Cognitive Modeling](#introduction)
