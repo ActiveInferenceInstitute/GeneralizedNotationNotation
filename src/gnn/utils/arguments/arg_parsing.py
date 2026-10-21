@@ -386,7 +386,9 @@ def build_step_command_args(
     if not config:
         raise ValueError(f"Unknown pipeline step: {step_name}")
 
-    cmd: list[Any] = [python_executable, str(script_path)]
+    # Python >=3.11: omit the script directory from the import search path.
+    # The installed package or explicit source PYTHONPATH owns gnn imports.
+    cmd: list[Any] = [python_executable, "-P", str(script_path)]
 
     # Get all arguments this step supports
     # First try from StepConfiguration

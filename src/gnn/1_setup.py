@@ -7,6 +7,11 @@ environment validation to `src/setup/`. Keep usage examples and operational
 details in `src/setup/README.md` so this numbered step stays orchestration-only.
 """
 
+import sys
+
+if __package__ is None and not sys.flags.safe_path:
+    sys.path.pop(0)  # Keep adjacent gnn/types from shadowing stdlib types.
+
 import logging
 from pathlib import Path
 from typing import Any, cast

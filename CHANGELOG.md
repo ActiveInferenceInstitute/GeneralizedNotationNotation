@@ -11,6 +11,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ### Release qualification
 
+- Keep the numbered-script directory off Python's import path before standard
+  library imports. Direct entrypoints and supervised children no longer let
+  `gnn/types` shadow stdlib `types` when current setuptools stops preloading it.
+  The normal installed/source package path still owns `gnn` imports.
+- Discover the release collector's actual argparse registrations in the flag
+  audit, preserving the existing ratchet rather than treating valid flags as drift.
+
 - Re-resolve current compatible dependencies at the release freeze: FastAPI
   0.156.4, Orbax Checkpoint 0.12.8, python-utils 4.1.4, setuptools 84.2.1,
   Sphinx 9.2.0, sphinxcontrib-jsmath 2.0.0 and virtualenv 21.14.12.

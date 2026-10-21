@@ -9,6 +9,11 @@ How to run:
   uv run python src/gnn/main.py  # (runs as part of the pipeline)
 """
 
+import sys
+
+if __package__ is None and not sys.flags.safe_path:
+    sys.path.pop(0)  # Keep adjacent gnn/types from shadowing stdlib types.
+
 from typing import cast
 
 from gnn.advanced_visualization import VIZ_TYPE_CHOICES, process_advanced_viz
