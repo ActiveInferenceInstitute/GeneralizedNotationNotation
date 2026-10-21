@@ -78,7 +78,7 @@ Both Julia backends run against **committed** environments checked into the repo
 
 | Framework | Environment | Pinned contents |
 |---|---|---|
-| RxInfer.jl | `src/gnn/execute/rxinfer/` | The `GnnRxInferModels` package — RxInfer 5.5.0 plus Distributions, JSON, Plots, StatsBase, PrecompileTools. Precompiles the `pomdp`, `continuous`, `hierarchical`, `factored`, and `learning` models loudly: a precompile failure surfaces rather than being swallowed. |
+| RxInfer.jl | `src/gnn/execute/rxinfer/` | The `GnnRxInferModels` package — RxInfer 6.1.0 plus Distributions, JSON, Plots, StatsBase, PrecompileTools. Precompiles the `pomdp`, `continuous`, `hierarchical`, `factored`, and `learning` models loudly: a precompile failure surfaces rather than being swallowed. |
 | ActiveInference.jl | `src/gnn/execute/activeinference_jl/` | A deliberately **minimal** environment — ActiveInference 0.1.2, Distributions, JSON, StatsBase, and nothing else. |
 
 Environment hygiene (2026-09-22 re-check): both projects share one Julia
@@ -463,7 +463,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 **Solution**:
 - Install framework dependencies: `uv pip install inferactively-pymdp jax`
 - **Note**: The correct PyMDP package name is `inferactively-pymdp`, not `pymdp`
-- For Julia: the RxInfer.jl environment is pinned by the committed `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` (RxInfer 5.5.0). `setup_environment.jl` activates and instantiates it (`Pkg.activate()` + `Pkg.instantiate()`) — there is no runtime `Pkg.add`.
+- For Julia: the RxInfer.jl environment is pinned by the committed `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` (RxInfer 6.1.0). `setup_environment.jl` activates and instantiates it (`Pkg.activate()` + `Pkg.instantiate()`) — there is no runtime `Pkg.add`.
 - Check framework-specific requirements in documentation
 
 #### Issue 2a: Wrong PyMDP package installed

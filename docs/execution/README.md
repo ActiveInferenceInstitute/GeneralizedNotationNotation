@@ -32,13 +32,15 @@ simulation frameworks across both model kinds (discrete categorical and
 continuous linear-Gaussian — see [FRAMEWORK_AVAILABILITY.md](FRAMEWORK_AVAILABILITY.md)):
 
 - **PyMDP**: Python Active Inference (discrete models; primary)
-- **RxInfer.jl**: Julia Bayesian inference via genuine `@model` + `infer()` (committed `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` pin RxInfer 5.5.0; run with `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`, no runtime `Pkg.add`) — discrete and continuous LGSSM lanes
+- **RxInfer.jl**: Julia Bayesian inference via genuine `@model` + `infer()` (committed `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` pin RxInfer 6.1.0; run with `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`, no runtime `Pkg.add`) — discrete and continuous LGSSM lanes
 - **ActiveInference.jl**: Complete Julia implementation (discrete models)
 - **DisCoPy**: Category theory and quantum computing (discrete models)
 - **JAX / NumPyro / PyTorch**: discrete factorized and continuous linear-Gaussian (LGSSM) programs
 - **Stan**: HMM (discrete) and LGSSM (continuous) programs via the cmdstanpy driver in `src/gnn/execute/stan/`
-- **Lean**: proof-carrying models via the fep_lean bridge
-- **bnlearn**: Bayesian network learning (render/execute; runtime optional)
+- **Lean**: typed document checking via the pinned FEP bridge; numerical and theorem evidence remain separate
+- **bnlearn**: Bayesian-network workflows (render/execute; runtime optional)
+- **ngc-learn**: admitted continuous/predictive-coding models
+- **cpomdp / THRML**: explicitly selected experimental contracts; see [availability](FRAMEWORK_AVAILABILITY.md)
 
 ## Integration
 
@@ -62,6 +64,6 @@ See the [main documentation index](../README.md) for comprehensive guides and fr
 
 ---
 
-**Status**: Production Ready  
+**Status**: Maintained; acceptance is backend/model/runtime-specific
 **Version**: 1.0
 

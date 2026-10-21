@@ -69,21 +69,18 @@ in [src/gnn/STEP_INDEX.md](../src/gnn/STEP_INDEX.md) and [PIPELINE_SCRIPTS.md](P
 
 Framework boundaries are deliberately explicit:
 
-- Step 11 exposes 9 render targets: PyMDP, RxInfer.jl, ActiveInference.jl, JAX,
-  DisCoPy, PyTorch, NumPyro, Stan, and bnlearn.
-- Step 12 executes 10 targets — the 9 render targets (bnlearn via `src/gnn/execute/bnlearn/`; its programs skip with an install hint until the `bnlearn` extra or an R + Rscript runtime is present) plus Lean document verification via fep_lean (`src/gnn/execute/lean/`).
-  Stan runs through the cmdstanpy driver
-  `<stem>_stan.py` via `src/gnn/execute/stan/`; without cmdstanpy plus a CmdStan toolchain
-  it is reported skipped. PyTorch and bnlearn are registry-gated and are not installed
-  by the default lock.
-- Discrete exemplars render on all 9 targets and execute on all of them
-  (plus Lean document verification where the fep_lean bridge is
-  present). The continuous
-  (linear-Gaussian) exemplars render and execute on JAX, NumPyro, PyTorch, Stan and
-  RxInfer.jl; PyMDP, ActiveInference.jl, DisCoPy and bnlearn report the render status
-  `unsupported` for them (counted separately from failures, never executed).
-- Missing optional runtimes are reported as skipped/unavailable; they are not silently
-  represented as successful executions.
+- Step 11's [renderer registry](../src/gnn/render/framework_registry.py) owns
+  code generators, model-kind support and default/experimental selection.
+- Step 12's [direct executor specifications](../src/gnn/execute/executor_specs.py)
+  and [pipeline discovery](../src/gnn/execute/detection.py) have distinct
+  inventories. Lean document checking is separate from numerical simulation.
+- Experimental cpomdp and THRML require explicit selection. Composition admission
+  remains backend-specific; a registered generator does not imply that every
+  discrete, continuous or coupled model can run.
+- Missing optional runtimes retain skipped/unavailable outcomes. Stan needs its
+  cmdstanpy driver and CmdStan; Julia backends use committed project environments.
+  See [framework availability](execution/FRAMEWORK_AVAILABILITY.md) and
+  [pipeline boundaries](pipeline/README.md#step-boundaries).
 
 Read [Framework Implementations](gnn/implementations/README.md) for per-target
 material and [the framework integration guide](gnn/integration/framework_integration_guide.md)

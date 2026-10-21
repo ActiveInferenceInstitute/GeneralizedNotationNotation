@@ -272,7 +272,7 @@ The shared contract is `canonical_pomdp_v1`, with B stored as `(next_state, prev
 
 ### Framework-Specific Dependencies
 - **PyMDP**: `pymdp` package
-- **RxInfer.jl**: Julia with the RxInfer.jl package (committed `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` pin RxInfer 5.5.0)
+- **RxInfer.jl**: Julia with the RxInfer.jl package (committed `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` pin RxInfer 6.1.0)
 - **ActiveInference.jl**: Julia with ActiveInference.jl package
 - **DisCoPy**: `discopy` package
 - **JAX**: `jax`, `jaxlib` packages

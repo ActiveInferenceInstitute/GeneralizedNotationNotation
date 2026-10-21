@@ -9,7 +9,7 @@ interpreter markers and platform constraints are declared in `pyproject.toml` an
 ## Fast path
 
 ```bash
-UV_PYTHON=3.12 uv sync --frozen --extra dev
+UV_PYTHON=3.14 uv sync --frozen --extra dev
 uv run --frozen --no-sync gnn health
 ```
 
@@ -39,11 +39,13 @@ The checked-in `input/config.yaml` is loaded automatically by `src/gnn/main.py`;
   [CI workflow](../.github/workflows/ci.yml) for tested interpreter splits;
   a compatible dependency install does not establish every native backend's
   readiness on that interpreter or OS.
-- `uv` with support for the lockfile format in this repository.
-- Linux is the primary tested platform. macOS is supported for Python-only paths;
-  Julia, GUI, audio, and system Graphviz paths have additional local requirements.
-- At least 2 GB free disk space for a normal environment; rendering and generated
-  artifacts can require considerably more.
+- Exact `uv` 0.13.4, as required by the committed project configuration.
+- Installed-wheel acceptance covers declared Linux, macOS and Windows lanes; see
+  the [platform guide](development/installed_platform_acceptance.md) for exact
+  interpreter/OS scope. Optional Julia, GUI, audio and Graphviz paths need their
+  own provisioning and acceptance.
+- Allow space for the interpreter, locked dependencies, caches and generated
+  artifacts. Optional backends and manuscript rendering add substantial storage.
 
 Optional system tools:
 
@@ -134,34 +136,18 @@ comma-separated list. The same selection is available through `src/gnn/main.py`.
 
 ## Framework boundaries
 
-Step 11 has **9 render targets**. Step 12 executes **10 framework families** — every
-render target plus Lean. Stan executes through the
-cmdstanpy driver (`src/gnn/execute/stan/`) since v3.2.0; it needs `uv sync --extra stan`
-plus a CmdStan toolchain and is reported skipped when either is absent. bnlearn
-executes through `src/gnn/execute/bnlearn/` and is reported skipped until its runtime
-is present (`uv sync --extra bnlearn`, or Rscript plus the R `bnlearn` package for
-`.R` scripts). PyTorch and bnlearn are locked optional extras, absent from the
-default environment. The runtime reports skipped or unavailable frameworks rather
-than pretending that every target is installed.
+The [renderer registry](../src/gnn/render/framework_registry.py) owns generators
+and model-kind support. The [direct executor specifications](../src/gnn/execute/executor_specs.py)
+and [pipeline discovery](../src/gnn/execute/detection.py) own execution wiring and
+presets. See [framework availability](execution/FRAMEWORK_AVAILABILITY.md) for
+admission and readiness; registration alone does not certify native execution.
 
-| Target | Language | Default environment status | Surface |
-|---|---|---|---|
-| PyMDP | Python | Core | Render + execute |
-| JAX | Python | Core | Render + execute |
-| NumPyro | Python | Core | Render + execute |
-| DisCoPy | Python | Core | Render + execute |
-| RxInfer.jl | Julia | Committed project environment | Render + execute |
-| ActiveInference.jl | Julia | Committed project environment | Render + execute |
-| PyTorch | Python | Locked optional extra (`uv sync --frozen --extra torch`) | Render + execute when provisioned |
-| Stan | Stan | Optional extra (`uv sync --extra stan`) | Render + execute via cmdstanpy |
-| bnlearn | Python | Optional extra (`uv sync --extra bnlearn`) | Render + execute |
-
-Model kind also matters: **discrete categorical** models (A/B/C/D[/E]) run on
-every backend above, while **continuous linear-Gaussian** models
-(F/H/Q/R + `prior_mean`/`prior_cov`) render to native LGSSM programs and
-execute only on JAX, NumPyro, PyTorch, Stan, and RxInfer.jl — the categorical
-backends report them `unsupported`. See
-[framework availability](execution/FRAMEWORK_AVAILABILITY.md).
+Stan needs the `stan` extra plus CmdStan. bnlearn needs its Python extra or
+Rscript and R's bnlearn package for `.R` programs. Julia targets use their committed
+project environments. Experimental cpomdp and THRML require explicit selection;
+ngc-learn has a continuous-only contract. Other composition and model-kind
+restrictions remain adapter-specific. Missing runtimes retain skipped/unavailable
+outcomes, and unsupported renders are never executed for that model.
 
 ### Python targets
 

@@ -208,7 +208,7 @@ flowchart LR
 
 - PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn rendering configured in `src/gnn/render/` (`framework_registry.py` is the single source of the framework list)
 - Execution backends in `src/gnn/execute/` (including the `stan/` cmdstanpy runner)
-- Model kinds: discrete POMDP/HMM specs render and execute on all nine frameworks; continuous linear-Gaussian specs (`input/gnn_files/continuous/`) render and execute on JAX, NumPyro, PyTorch, Stan and RxInfer.jl and are reported with the `unsupported` render status on PyMDP, ActiveInference.jl, DisCoPy and bnlearn (excluded from success rates, never executed by Step 12). See the "Model Kinds and Framework Support (v3.2.0)" section of [README.md](README.md).
+- Model-kind and composition admission are backend-specific. The [renderer registry](src/gnn/render/framework_registry.py) owns current support and default/experimental selection; [pipeline boundaries](docs/pipeline/README.md#step-boundaries) distinguish generator registration from native execution. See [Model Kinds and Framework Support](README.md#model-kinds-and-framework-support) for admitted scopes and limits.
 - MCP tools in `src/gnn/mcp/`
 
 ## References

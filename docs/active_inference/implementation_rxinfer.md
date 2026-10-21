@@ -1,246 +1,106 @@
 # RxInfer.jl Implementation Reference
 
-> **📋 Document Metadata**  
-> **Type**: Implementation Reference | **Audience**: Developers | **Complexity**: Intermediate  
-> **Cross-References**: [RxInfer Documentation](../rxinfer/README.md) | [Variational Inference](variational_inference.md) | [Computational Patterns](computational_patterns.md)
-
 ## Overview
 
-**RxInfer.jl** is a Julia package for Bayesian inference using genuine `@model` + `infer()` variational message-passing on factor graphs. This document provides signposting to GNN source code and documentation.
-
-The pipeline's canonical integration uses a committed Julia environment
-(`Project.toml` + `Manifest.toml` pinning RxInfer 5.5.0 under
-`src/gnn/execute/rxinfer/`) and a genuine `@model` + `infer()` pipeline:
-`src/gnn/render/rxinfer/rxinfer_renderer.py` emits
-`@model function pomdp_model(y, A, B, D, u, T)` (`Categorical` /
-`DiscreteTransition` nodes) solved with `infer()` (`free_energy = true`),
-populating `variational_free_energy` with real values (previously `Float64[]`).
-
-RxInfer is the only one of the three Active Inference implementation frameworks (PyMDP, RxInfer, ActiveInference.jl) with continuous support (`supports_continuous=True`; the other registry backends with continuous support — JAX, PyTorch, NumPyro, Stan — are covered in their own docs). The discrete categorical POMDP path above is unaffected. When a GNN spec declares a continuous linear-Gaussian `initialparameterization` — F/H/Q/R system matrices plus `prior_mean`/`prior_cov` — [`src/gnn/render/rxinfer/_strategies_continuous.py`](../../src/gnn/render/rxinfer/_strategies_continuous.py) emits a native linear-Gaussian `@model` script (`continuous_pomdp_model`, precompiled in the pinned `GnnRxInferModels` package) instead of the categorical POMDP model:
-
-```julia
-x[1] ~ MvNormal(prior_mean, prior_cov)
-x[t] = F * x[t-1] + u[t-1] + N(0, Q)
-y[t] = H * x[t]           + N(0, R)
-```
-
-When `goal_mean`/`control_gain` are declared, the forward simulation closes the loop on beliefs with proportional control (`u[t] = gain * (goal - mu[t])`, `mu[t]` the online Kalman-filtered mean); otherwise `u` is zero and the dynamics run passively. The fully conjugate model is solved with the same `infer()` (`free_energy = true`) pipeline, and the renderer refuses to derive continuous parameters from discrete A/B/C/D stand-ins.
-
-**Status**: ✅ Production Ready  
-**Version**: 1.0
-
----
+GNN uses RxInfer's native `@model` and `infer()` message-passing APIs for admitted
+categorical and linear-Gaussian models. The committed
+[Project.toml](../../src/gnn/execute/rxinfer/Project.toml) and
+[Manifest.toml](../../src/gnn/execute/rxinfer/Manifest.toml) select RxInfer 6.1.0 /
+ReactiveMP 7. The [native workflow](../../.github/workflows/rxinfer.yml) qualifies
+Julia 1.13.2, model families, numerical witnesses and custom trajectory rules.
 
 ## Source Code Signposting
 
-### Execution Engine
+| Component | Owner |
+| --- | --- |
+| Model-kind dispatch and rendering | [Renderer](../../src/gnn/render/rxinfer/rxinfer_renderer.py), [strategy guide](../../src/gnn/render/rxinfer/README.md) |
+| Native model definitions | [GnnRxInferModels.jl](../../src/gnn/execute/rxinfer/src/GnnRxInferModels.jl) |
+| Execution and environment | [RxInfer runner](../../src/gnn/execute/rxinfer/README.md) |
+| Native numerical/custom-rule checks | [test_models.jl](../../src/gnn/execute/rxinfer/test_models.jl) |
 
-| Component | Path | Description |
-|-----------|------|-------------|
-| **RxInfer Runner** | [`src/gnn/execute/rxinfer/`](../../src/gnn/execute/rxinfer/) | Main execution scripts |
-| **Julia Setup** | [`src/gnn/execute/julia_setup.py`](../../src/gnn/execute/julia_setup.py) | Julia environment config |
-
-### Integration
-
-| Component | Path | Description |
-|-----------|------|-------------|
-| **Executor** | [`src/gnn/execute/executor.py`](../../src/gnn/execute/executor.py) | Multi-engine dispatcher |
-| **Processor** | [`src/gnn/execute/processor/`](../../src/gnn/execute/processor/) | Step 12 processing (facade package) |
-
----
-
-## Documentation Signposting
-
-### RxInfer Documentation
-
-| Document | Path | Description |
-|----------|------|-------------|
-| **README** | [`docs/rxinfer/README.md`](../rxinfer/README.md) | Overview |
-| **GNN RxInfer Guide** | [`docs/rxinfer/gnn_rxinfer.md`](../rxinfer/gnn_rxinfer.md) | Integration guide |
-| **Multiagent** | [`docs/rxinfer/Multiagent_GNN_RxInfer.jl`](../rxinfer/Multiagent_GNN_RxInfer.jl) | Multi-agent models |
-| **Engineering Guide** | [`docs/rxinfer/engineering_rxinfer_gnn.md`](../rxinfer/engineering_rxinfer_gnn.md) | Engineering details |
-
----
+Generated scripts import the committed model package rather than redefining its
+models. They supply source-declared parameters, simulation and action-selection
+logic, supervision metadata and result serialization. Execution uses the committed
+project environment; it does not install missing packages at runtime.
 
 ## Quick Reference
 
 ### Installation
 
-Within the GNN pipeline, RxInfer 5.5.0 and all Julia dependencies are pinned by the
-committed environment under `src/gnn/execute/rxinfer/` (`Project.toml` + `Manifest.toml`).
-`setup_environment.jl` activates and instantiates it — there is **no runtime
-`Pkg.add`**. The runner invokes:
+From the repository root, instantiate the committed environment during setup:
 
 ```bash
-julia --startup-file=no --project=src/gnn/execute/rxinfer <script>
+julia --startup-file=no --project=src/gnn/execute/rxinfer \
+  -e 'using Pkg; Pkg.instantiate()'
 ```
 
-For local experimentation outside the repo, install RxInfer directly:
-
-```julia
-using Pkg
-Pkg.add("RxInfer")
-```
+Run a Julia script with the same `--project` setting. The GNN runner uses this
+project-specific environment; an ambient Julia installation alone does not
+establish backend readiness.
 
 ### Basic Model
 
+This complete categorical example uses the same model and data representation as
+[the exhaustive-enumeration native check](../../src/gnn/execute/rxinfer/test_models.jl).
+Save it as a Julia script and run it under the project above:
+
 ```julia
 using RxInfer
+using GnnRxInferModels: pomdp_model
 
-@model function active_inference_model(A, B, C, D, T)
-    # Initial state
-    s_0 ~ Categorical(D)
-    
-    # State-observation sequence
-    s = Vector{Any}(undef, T)
-    o = Vector{Any}(undef, T)
-    
-    s[1] ~ Categorical(B * s_0)
-    o[1] ~ Categorical(A * s[1])
-    
-    for t in 2:T
-        s[t] ~ Categorical(B * s[t-1])
-        o[t] ~ Categorical(A * s[t])
-    end
-    
-    return s, o
-end
+A = [0.85 0.2; 0.15 0.8]
+B = reshape([0.7 0.25; 0.3 0.75], 2, 2, 1)
+D = [0.6, 0.4]
+observations = [1, 2, 2]
+y = [[Float64(k == o) for k in 1:2] for o in observations]
+result = infer(
+    model = pomdp_model(A=A, B=B, D=D, u=[1, 1], T=3),
+    data = (y=y,), iterations=3, returnvars=KeepLast(), free_energy=true,
+)
+beliefs = [probvec(q) for q in result.posteriors[:s]]
+@assert length(beliefs) == 3
+@assert all(isfinite, result.free_energy)
 ```
 
 ### Inference
 
-```julia
-# Create model
-model = active_inference_model(A, B, C, D, T)
-
-# Run inference
-result = inference(
-    model = model,
-    data = (o = observations,),
-    returnvars = (s = KeepLast(),),
-    iterations = 10
-)
-
-# Get beliefs
-beliefs = result.posteriors[:s]
-```
-
----
+The batch model returns smoothed posterior states conditioned on the complete
+observation sequence. Those results differ from online filtered beliefs.
+Generated flat models also support explicit online mode; the
+[integration guide](../gnn/integration/framework_integration_guide.md) owns that
+selection and action-policy semantics. Free energy is a numerical output of
+`infer()`; continuous Gaussian free energy need not be positive.
 
 ## Key Concepts
 
-### Factor Graphs
-
-RxInfer represents models as factor graphs:
-
-```
-    s[t-1] ────── B ────── s[t] ────── A ────── o[t]
-       │                     │
-       └──────── B ──────────┘
-                 ↓
-              s[t+1]
-```
-
-### Message Passing
-
-Belief propagation via messages:
-
-```julia
-@rule Categorical(:out, Marginalisation) (
-    m_p::PointMass,
-) = begin
-    Categorical(mean(m_p))
-end
-```
-
-### Reactive Inference
-
-Continuous, streaming inference:
-
-```julia
-subscription = subscribe!(
-    inference_result,
-    on_next = (result) -> handle_update(result)
-)
-```
-
----
-
-## GNN Integration
-
 ### Model Mapping
 
-```
-GNN Syntax              →    RxInfer
-─────────────────────────────────────────
-A[obs, states]          →    A matrix
-B[states, states, actions] → B[action] matrices
-C[obs]                  →    C vector (via goal prior)
-D[states]               →    D Categorical prior
-```
+- `A[observation, state]` supplies the categorical likelihood.
+- `B[next_state, previous_state, action]` supplies action-conditioned transitions.
+- `D[state]` supplies the initial categorical prior.
+- Preferences and action selection belong to generated policy logic; they are
+  separate from the batch posterior model above.
+- Continuous models use source-declared `F/H/Q/R` and `prior_mean/prior_cov`;
+  the renderer does not invent Gaussian parameters from categorical matrices.
 
-### Execution Pipeline
+### Advanced Features
 
-```mermaid
-graph LR
-    GNN[GNN Model] --> Export[GNN Export]
-    Export --> Julia[Julia Script]
-    Julia --> RxInfer[RxInfer Model]
-    RxInfer --> Inference[Message Passing]
-    Inference --> Results[Posterior Beliefs]
-```
+Hierarchical, factored and learning strategies use the committed package's model
+functions and their required constraints/initialization. Multi-agent composition
+and continuous control retain explicit admission limits; see the
+[backend guide](../gnn/implementations/rxinfer.md).
 
----
-
-## Advanced Features
-
-### Hierarchical Models
-
-```julia
-@model function hierarchical_ai(T_high, T_low)
-    # High-level (slow) dynamics
-    for t in 1:T_high
-        s_high[t] ~ transition_high(s_high[t-1])
-        
-        # Low-level (fast) dynamics
-        for τ in 1:T_low
-            s_low[t, τ] ~ transition_low(s_low[t, τ-1], s_high[t])
-        end
-    end
-end
-```
-
-### Custom Nodes
-
-```julia
-# Define custom factor
-@node MyFactor Stochastic [out, in1, in2]
-
-# Implement update rules
-@rule MyFactor(:out, Marginalisation) (...) = begin
-    # Custom message computation
-end
-```
-
----
+Custom factors and rules must use the RxInfer 6 / ReactiveMP 7 APIs. The
+[Halfspace node](../rxinfer/multiagent_trajectory_planning/HalfspaceNode.jl) and
+[native compatibility checks](../../src/gnn/execute/rxinfer/test_models.jl) provide
+working examples. Placeholder node/rule sketches cannot establish compatibility.
 
 ## Related Resources
 
-### Theory
-- **[Variational Inference](variational_inference.md)**: Message passing theory
-- **[Active Inference Theory](active_inference_theory.md)**: Core concepts
-- **[Generative Models](generative_models.md)**: Model specification
-
-### Implementation
-- **[PyMDP Implementation](implementation_pymdp.md)**: Python alternative
-- **[ActiveInference.jl](implementation_activeinference_jl.md)**: Julia alternative
-- **[Computational Patterns](computational_patterns.md)**: Common patterns
-
-### External
-- **[RxInfer.jl GitHub](https://github.com/biaslab/RxInfer.jl)**
-- **[RxInfer Documentation](https://docs.rxinfer.com/stable/)**
-
----
-
-**Status**: ✅ Production Ready  
-**Compliance**: GNN documentation standards
+- [RxInfer documentation hub](../rxinfer/README.md)
+- [GNN integration guide](../rxinfer/gnn_rxinfer.md)
+- [Variational inference](variational_inference.md)
+- [PyMDP implementation](implementation_pymdp.md)
+- [ActiveInference.jl implementation](implementation_activeinference_jl.md)
+- [RxInfer source](https://github.com/ReactiveBayes/RxInfer.jl)
+- [RxInfer documentation](https://docs.rxinfer.com/stable/)

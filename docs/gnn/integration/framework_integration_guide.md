@@ -129,7 +129,7 @@ result serialization.
 | `ModelKind` | Strategy | Generated model |
 |---|---|---|
 | `FLAT` | `FlatStrategy` | `pomdp_model` — batch smoothing by default; per-timestep filtering when online mode is selected (below) |
-| `HIERARCHICAL` | `HierarchicalStrategy` | `hierarchical_pomdp_model` — native two-level: the context latent is coupled into the fast-state prior through the column-normalized `A_level2` from the GNN spec, which arrives as the model's `A_ctx` argument. Mean-field constraints *and* marginal initialization are both required on RxInfer 5.5. Three or more declared levels render as the documented joint composition |
+| `HIERARCHICAL` | `HierarchicalStrategy` | `hierarchical_pomdp_model` — native two-level: the context latent is coupled into the fast-state prior through the column-normalized `A_level2` from the GNN spec, which arrives as the model's `A_ctx` argument. Mean-field constraints *and* marginal initialization are both required by the committed RxInfer models. Three or more declared levels render as the documented joint composition |
 | `FACTORED` | `FactoredStrategy` | `factored_pomdp_model` — native mean-field two-factor model with a multi-parent likelihood, `DiscreteTransition(s1, A_m0, s2)`, yielding per-factor posteriors |
 | `CONTINUOUS` | `ContinuousStrategy` | `continuous_pomdp_model` — native linear-Gaussian state space built from `F`/`H`/`Q`/`R` plus `prior_mean`/`prior_cov` in `InitialParameterization`. Beliefs are posterior *means* alongside `posterior_cov`, and VFE validation is sign-agnostic because a Gaussian Bethe free energy is routinely negative |
 | `LEARNING` | `LearningStrategy` | `learning_pomdp_model` — the likelihood `A` is learned jointly with the states as `DirichletCollection(dirichlet_A)`; `a_learning_improved` is a hard validation gate |
@@ -153,7 +153,7 @@ smoothed joint posterior — drives action selection via `softmax(log E − γ·
 (`_build_execution_environment()` in `src/gnn/execute/processor/single.py`), so scripts resolve
 their packages without an ambient environment; an explicitly set `JULIA_PROJECT` still
 wins. The committed `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` pin
-RxInfer 5.5.0 and define the `GnnRxInferModels` package, which precompiles the pomdp,
+RxInfer 6.1.0 and define the `GnnRxInferModels` package, which precompiles the pomdp,
 continuous, hierarchical, factored, and learning models loudly — a precompilation
 failure surfaces rather than being swallowed. `setup_environment.jl` activates and
 instantiates the environment (`Pkg.activate()` + `Pkg.instantiate()`, no runtime
