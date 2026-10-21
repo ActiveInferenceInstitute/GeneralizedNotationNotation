@@ -13,6 +13,7 @@ import json
 import re
 import subprocess
 from pathlib import Path
+from typing import Any
 from urllib.parse import quote
 
 REPOSITORY = "ActiveInferenceInstitute/Generalized_Notation_Notation"
@@ -36,7 +37,7 @@ WORKFLOWS = (
 )
 
 
-def gh(*arguments: str) -> object:
+def gh(*arguments: str) -> Any:
     return json.loads(
         subprocess.check_output(["gh", *arguments], text=True, timeout=120)
     )
@@ -149,7 +150,7 @@ def main() -> int:
                 WORKFLOWS,
             )
         )
-    dispatches = []
+    dispatches: list[str] = []
     receipt = {
         "repository": REPOSITORY,
         "revision": args.revision,
