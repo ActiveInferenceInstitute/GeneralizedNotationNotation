@@ -20,11 +20,13 @@ from __future__ import annotations
 
 import argparse
 import ast
+import html
 import logging
 import re
 import sys
 from collections.abc import Sequence
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -113,47 +115,51 @@ def iter_markdown_files() -> list[Path]:
     return sorted(out)
 
 
-# [text](url) — capture path before # or )
-LINK_RE = re.compile(r"\[[^\]]*\]\(([^)#\s]+)(?:#[^)]*)?\)")
-
-# Image links whose alt text contains one nested bracket level, e.g.
-# ![Caption [DAT] tag](Figure_1.png). LINK_RE cannot match these because the
-# first closing ] ends the alt text early, so a dedicated pattern extracts the
-# path for link validation. Applies to both ! and plain link forms.
-NESTED_ALT_LINK_RE = re.compile(
-    r"!{0,1}\[(?:[^\]\[]|\[[^\]\[]*\])*\]\(([^)#\s]+)(?:#[^)]*)?\)"
-)
-
-# [text](url) — full href including fragment (for anchor checks)
-FULL_LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
-
-# Fenced code blocks (``` … ``` or ~~~ … ~~~), non-greedy, DOTALL so fences can span lines.
-FENCED_CODE_RE = re.compile(r"(?ms)^([ \t]*)(```|~~~)[^\n]*\n.*?^\1\2[ \t]*$")
-
-# Inline code spans: `…` or ``…`` (shortest match wins within a line).
+# Inline code spans must not turn example syntax into links.
 INLINE_CODE_RE = re.compile(r"(`+)(?:(?!\1).)+\1")
+DESTINATION_RE = re.compile(
+    r"!?\[(?:[^\]\[]|\[[^\]\[]*\])*\]"
+    r"\(\s*(<[^>\n]+>|(?:[^\s()\\]|\\.|\([^()]*\))+)"
+    r"(?:\s+(?:\"[^\"]*\"|'[^']*'|\([^()]*\)))?\s*\)"
+)
+REFERENCE_RE = re.compile(r"^ {0,3}\[[^]\n]+\]:\s*(<[^>]+>|\S+)", re.MULTILINE)
+
+
+def _strip_fenced_code(md: str) -> str:
+    """Blank fenced code while preserving line numbers, including long fences."""
+    lines: list[str] = []
+    fence_char = ""
+    fence_size = 0
+    for line in md.splitlines(keepends=True):
+        match = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", line.rstrip("\r\n"))
+        if fence_char:
+            if (
+                match
+                and match[1][0] == fence_char
+                and len(match[1]) >= fence_size
+                and not match[2].strip()
+            ):
+                fence_char = ""
+            lines.append("\n" if line.endswith("\n") else "")
+        elif match and not (match[1][0] == "`" and "`" in match[2]):
+            fence_char, fence_size = match[1][0], len(match[1])
+            lines.append("\n" if line.endswith("\n") else "")
+        else:
+            lines.append(line)
+    return "".join(lines)
 
 
 def _strip_code(md: str) -> str:
-    """Remove fenced code blocks and inline code spans so link regexes don't match
-    Python / shell snippets that happen to contain ``[ident](expr)``."""
-    no_blocks = FENCED_CODE_RE.sub(
-        lambda m: "\n".join("" for _ in m.group(0).splitlines()), md
-    )
-    return INLINE_CODE_RE.sub(lambda m: " " * len(m.group(0)), no_blocks)
+    """Remove code without changing the line numbers of real links."""
+    return INLINE_CODE_RE.sub(lambda m: " " * len(m.group(0)), _strip_fenced_code(md))
 
 
 def extract_links(md: str) -> list[str]:
+    """Extract inline destinations and reference definitions, excluding code."""
     stripped = _strip_code(md)
-    links = [m.group(1).strip() for m in LINK_RE.finditer(stripped)]
-    # Second pass: catch links with nested-bracket alt text that LINK_RE skips.
-    seen = set(links)
-    for m in NESTED_ALT_LINK_RE.finditer(stripped):
-        link = m.group(1).strip()
-        if link not in seen:
-            links.append(link)
-            seen.add(link)
-    return links
+    return [m[1].strip("<>") for m in DESTINATION_RE.finditer(stripped)] + [
+        m[1].strip("<>") for m in REFERENCE_RE.finditer(stripped)
+    ]
 
 
 def gfm_slug(heading_line: str) -> str:
@@ -180,22 +186,47 @@ def gfm_slug(heading_line: str) -> str:
     """
     m = re.match(r"^#{1,6}\s+(.+)$", heading_line.strip())
     text = m.group(1) if m else heading_line
-    text = text.strip().replace("`", "").lower()
+    text = re.sub(r"\s+#+\s*$", "", text)
+    text = re.sub(r"!?\[([^]]+)\]\([^)]*\)", r"\1", text)
+    text = re.sub(r"<[^>]*>", "", text)
+    text = html.unescape(text).strip().replace("`", "").lower()
     text = re.sub(r"[^\w\s-]", "", text, flags=re.UNICODE)
     return text.replace(" ", "-").strip("-")
 
 
 def _heading_slugs_in_markdown(md: str) -> set[str]:
-    slugs: set[str] = set()
-    for line in md.splitlines():
-        if not line.strip().startswith("#"):
+    """Rendered ATX/Setext headings, duplicate suffixes and explicit HTML IDs."""
+    prose = _strip_fenced_code(md)
+    slugs = {
+        m[1]
+        for m in re.finditer(
+            r"<(?:a|h[1-6])\b[^>]*\b(?:id|name)=[\"']([^\"']+)[\"']",
+            prose,
+            re.IGNORECASE,
+        )
+    }
+    used: set[str] = set()
+    lines = prose.splitlines()
+    for i, line in enumerate(lines):
+        if re.match(r"^ {0,3}#{1,6}\s+", line):
+            heading = line.strip()
+        elif i and lines[i - 1].strip() and re.fullmatch(r" {0,3}(?:=+|-+)\s*", line):
+            heading = lines[i - 1].strip()
+        else:
             continue
-        slugs.add(gfm_slug(line))
+        base = gfm_slug(heading)
+        slug = base
+        suffix = 0
+        while slug in used:
+            suffix += 1
+            slug = f"{base}-{suffix}"
+        used.add(slug)
+        slugs.add(slug)
     return slugs
 
 
 def audit_bad_markdown_anchors(files: list[Path]) -> list[tuple[Path, int, str, str]]:
-    """Flag relative links to *.md where #fragment does not match any heading slug."""
+    """Check same-page and cross-file Markdown anchors against rendered headings."""
     issues: list[tuple[Path, int, str, str]] = []
     slug_cache: dict[Path, set[str]] = {}
     for src in files:
@@ -203,65 +234,45 @@ def audit_bad_markdown_anchors(files: list[Path]) -> list[tuple[Path, int, str, 
             rel_src = src.relative_to(REPO_ROOT)
         except ValueError:
             continue
-        raw = src.read_text(encoding="utf-8", errors="replace")
-        lines = _strip_code(raw).splitlines()
+        lines = _strip_code(
+            src.read_text(encoding="utf-8", errors="replace")
+        ).splitlines()
         for i, line in enumerate(lines, start=1):
-            for m in FULL_LINK_RE.finditer(line):
-                href = m.group(1).strip()
-                if href.startswith("`"):
+            for href in extract_links(line):
+                url = urlsplit(href)
+                if url.scheme or url.netloc or not url.fragment:
                     continue
-                href = href.strip("<>")
-                if "#" not in href:
+                resolved = resolve_link(src, href) if url.path else src
+                if (
+                    resolved is None
+                    or not resolved.is_file()
+                    or resolved.suffix.lower() != ".md"
+                ):
                     continue
-                path_part, frag = href.split("#", 1)
-                if not path_part:
-                    continue
-                frag = frag.split("?")[0].strip()
-                if not frag:
-                    continue
-                if path_part.startswith(("http://", "https://", "mailto:", "//")):
-                    continue
-                resolved = resolve_link(src, path_part)
-                if resolved is None or not resolved.is_file():
-                    continue
-                if resolved.suffix.lower() != ".md":
+                if not resolved.is_relative_to(REPO_ROOT):
                     continue
                 if resolved not in slug_cache:
                     slug_cache[resolved] = _heading_slugs_in_markdown(
                         resolved.read_text(encoding="utf-8", errors="replace")
                     )
-                slugs = slug_cache[resolved]
-                frag_l = frag.lower()
-                if frag_l not in slugs:
-                    try:
-                        rt = resolved.relative_to(REPO_ROOT)
-                    except ValueError:
-                        rt = resolved
+                frag = unquote(url.fragment)
+                if frag not in slug_cache[resolved]:
                     issues.append(
                         (
                             rel_src,
                             i,
                             href,
-                            f"anchor #{frag} not found (headings in `{rt}`)",
+                            f"anchor #{frag} not found (headings in `{resolved.relative_to(REPO_ROOT)}`)",
                         )
                     )
     return issues
 
 
 def resolve_link(source_file: Path, href: str) -> Path | None:
-    if not href or href.startswith(("http://", "https://", "mailto:", "//")):
+    url = urlsplit(href.strip("<>"))
+    if url.scheme or url.netloc or not url.path:
         return None
-    if href.startswith("#"):
-        return None
-    # Strip angle brackets some authors use
-    href = href.strip("<>")
-    base = source_file.parent
-    target = (base / href).resolve()
-    try:
-        target.relative_to(REPO_ROOT)
-    except ValueError:
-        return None
-    return target
+    return (source_file.parent / unquote(url.path)).resolve()
 
 
 def audit_broken_links(files: list[Path]) -> list[tuple[Path, int, str, str]]:
@@ -280,6 +291,14 @@ def audit_broken_links(files: list[Path]) -> list[tuple[Path, int, str, str]]:
                 try:
                     rtarget = resolved.relative_to(REPO_ROOT)
                 except ValueError:
+                    issues.append(
+                        (
+                            path.relative_to(REPO_ROOT),
+                            i,
+                            href,
+                            "relative link escapes repository",
+                        )
+                    )
                     continue
                 if resolved.exists():
                     continue
@@ -552,14 +571,12 @@ def audit_src_spec_coverage() -> list[tuple[Path, str]]:
 
 
 def _strip_code_and_links(md: str) -> str:
-    """Remove fenced blocks, inline code spans, and markdown link targets so
-    the prose pattern scans only see free text. Line structure is preserved
-    exactly like ``_strip_code`` (fenced blocks become empty lines) so
-    line numbers reported by these audits match the raw file."""
-    no_blocks = FENCED_CODE_RE.sub(
-        lambda m: "\n".join("" for _ in m.group(0).splitlines()), md
-    )
-    return INLINE_CODE_RE.sub(lambda m: " " * len(m.group(0)), no_blocks)
+    """Remove code while retaining canonical owner links used by claim checks.
+
+    Link text/targets remain available to the canonical-reference matcher;
+    fenced examples cannot contribute prose/version claims.
+    """
+    return _strip_code(md)
 
 
 # Named repo-root docs inside the maintained set (package-version label

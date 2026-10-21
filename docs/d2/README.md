@@ -10,7 +10,6 @@ This directory contains documentation, resources, and implementation guides for 
 
 **Role**: D2 is a **visualization capability**, not a render or execution framework. It is not an entry in the pipeline's framework registry (`src/gnn/render/framework_registry.py`), generates no simulation code, and has no Step 12 executor. D2 diagram generation ships with the advanced visualization module (`src/gnn/advanced_visualization/d2_visualizer.py`, used by Step 9), which converts GNN models to D2 specifications and compiles them to SVG/PNG/PDF via the external D2 CLI (probed as an optional tool in pipeline preflight).
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ## Quick Navigation
@@ -38,7 +37,7 @@ This directory contains documentation, resources, and implementation guides for 
 
 ## Contents
 
-**Files**: 3 | **Subdirectories**: 0
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ### Core Files
 
@@ -119,6 +118,4 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new D2 features and integration capabilities

@@ -4,7 +4,6 @@
 
 This document provides comprehensive agent scaffolding for the Cognitive Phenomena documentation subsystem. The documentation covers modeling of various cognitive processes (attention, memory, emotion, consciousness, etc.) using Active Inference principles and GNN notation.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0  
 **Tree policy**: [SPEC.md](SPEC.md) (canonical; leaf `SPEC.md` files link here)
 
@@ -24,7 +23,7 @@ This subsystem is part of the broader GNN (Generalized Notation Notation) docume
 
 ## Contents
 
-**Files**: 1 | **Subdirectories**: 11
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ### Subdirectories
 
@@ -133,6 +132,4 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new cognitive models and research applications

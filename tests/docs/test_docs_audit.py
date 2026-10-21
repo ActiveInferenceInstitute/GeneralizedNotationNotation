@@ -445,3 +445,62 @@ def test_maintained_doc_terms_skips_generated_and_archive_paths(tmp_path: Path) 
     findings = mod.scan(tmp_path)
 
     assert findings == []
+
+
+def test_anchor_audit_checks_same_page_and_ignores_code_headings(
+    audit_mod: Any, tmp_path: Path
+) -> None:
+    doc = tmp_path / "guide.md"
+    doc.write_text(
+        "# Guide\n[real](#guide) [missing](#phantom)\n"
+        "````markdown\n# Phantom\n```\n[example](missing.md)\n````\n",
+        encoding="utf-8",
+    )
+    assert audit_mod.audit_broken_links([doc]) == []
+    issues = audit_mod.audit_bad_markdown_anchors([doc])
+    assert [(i[1], i[2]) for i in issues] == [(2, "#phantom")]
+
+
+def test_anchor_audit_renders_duplicate_setext_and_explicit_targets(
+    audit_mod: Any, tmp_path: Path
+) -> None:
+    doc = tmp_path / "guide.md"
+    doc.write_text(
+        "# Topic\n## Topic\n## Topic-1\n## Topic\n"
+        'Setext title\n============\n<a id="stable-target"></a>\n'
+        "[a](#topic-1) [b](#topic-1-1) [c](#topic-2) "
+        "[d](#setext-title) [e](#stable-target)\n",
+        encoding="utf-8",
+    )
+    assert audit_mod.audit_bad_markdown_anchors([doc]) == []
+
+
+def test_link_audit_reports_escape_and_decodes_destinations(
+    audit_mod: Any, tmp_path: Path
+) -> None:
+    doc = tmp_path / "guide.md"
+    target = tmp_path / "other page.md"
+    target.write_text("# Héading\n", encoding="utf-8")
+    doc.write_text(
+        '[valid](other%20page.md#h%C3%A9ading "title")\n'
+        '[ref]: <other page.md#h%C3%A9ading> "title"\n'
+        "[escape](../outside.md)\n[missing](absent.md)\n",
+        encoding="utf-8",
+    )
+    assert audit_mod.audit_bad_markdown_anchors([doc, target]) == []
+    issues = audit_mod.audit_broken_links([doc, target])
+    assert [(i[1], i[2], i[3]) for i in issues] == [
+        (3, "../outside.md", "relative link escapes repository"),
+        (4, "absent.md", "missing: absent.md"),
+    ]
+
+
+def test_link_audit_keeps_actual_line_numbers_after_fences(
+    audit_mod: Any, tmp_path: Path
+) -> None:
+    doc = tmp_path / "guide.md"
+    doc.write_text(
+        "~~~python\n[x](ignored.md)\n~~~\n[x](missing.md)\n", encoding="utf-8"
+    )
+    issues = audit_mod.audit_broken_links([doc])
+    assert [(i[1], i[2]) for i in issues] == [(4, "missing.md")]

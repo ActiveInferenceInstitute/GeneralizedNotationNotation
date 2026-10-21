@@ -8,7 +8,6 @@
 
 The **Free Energy Principle (FEP)** is a unifying theory proposing that all self-organizing systems—from cells to brains to social systems—resist the natural tendency towards disorder by minimizing a quantity called **variational free energy**. This document provides the theoretical foundations necessary for understanding Active Inference implementations in GNN.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ---
@@ -325,6 +324,5 @@ Free energy minimization is implemented in:
 
 ---
 
-**Status**: ✅ Production Ready  
 **Compliance**: GNN documentation standards  
 **Maintenance**: Regular updates with new theoretical developments

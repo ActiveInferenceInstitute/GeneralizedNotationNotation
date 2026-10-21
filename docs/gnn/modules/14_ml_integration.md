@@ -38,7 +38,6 @@ Main function for processing machine learning integration tasks.
 
 **Category**: Machine Learning / Model Training
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 

@@ -12,15 +12,19 @@ This directory contains documentation and examples for modeling various cognitiv
 
 > **🧠 Research Focus**: Bridging computational and cognitive neuroscience through Active Inference modeling  
 > **🎯 Applications**: Clinical research, educational technology, artificial intelligence  
-> **📊 Coverage**: 40+ cognitive phenomena with validated implementations
+> **Scope**: conceptual modeling notes; numerical and empirical validation require separate evidence.
+
+The blocks below are partial research sketches, not runnable or empirically validated
+models. Use the [complete exemplar index](../../input/gnn_files/INDEX.md) and
+[backend admission guide](../execution/FRAMEWORK_AVAILABILITY.md) for execution.
 
 ## Table of Contents
 
 1. [Introduction to Cognitive Modeling](#introduction)
-2. [Basic Cognitive Phenomena](#basic-phenomena)
-3. [Advanced Cognitive Models](#advanced-models)
+2. [Basic Cognitive Phenomena](#basic-cognitive-phenomena)
+3. [Advanced Cognitive Models](#advanced-cognitive-models)
 4. [Implementation Patterns](#implementation-patterns)
-5. [Validation and Testing](#validation)
+5. [Validation and Testing](#validation-and-testing)
 6. [Research Applications](#research-applications)
 
 ## Introduction

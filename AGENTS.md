@@ -333,7 +333,7 @@ explicit profiles. LLM defaults and provisioning live in the [LLM guide](docs/ll
 
 ### Published releases
 
-The current [4.2.0 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0)
+The historical [4.2.0 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0)
 records exact-source checks and assets. [CHANGELOG.md](CHANGELOG.md) owns release history.
 
 The historical [patch publication receipt](docs/development/gnn_4_0_1_post_publication.json)

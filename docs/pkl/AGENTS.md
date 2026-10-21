@@ -25,7 +25,7 @@ Pkl integration enables:
 
 ## Contents
 
-**Files**:        4 | **Subdirectories**:        2
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ## Quick Navigation
 
@@ -124,5 +124,4 @@ All documentation in this module adheres to professional standards:
 ---
 
 **Status**: Format support implemented in `src/gnn/parsers/` (PKL parser + serializer at Step 3 serialization); Pkl is not a render/execution framework  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new Pkl features and integration capabilities

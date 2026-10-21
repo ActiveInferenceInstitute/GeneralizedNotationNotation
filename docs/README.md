@@ -92,15 +92,15 @@ All commands below run from the repository root:
 
 ```bash
 # Install and inspect the environment.
-uv sync --extra dev
-uv run gnn preflight
-uv run gnn health
+uv sync --frozen --extra dev --python 3.14
+uv run --frozen --no-sync gnn preflight
+uv run --frozen --no-sync gnn health
 
 # Validate one file.
-uv run gnn validate input/gnn_files/discrete/actinf_pomdp_agent.md --strict
+uv run --frozen --no-sync gnn validate input/gnn_files/discrete/actinf_pomdp_agent.md --strict
 
 # Run a focused pipeline path.
-uv run python src/gnn/main.py \
+uv run --frozen --no-sync python src/gnn/main.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --only-steps "3,5,11,12" \
@@ -116,10 +116,10 @@ system.
 ## Documentation quality checks
 
 ```bash
-uv run --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write
-uv run --extra dev python scripts/check_doc_contracts.py --strict
-uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
-uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
+uv run --frozen --no-sync python docs/development/docs_audit.py --strict --check-anchors --no-write
+uv run --frozen --no-sync python scripts/check_doc_contracts.py --strict
+uv run --frozen --no-sync python scripts/check_gnn_doc_patterns.py --strict
+uv run --frozen --no-sync python scripts/check_maintained_doc_terms.py --strict
 ```
 
 The audit checks links, anchors, and documentation scaffolding. The contract check

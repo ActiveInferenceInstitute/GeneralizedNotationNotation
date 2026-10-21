@@ -41,7 +41,6 @@ Continuous (linear-Gaussian) models reach Step 12 only for the backends that ren
 
 **Category**: Simulation / Execution
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
@@ -526,7 +525,6 @@ See [pyproject.toml](../../../pyproject.toml).
 
 **Last Updated**: 2026-09-21
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 

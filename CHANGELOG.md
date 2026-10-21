@@ -7,6 +7,41 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+## [4.2.1] - 2026-10-21
+
+### Current compatible dependencies
+
+- Refresh the frozen lock to FastAPI 0.159.1, httpcore2/httpx2 2.16.0,
+  JAX/JAXlib 0.12.0.1, OpenAI 3.36.0, Tornado 6.6 and zipp 4.1.2.
+  Preserve the documented Python/PyMDP/Flax, GUI/Pillow and archived Julia
+  compatibility exceptions; updated runtimes require fresh native acceptance.
+
+### Documentation and navigation
+
+- Check same-page and cross-file Markdown anchors, reference definitions,
+  URL-encoded destinations and repository escapes. Ignore fenced example headings,
+  preserve diagnostic line numbers and resolve duplicate/Setext headings and
+  explicit HTML targets. Add positive and negative navigation controls.
+- Repair the tutorial's factor naming and declare its transition axes so its
+  actual model passes scientific render admission and native PyMDP execution.
+  Add a production-render regression and distinguish fixed-model inference
+  from parameter learning or guaranteed optimal trajectories.
+- Repair broken relative paths and table-of-contents fragments. Replace unsupported
+  configuration recipes with implemented CLI examples; fix moved documentation
+  test paths and remove false test timings and blanket success claims.
+- Consolidate developer, release and test infrastructure guides around executable
+  owners. Replace generic documentation specifications that described fictional
+  runtime modules, and remove unsupported readiness badges from maintained prose.
+- Clarify research sketches versus runnable, admitted models. Keep immutable
+  historical release, manuscript and scientific receipts at their original scope.
+- Scope compatible 4.3.0–4.9.0 targets in TO-DO with prerequisites, review roles,
+  explicit exclusions and acceptance criteria. Preserve stable S/E workstreams,
+  externally blocked THRML/archive work and measured CI iteration requirements.
+
+Publication requires the exact-source manuscript/companion ritual, full candidate,
+main and tag qualification, ordinary package verification and public asset parity.
+Version metadata alone does not establish that those steps completed.
+
 ## [4.2.0] - 2026-10-21
 
 ### Release qualification

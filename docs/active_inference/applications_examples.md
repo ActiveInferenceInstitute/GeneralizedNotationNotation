@@ -8,7 +8,6 @@
 
 This document provides practical examples and applications of Active Inference in the GNN framework.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ---
@@ -197,5 +196,4 @@ Located in: `output/16_analysis_output/` (created by pipeline step 16 when analy
 
 ---
 
-**Status**: ✅ Production Ready  
 **Compliance**: GNN documentation standards

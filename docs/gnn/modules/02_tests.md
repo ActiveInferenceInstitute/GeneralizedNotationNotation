@@ -32,7 +32,6 @@ uv run python src/gnn/2_tests.py --comprehensive --verbose
 
 **Category**: Testing / Quality Assurance
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 

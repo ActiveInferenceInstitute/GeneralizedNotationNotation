@@ -34,7 +34,6 @@ For the reference model used in tests, those **21** formats achieve **100%** rou
 
 **Category**: Core Processing
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 

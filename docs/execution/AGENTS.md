@@ -4,7 +4,6 @@
 
 This document provides agent scaffolding for the execution subsystem documentation. The documentation covers framework availability, execution strategies, and multi-backend support for Active Inference simulations.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ---
@@ -62,7 +61,5 @@ See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documenta
 
 ---
 
-**Status**: ✅ Production Ready  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new frameworks
 

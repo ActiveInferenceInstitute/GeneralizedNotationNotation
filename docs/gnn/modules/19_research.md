@@ -34,7 +34,6 @@ Main function for processing research-related tasks.
 
 **Category**: Research / Experimental Analysis
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
@@ -350,7 +349,6 @@ Registered in `register_tools` (`src/gnn/research/mcp.py`):
 
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 

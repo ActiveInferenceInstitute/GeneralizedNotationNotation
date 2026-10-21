@@ -25,7 +25,7 @@ SymPy integration enables:
 
 ## Contents
 
-**Files**:        4 | **Subdirectories**:        1
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ## Quick Navigation
 
@@ -133,5 +133,4 @@ All documentation in this module adheres to professional standards:
 ---
 
 **Status**: MCP tool integration implemented in `src/gnn/mcp/` (8 SymPy tools registered via Step 21); SymPy itself is not a render/execution framework  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new SymPy features and integration capabilities

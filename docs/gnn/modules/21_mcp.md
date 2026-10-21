@@ -40,7 +40,6 @@ graph TD
 
 **Category**: Protocol Integration / Tool Management
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
@@ -388,7 +387,6 @@ See [pyproject.toml](../../../pyproject.toml).
 
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 

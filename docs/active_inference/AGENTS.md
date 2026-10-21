@@ -18,7 +18,7 @@ Central documentation hub for all theoretical, computational, and implementation
 
 ## Contents
 
-**Files**: 15 | **Subdirectories**: 0
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ### Navigation Files
 
@@ -186,6 +186,5 @@ All documentation in this module adheres to:
 
 ---
 
-**Status**: ✅ Production Ready  
 **Compliance**: GNN documentation standards  
 **Maintenance**: Regular updates with new research

@@ -1,505 +1,86 @@
-# Developer Documentation
-
-> **📋 Document Metadata**  
-> **Type**: Development Guide | **Audience**: Developers & Contributors | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [Testing Guide](../testing/README.md) | [API Documentation](../api/README.md) | [AGENTS.md](AGENTS.md) | [docs/INDEX.md](../INDEX.md) | [docs/SPEC.md](../SPEC.md) (versioning policy)
+# Developer documentation
 
 ## Overview
-This guide provides information for developers contributing to the GNN project, including code organization, development workflows, and architecture patterns.
 
-### Remaining roadmap contracts
-
-[Implementation boundaries and acceptance cases](remaining_roadmap_contracts.md)
-cover long-context processing, independent semantic witnesses, coupled continuous
-agents, THRML/cpomdp extensions and exact-version archival. They preserve the
-seven open workstreams in [TO-DO](../../TO-DO.md).
-
-### Documentation audit tooling
-
-From the repository root:
-
-```bash
-# Scan maintained Markdown for broken relative links (generated output/ is skipped)
-uv run --extra dev python docs/development/docs_audit.py
-# Fail the shell if any issues (for CI / pre-commit)
-uv run --extra dev python docs/development/docs_audit.py --strict
-# With --strict and failures, full per-issue lines go to stderr by default (fix loop). Use -q for summary only.
-uv run --extra dev python docs/development/docs_audit.py --strict -q
-# Optional: validate #fragments against heading slugs (heuristic; can be noisy)
-uv run --extra dev python docs/development/docs_audit.py --check-anchors
-# Optional: log markdown file count and other diagnostics to stderr
-uv run --extra dev python docs/development/docs_audit.py --verbose
-# Check maintained docs for stale PyMDP and policy terminology
-uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
-```
-
-Writes [docs_audit_report.md](docs_audit_report.md): broken relative links, `AGENTS.md`→`SPEC.md` consistency, `src/` dirs with `.py` but no `AGENTS.md`, maintained `docs/` dirs missing `AGENTS.md` or `README.md`, `AGENTS.md`/`README.md` pairing under `src/`, `docs/`, `.github/`, and the repo root, and **`docs/**/AGENTS.md` orientation** (`## Overview`, `## Purpose`, or `## Directory Identity`; substantive `## Purpose` when present). Generated snapshots under `docs/` are excluded from pairing where noted. After moving files under `docs/gnn/`, run the rewriter (idempotent on already-fixed links):
-
-```bash
-uv run python docs/development/rewrite_gnn_doc_links.py
-```
-
-Source: [docs_audit.py](docs_audit.py), [rewrite_gnn_doc_links.py](rewrite_gnn_doc_links.py), [../../scripts/check_maintained_doc_terms.py](../../scripts/check_maintained_doc_terms.py). See the [documentation review workflow](documentation_review.md) and
-[contributor handoff checklist](contributor_handoff.md).
+Start with the [contribution guide](../../CONTRIBUTING.md),
+[repository instructions](../../AGENTS.md) and [source architecture](../../ARCHITECTURE.md).
+The installed package is `gnn`; implementation lives under `src/gnn/`, numbered
+scripts delegate to shared modules, and tests live under `tests/`.
 
 ## Quick Start for Developers
 
-### Environment Setup
+Use the uv version in the [setup guide](../SETUP.md), then from the repository root:
+
 ```bash
-# Clone repository
-git clone https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git
-cd Generalized_Notation_Notation
-
-# Run setup (Step 1: env + dependencies; use --dev for dev extras)
-uv run python src/gnn/main.py --only-steps 1 --dev
-
-# Or sync only: uv sync / uv sync --extra dev
-
-# Activate virtual environment (if not using `uv run` for every command)
-source .venv/bin/activate  # Linux/Mac (repo-root `.venv` after `uv sync`)
-# .venv\Scripts\activate    # Windows
-
-# Run tests to verify setup (Step 2)
-uv run python src/gnn/main.py --only-steps 2 --verbose
+uv sync --frozen --extra dev --python 3.14
+uv run --frozen --no-sync gnn preflight
+uv run --frozen --no-sync python -m pytest tests/docs/ -q
+just release-preflight
 ```
 
-### Development Workflow
-```bash
-# Create feature branch
-git checkout -b feature/my-new-feature
-
-# Make changes, add tests
-# ...
-
-# Run quality checks
-just quality
-just test-pymdp-focused
-
-# Commit and push
-git add .
-git commit -m "feat: add new feature"
-git push origin feature/my-new-feature
-```
+The last command provisions the frozen dev profile and checks deterministic release
+prerequisites. `just quality` runs the broader local roster. Neither replaces
+required hosted native, platform, security or companion qualification.
 
 ## Project Architecture
 
-### Module Organization
-```
-src/
-├── main.py                    # Pipeline orchestrator
-├── pipeline/                  # Pipeline configuration, execution adapters, DAG/context helpers
-│   ├── config.py             # Step metadata and output directory mapping
-│   ├── execution.py          # Programmatic API delegating to main.py/numbered steps
-│   └── step_timeouts.py      # Per-step timeout policy
-├── gnn/                      # Core GNN processing
-│   ├── processor.py          # Directory processing helpers
-│   ├── schema.py             # Core schema parsing/validation
-│   └── parsers/              # Format-specific parsers
-├── export/                   # Multi-format export
-│   ├── processor.py          # Export orchestration
-│   └── format_exporters.py   # Export implementations
-├── visualization/            # Model visualization
-│   ├── core/                 # Core visualization processing
-│   ├── graph/                # Graph visualizers
-│   └── matrix/               # Matrix visualizers
-├── render/                   # Code generation
-│   ├── processor.py          # Main rendering processor
-│   ├── pymdp/                # PyMDP code generation
-│   ├── rxinfer/              # RxInfer.jl generation
-│   └── stan/                 # Stan rendering support
-├── execute/                  # Simulator execution
-│   ├── processor.py          # Execute orchestration
-│   ├── pymdp/                # PyMDP execution
-│   └── rxinfer/              # RxInfer.jl execution
-├── llm/                     # LLM integration
-│   ├── providers/           # LLM provider implementations
-│   ├── processor.py         # Step 13 processing
-│   └── mcp.py               # LLM MCP tools
-├── mcp/                     # Model Context Protocol
-│   ├── mcp.py               # Core MCP instance
-│   ├── server_stdio.py      # STDIO server
-│   └── processor.py         # Step 21 processing
-├── ontology/                # Ontology processing
-│   ├── processor.py         # Core processing
-│   └── act_inf_ontology_terms.json # Ontology data
-├── utils/                   # Shared utilities (S2-33/SC-38 concern packages:
-│                            #   arguments/, config_io/, errors/, observability/,
-│                            #   pipeline_orchestration/, runtime_safety/,
-│                            #   system_env/, testing/, logging/, mcp/)
-└── tests/                   # pytest source files, mirrored by module
-```
+| Task | Implementation or contract owner |
+|---|---|
+| Find steps and their order | [Step registry](../../src/gnn/pipeline/step_registry.py), [script guide](../PIPELINE_SCRIPTS.md) |
+| Change CLI behavior | [Argument parsing](../../src/gnn/utils/arguments/arg_parsing.py), [flag parity check](../../scripts/check_flag_parity.py) |
+| Change model syntax | [Normative syntax](../gnn/gnn_syntax.md), [schema package](../../src/gnn/schema/) |
+| Add a backend | [Integration guide](../gnn/integration/framework_integration_guide.md), [renderer registry](../../src/gnn/render/framework_registry.py) |
+| Run tests | [Testing guide](../testing/README.md), [test infrastructure](../../tests/README.md) |
+| Change run/process ownership | [Migration contract](run_ownership_migration.md), [filesystem boundaries](../security/filesystem_boundaries.md) |
+| Refactor shared helpers | [Utils boundaries](utils_split_design.md), [thin orchestrator pattern](thin_orchestrator_pattern.md) |
 
-### Design Patterns
+## Development Workflow
 
-#### Pipeline Step Pattern
-Each pipeline step follows this pattern:
+Create a focused branch, change the owning module and its public documentation,
+run the affected consumer tests, and run the mandatory repository checks. Follow
+[workflow rules](../../.agent_rules/workflow.md) for commits and review. Keep optional
+runtime absence, unsupported models, warnings and failures distinguishable in receipts.
+Do not treat an import, parser success or mocked test as native scientific acceptance.
 
-```python
-#!/usr/bin/env python3
-"""
-GNN Processing Pipeline - Step N: Description
+## Documentation audit tooling
 
-Purpose description and usage information.
-"""
+After provisioning the frozen environment:
 
-import logging
-import argparse
-from pathlib import Path
-
-logger = logging.getLogger(__name__)
-
-
-def process_main_logic(args: argparse.Namespace) -> bool:
-    """Main processing logic for this step."""
-    # Implementation here
-    return success
-
-
-def main(args: argparse.Namespace) -> int:
-    """Entry point called by main.py pipeline."""
-    logger.info(f"Starting Step N: Description")
-
-    if not process_main_logic(args):
-        logger.error("Step N failed")
-        return 1
-
-    logger.info("Step N completed successfully")
-    return 0
-
-
-if __name__ == "__main__":
-    # Standalone execution setup
-    parser = argparse.ArgumentParser(description="Step N (Standalone)")
-    # Add arguments
-    args = parser.parse_args()
-
-    # Setup logging for standalone
-    from gnn.utils.logging.logging_utils import setup_standalone_logging
-
-    setup_standalone_logging(
-        level=logging.DEBUG if args.verbose else logging.INFO, logger_name=__name__
-    )
-
-    sys.exit(main(args))
-```
-
-#### MCP Tool Pattern
-Each module can provide MCP tools:
-
-```python
-# In module_name/mcp.py
-def tool_function(param1: str, param2: int = 10) -> dict:
-    """
-    Tool description for MCP schema generation.
-
-    Args:
-        param1: Parameter description
-        param2: Optional parameter with default
-
-    Returns:
-        Result dictionary
-    """
-    # Implementation
-    return {"result": result}
-
-
-def register_tools():
-    """Register all tools from this module."""
-    from gnn.mcp import mcp_instance
-
-    tools = {
-        "module_tool_name": tool_function,
-        # Add more tools
-    }
-
-    for name, func in tools.items():
-        mcp_instance.register_tool(name, func)
-```
-
-## Development Guidelines
-
-### Code Quality Standards
-
-#### Type Hints
-```python
-# Required for all function signatures
-def process_gnn_file(file_path: Path, strict: bool = False) -> Dict[str, Any]:
-    """Process a GNN file and return parsed data."""
-    pass
-
-
-# Use Union types where appropriate
-from typing import Union, Optional, List, Dict
-
-
-def validate_model(model: Union[str, Path, Dict]) -> Optional[List[str]]:
-    """Validate a model, return errors if any."""
-    pass
-```
-
-#### Documentation Standards
-```python
-def complex_function(param1: str, param2: Optional[int] = None) -> Dict[str, Any]:
-    """
-    One-line summary of the function.
-    
-    More detailed description if needed. Explain the purpose,
-    key behaviors, and any important considerations.
-    
-    Args:
-        param1: Description of what this parameter does
-        param2: Optional parameter, explain default behavior
-        
-    Returns:
-        Dictionary containing:
-            - key1: Description of what this contains
-            - key2: Description of this field
-            
-    Raises:
-        ValueError: When param1 is invalid
-        FileNotFoundError: When required files are missing
-        
-    Example:
-        >>> result = complex_function("test", 42)
-        >>> print(result["key1"])
-        expected_output
-    """
-    pass
-```
-
-#### Error Handling
-```python
-# Use specific exceptions
-def parse_gnn_file(file_path: Path) -> Dict[str, Any]:
-    """Parse GNN file with proper error handling."""
-    try:
-        if not file_path.exists():
-            raise FileNotFoundError(f"GNN file not found: {file_path}")
-
-        with open(file_path, "r", encoding="utf-8") as f:
-            content = f.read()
-
-        # Processing logic
-        return parse_content(content)
-
-    except json.JSONDecodeError as e:
-        raise ValueError(f"Invalid JSON in GNN file: {e}")
-    except Exception as e:
-        logger.error(f"Unexpected error parsing {file_path}: {e}")
-        raise
-```
-
-### Testing Standards
-
-#### Test Organization
-```
-tests/
-├── <module>/               # One directory per src/ module (e.g. gnn/, render/, pipeline/)
-│   ├── gnn/              # GNN parsing and validation tests
-│   ├── render/           # Render step tests
-│   └── pipeline/         # Pipeline orchestration tests
-├── integration/          # Cross-module integration tests
-├── helpers/              # Shared test fixtures and helper utilities
-├── test_data/            # Shared test data
-└── conftest.py           # Pytest configuration
-```
-
-#### Test Writing Patterns
-```python
-import pytest
-from pathlib import Path
-from gnn.processing.processor import parse_gnn_file
-
-
-class TestGNNParser:
-    """Test suite for GNN file parsing."""
-
-    @pytest.fixture
-    def sample_gnn_file(self, tmp_path):
-        """Create a sample GNN file for testing."""
-        content = """
-        # ModelName
-        Test Model
-
-        # StateSpaceBlock
-        s_f0[3,1,type=float]
-        """
-        file_path = tmp_path / "test_model.md"
-        file_path.write_text(content)
-        return file_path
-
-    def test_parse_valid_file(self, sample_gnn_file):
-        """Test parsing a valid GNN file."""
-        result = parse_gnn_file(sample_gnn_file)
-
-        assert result["model_name"] == "Test Model"
-        assert "s_f0" in result["state_space"]
-        assert result["state_space"]["s_f0"]["dimensions"] == [3, 1]
-
-    def test_parse_missing_file(self):
-        """Test error handling for missing files."""
-        with pytest.raises(FileNotFoundError):
-            parse_gnn_file(Path("nonexistent.md"))
-
-    @pytest.mark.parametrize(
-        "invalid_content,expected_error",
-        [
-            ("# InvalidSection\nContent", "Unknown section"),
-            ("# StateSpaceBlock\ninvalid[format", "Invalid dimension"),
-        ],
-    )
-    def test_parse_invalid_content(self, tmp_path, invalid_content, expected_error):
-        """Test error handling for various invalid content."""
-        file_path = tmp_path / "invalid.md"
-        file_path.write_text(invalid_content)
-
-        with pytest.raises(ValueError, match=expected_error):
-            parse_gnn_file(file_path)
-```
-
-#### Running Tests
 ```bash
-# Run all tests (pipeline test step)
-uv run python src/gnn/main.py --only-steps 2 --verbose
-
-# Run specific test categories
-uv run --extra dev python -m pytest tests/gnn/ -v
-uv run --extra dev python -m pytest tests/integration/ -v
-
-# Run with coverage
-uv run pytest tests/ --cov=src --cov-report=term-missing
-
-# Run pipeline orchestration tests
-uv run --extra dev python -m pytest tests/pipeline/ -v
+uv run --frozen --no-sync python docs/development/docs_audit.py --strict --check-anchors --no-write
+uv run --frozen --no-sync python scripts/check_doc_contracts.py --strict
+uv run --frozen --no-sync python scripts/check_gnn_doc_patterns.py --strict
+uv run --frozen --no-sync python scripts/check_maintained_doc_terms.py --strict
+uv run --frozen --no-sync python scripts/check_doc_path_references.py
 ```
 
-### Adding New Features
+The [audit](docs_audit.py) checks relative destinations, repository escapes,
+same-page and cross-file anchors, heading duplicates, document pairing and owner
+claims. Code examples do not create real navigation targets. Reference definitions
+and URL-encoded paths are checked too. It writes a report unless `--no-write` is
+supplied; strict failures print individual diagnostics, and `--quiet` prints counts.
+[Documentation review](documentation_review.md) adds executable-example and rendered-page
+review. Generated and quoted historical material keeps its declared scope.
 
-#### Adding a New Pipeline Step
+## Remaining roadmap contracts
 
-1. **Create the script**: `src/N_description.py`
-2. **Add configuration**: Update `src/gnn/pipeline/config.py`
-3. **Add tests**: Create tests in `tests/<module>/` and `tests/integration/`
-4. **Add documentation**: Update pipeline documentation
-5. **Add MCP tools**: Create `module/mcp.py` if exposing APIs
+[TO-DO.md](../../TO-DO.md) owns target versions and outstanding work. The
+[implementation contracts](remaining_roadmap_contracts.md) define bounded scientific
+and source-preservation acceptance cases; they are not claims of completed features.
 
-#### Adding New Export Formats
+## Release and evidence custody
 
-1. **Implement exporter**: Add to `src/gnn/export/format_exporters.py`
-2. **Register format**: Update `AVAILABLE_EXPORT_FUNCTIONS`
-3. **Add tests**: Test export functionality and output validation
-4. **Update documentation**: Add format to documentation
+Follow [release management](../releases/README.md) and the canonical
+[paired-revision order](fep_lean_paired_revision.md#closeout-ordering-canonical).
+Finish content before generating source-bound manuscript and companion evidence.
+Preserve producer ancestry, failed receipts and exact source identities. Read
+[native coverage](native_comprehensive_coverage.md) and
+[installed platform acceptance](installed_platform_acceptance.md) for the actual
+release gates. Record a [contributor handoff](contributor_handoff.md) with tested
+commands and unresolved limits.
 
-#### Adding New MCP Tools
+## Related resources
 
-1. **Implement tools**: Create functions in appropriate `module/mcp.py`
-2. **Register tools**: Call registration in module initialization
-3. **Add schemas**: Ensure proper type hints for auto-schema generation
-4. **Test integration**: Test via MCP CLI and HTTP server
-5. **Document APIs**: Update MCP documentation
-
-## Performance Considerations
-
-### Memory Management
-- Use generators for large file processing
-- Implement streaming for export formats
-- Monitor memory usage in resource estimation
-
-### Optimization Guidelines
-- Profile performance-critical paths
-- Use caching appropriately
-- Consider JAX for numerical computations
-- Implement timeout handling for long operations
-
-### Monitoring
-- Log performance metrics
-- Track memory usage per pipeline step
-- Monitor export file sizes
-- Measure visualization generation times
-
-## Release Process
-
-### Versioning
-- Follow semantic versioning (MAJOR.MINOR.PATCH)
-- Tag releases corresponding to paper submissions
-- Maintain CHANGELOG.md with clear categories
-
-### Quality Gates
-1. Formatting and lint pass (`uv run --extra dev ruff format --check src scripts`; `uv run --extra dev ruff check src scripts`)
-2. Terminology and documentation audits pass (`scripts/check_repo_terminology.py`, `scripts/check_maintained_doc_terms.py`, `docs/development/docs_audit.py`, `scripts/check_gnn_doc_patterns.py`)
-3. Type checking passes (`uv run --extra dev mypy src --show-error-codes`)
-4. Security scan passes (`uv run --extra dev bandit -r src -c pyproject.toml -q`)
-5. Focused PyMDP/POMDP tests, collect-only, and the full suite command of record pass
-
-### Release Checklist
-- [ ] Update version numbers
-- [ ] Update CHANGELOG.md
-- [ ] Run full test suite
-- [ ] Update documentation
-- [ ] Create GitHub release
-- [ ] Update citation information
-
-## Troubleshooting Development Issues
-
-### Common Problems
-
-1. **Import Errors**
-   - Check virtual environment activation
-   - Verify `src/` is in Python path
-   - Run setup step: `uv run python src/gnn/main.py --only-steps 1 --dev --verbose`
-
-2. **Test Failures**
-   - Check test data fixtures
-   - Verify dependencies installed
-   - Run individual test files for debugging
-
-3. **Pipeline Issues**
-   - Check step configuration in `src/gnn/pipeline/config.py`
-   - Verify argument passing between steps
-   - Check timeout settings for slow operations
-
-4. **MCP Integration Problems**
-   - Verify tool registration in module `mcp.py` files
-   - Check MCP server startup logs
-   - Test tools via CLI before HTTP integration
-
-### Debug Tools
-```bash
-# Verbose pipeline execution
-uv run python src/gnn/main.py --verbose --only-steps 1,4
-
-# MCP tool debugging
-uv run gnn --help  # inspect the current MCP/CLI entry points
-
-# Test debugging
-pytest -vvv --pdb tests/gnn/test_gnn_overall.py
-
-# Type checking
-uv run --extra dev mypy src --show-error-codes
-```
-
-## Contributing Guidelines
-
-### Code Review Process
-1. Create feature branch from `main`
-2. Implement changes with tests
-3. Submit pull request with clear description
-4. Address review feedback
-5. Merge after approval and CI passes
-
-### Documentation Requirements
-- Update relevant documentation for all changes
-- Add docstrings for new functions/classes
-- Include examples for new features
-- Update troubleshooting guides for new error cases
-
-### Testing Requirements
-- Unit tests for all new functions
-- Integration tests for new pipeline steps
-- Performance tests for computationally intensive features
-- Regression tests for bug fixes 
-
-The [2026-10-16 native corpus receipt](native_corpus_acceptance_20261016.json)
-records all 38 tracked examples and 12 requested frameworks at the reviewed
-source epoch. Local process, numerical, installed-wheel and publication claims
-retain their separate scopes.
+- [Documentation hub](../README.md) and [flat index](../INDEX.md)
+- [Setup](../SETUP.md), [configuration](../configuration/README.md), [troubleshooting](../troubleshooting/README.md)
+- [Agent guide](AGENTS.md) and [documentation specification](SPEC.md)

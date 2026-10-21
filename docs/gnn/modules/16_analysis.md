@@ -40,7 +40,6 @@ The RxInfer analyzer (`src/gnn/analysis/rxinfer/`) is the deepest of these and i
 
 **Category**: Statistical Analysis / Performance Evaluation
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
@@ -445,7 +444,6 @@ See [pyproject.toml](../../../pyproject.toml).
 
 **Last Updated**: 2026-10-20
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 

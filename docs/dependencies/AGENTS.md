@@ -4,7 +4,6 @@
 
 This document provides agent scaffolding for the dependencies subsystem documentation. The documentation covers package management, optional dependencies, and framework selection strategies.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ---
@@ -61,7 +60,5 @@ See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documenta
 
 ---
 
-**Status**: ✅ Production Ready  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new package versions
 

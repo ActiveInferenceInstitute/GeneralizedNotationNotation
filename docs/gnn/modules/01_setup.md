@@ -46,7 +46,6 @@ graph TD
 
 **Category**: Environment Management / Dependency Installation
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 

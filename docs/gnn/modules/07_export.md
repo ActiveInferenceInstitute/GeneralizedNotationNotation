@@ -33,7 +33,6 @@ src/gnn/export/
 
 **Category**: Data Export / Transformation
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
@@ -429,7 +428,6 @@ uv run python src/gnn/7_export.py --target-dir input/ --verbose
 
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 

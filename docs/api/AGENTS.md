@@ -1,72 +1,25 @@
-# api
+# Api documentation — agent guide
 
 ## Overview
 
-This directory contains documentation and resources for the api subsystem.
-
-**Status**: ✅ Documentation Module  
-**Version**: 1.0  
-
----
-
-## Purpose
-
-Complete API documentation for GNN pipeline components
-
-This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem, integrated with the 25-step processing pipeline.
+Document public package interfaces, REST ownership and MCP dispatch without implying native execution from registration.
 
 ## Contents
 
-**Files**: `README.md`, `AGENTS.md`, `comprehensive_api_reference.md` | **Subdirectories**: none
+- [API guide](README.md)
+- [API reference](comprehensive_api_reference.md)
+- [API implementation](../../src/gnn/api/README.md)
+- [MCP guide](../mcp/README.md)
 
-## Quick Navigation
+## Verification
 
-- **README.md**: [Directory overview](README.md)
-- **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
-- **Main Documentation**: [docs/README.md](../README.md)
-- **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
+Follow the [documentation specification](SPEC.md) and
+[repository documentation rules](../../.agent_rules/documentation.md). Run the
+affected examples and consumer tests, preserve historical receipts, and report
+actual source/runtime scope. Never infer completion from a status badge or a
+partial test count.
 
-## Documentation Structure
+## Related resources
 
-This module is organized as follows:
-
-- **Overview**: High-level description and purpose
-- **Contents**: Files and subdirectories
-- **Integration**: Connection to the broader pipeline
-- **Usage**: How to work with this subsystem
-
-## Integration with Pipeline
-
-This documentation is integrated with the 25-step GNN processing pipeline:
-
-1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-2. **Simulation** (Steps 10-16): Model execution and analysis  
-3. **Integration** (Steps 17-24): System coordination and output
-
-See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
-
-## Standards and Guidelines
-
-All documentation in this module adheres to professional standards:
-
-- **Clarity**: Concrete, technical writing
-- **Functionality**: Describes actual capabilities
-- **Completeness**: Comprehensive coverage
-- **Consistency**: Uniform structure and style
-
-## Related Resources
-
-**Main GNN Documentation**: [gnn/](../gnn/)
-- [GNN Overview](../gnn/gnn_overview.md)
-- [GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)
-- [GNN Examples](../gnn/tutorials/gnn_examples_doc.md)
-
-**Pipeline Architecture**: [src/](../../src/)
-- [Pipeline AGENTS](../../src/gnn/AGENTS.md)
-- [Pipeline README](../../src/gnn/README.md)
-
----
-
-**Status**: ✅ Production Ready  
-**Compliance**: Professional documentation standards  
-**Maintenance**: Regular updates with new features
+- [Documentation hub](../README.md)
+- [Canonical roadmap](../../TO-DO.md)

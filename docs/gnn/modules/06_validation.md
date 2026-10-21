@@ -39,7 +39,6 @@ src/gnn/validation/
 
 **Category**: Validation / Quality Assurance
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 

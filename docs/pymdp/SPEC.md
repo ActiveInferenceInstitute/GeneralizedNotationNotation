@@ -1,9 +1,5 @@
 # Specification: Pymdp
 
-## Design Requirements
-This module (`pymdp`) maps structural logic to the overall execution graph.
-It ensures that `Pymdp` tasks resolve without runtime dependency loops.
-
 ## Components
 1. **The Integration Contract** (`gnn_pymdp.md`): Defines the mathematical mapping from GNN primitives to PyMDP 1.0.0 (JAX-first) structures.
 2. **Performance Benchmarking** (`run_pymdp_gnn_scaling_analysis.py`): Automated parametric sweeps (N, T) for empirical complexity analysis.
@@ -17,3 +13,10 @@ It ensures that `Pymdp` tasks resolve without runtime dependency loops.
   `src/gnn/render/framework_registry.py`); rendered scripts execute at Step 12
   (`supports_execution: True`).
 - **Scaling Orchestrator**: External driver for batch simulation and meta-analysis.
+
+## Documentation contract
+
+[README.md](README.md) owns the topic entrypoints; [AGENTS.md](AGENTS.md) guides
+maintenance. Follow the [documentation rules](../../.agent_rules/documentation.md) for links, executable
+examples and source-bound claims. Research scripts and quoted upstream code have
+their own prerequisites; their presence does not register a pipeline backend.

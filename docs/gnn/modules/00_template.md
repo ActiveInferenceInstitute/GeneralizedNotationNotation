@@ -41,7 +41,6 @@ flowchart TD
 
 **Category**: Pipeline Infrastructure / Initialization
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 

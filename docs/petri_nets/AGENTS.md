@@ -19,7 +19,7 @@ This subsystem is part of the broader GNN (Generalized Notation Notation) docume
 
 ## Contents
 
-**Files**:        4 | **Subdirectories**:        1
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ## Quick Navigation
 
@@ -70,5 +70,4 @@ All documentation in this module adheres to professional standards:
 ---
 
 **Status**: Documentation module — PNML samples and modeling notes (PNML is parse-only; no export, render, or execution support)  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new features

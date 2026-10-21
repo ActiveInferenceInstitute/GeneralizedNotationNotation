@@ -10,7 +10,6 @@ This directory contains documentation, resources, and implementation guides for 
 
 **Role**: SAPF is an **audio sonification capability** (Step 15), not a render or execution framework. It is not an entry in `src/gnn/render/framework_registry.py`, generates no simulation code, and has no Step 12 executor. In the live tree, `src/gnn/audio/sapf/` provides the SAPF module and the Step 15 audio script (`src/gnn/15_audio.py`) accepts `--audio-backend` values including `sapf`; `src/gnn/STEP_INDEX.md` lists Step 15 as audio sonification (SAPF) with soundfile and pedalboard as dependencies.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ## Quick Navigation
@@ -37,7 +36,7 @@ This directory contains documentation, resources, and implementation guides for 
 
 ## Contents
 
-**Files**: 5 | **Subdirectories**: 0
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ### Core Files
 
@@ -136,6 +135,4 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new SAPF features and integration capabilities

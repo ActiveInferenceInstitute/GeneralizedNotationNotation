@@ -48,5 +48,4 @@ See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documenta
 
 ---
 
-**Status**: ✅ Production Ready  
 **Last Updated**: 2026-04-14

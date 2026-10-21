@@ -36,7 +36,7 @@ This directory contains documentation, resources, and implementation guides for 
 
 ## Contents
 
-**Files**: 5 (AGENTS.md, README.md, SPEC.md, pedalboard_gnn.md, pedalboard.md) | **Subdirectories**: 0
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ### Core Files
 
@@ -131,5 +131,4 @@ All documentation in this module adheres to professional standards:
 ---
 
 **Status**: 🛠️ Scaffold / Planned  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new Pedalboard features and integration capabilities

@@ -17,7 +17,7 @@ This subsystem is part of the broader GNN (Generalized Notation Notation) docume
 
 ## Contents
 
-**Files**: `README.md`, `AGENTS.md`, `api_error_reference.md`, `common_errors.md`, `debugging_workflows.md`, `error_taxonomy.md`, `faq.md`, `performance.md`, `pipeline_error_recovery.md`, `pipeline_warnings.md` | **Subdirectories**: none
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ## Quick Navigation
 
@@ -67,6 +67,4 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new features

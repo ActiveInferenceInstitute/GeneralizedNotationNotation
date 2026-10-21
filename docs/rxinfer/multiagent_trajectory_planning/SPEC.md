@@ -1,8 +1,8 @@
 # Specification: Multiagent Trajectory Planning
 
-## Design Requirements
-This module (`multiagent_trajectory_planning`) maps structural logic to the overall execution graph.
-It ensures that `Multiagent Trajectory Planning` tasks resolve without runtime dependency loops.
+## Documentation contract
 
-## Components
-Expected available types: No specific classes exported.
+[README.md](README.md) owns the topic entrypoints; [AGENTS.md](AGENTS.md) guides
+maintenance. Follow the [documentation rules](../../../.agent_rules/documentation.md) for links, executable
+examples and source-bound claims. Research scripts and quoted upstream code have
+their own prerequisites; their presence does not register a pipeline backend.

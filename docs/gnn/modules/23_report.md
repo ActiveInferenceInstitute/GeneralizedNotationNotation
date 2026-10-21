@@ -38,7 +38,6 @@ src/gnn/report/
 
 **Category**: Documentation / Analysis Reporting
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
@@ -495,7 +494,6 @@ Pipeline Results → Report Aggregation → Data Analysis → Format Generation 
 
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 

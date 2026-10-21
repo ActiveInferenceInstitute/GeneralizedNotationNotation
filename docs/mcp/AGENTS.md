@@ -17,7 +17,7 @@ This subsystem is part of the broader GNN (Generalized Notation Notation) docume
 
 ## Contents
 
-**Files**:        5 | **Subdirectories**:        1
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ## Quick Navigation
 
@@ -67,6 +67,4 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new features

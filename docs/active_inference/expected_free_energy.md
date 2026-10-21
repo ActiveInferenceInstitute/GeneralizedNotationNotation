@@ -8,7 +8,6 @@
 
 **Expected Free Energy (EFE)** is the quantity that guides action selection in Active Inference. It provides a principled way to balance goal-seeking behavior (exploitation) with information-gathering behavior (exploration). This document details the mathematical foundations and computational implementation of EFE.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ---
@@ -339,6 +338,5 @@ end
 
 ---
 
-**Status**: ✅ Production Ready  
 **Compliance**: GNN documentation standards  
 **Maintenance**: Regular updates with new EFE variants

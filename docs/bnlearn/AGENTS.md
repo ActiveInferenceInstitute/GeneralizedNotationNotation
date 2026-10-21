@@ -49,8 +49,6 @@ All documentation in this subsystem follows the professional standards establish
 
 ---
 
-**Status**: ✅ Production Ready  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new features
 
 The source compiler retains authored and canonical CPTs, source timesteps,

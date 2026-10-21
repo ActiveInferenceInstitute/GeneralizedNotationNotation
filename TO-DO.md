@@ -1,7 +1,10 @@
 # TO-DO — GNN next steps
 
 Updated 2026-10-21.
-Current software version is **4.2.0**. The historical **4.1.0** [GitHub release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0) records exact tag, source, checks and artifacts; version metadata alone does not establish acceptance.
+Current software version is owned by [pyproject.toml](pyproject.toml).
+[GitHub release records](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases)
+own exact tags, accepted sources, checks and public artifacts. Version metadata
+or a target below does not establish publication.
 Every checkbox below is remaining work. Remove accepted bounded work while
 retaining its evidence in [CHANGELOG.md](CHANGELOG.md), release receipts and Git
 history. Historical failures retain their original source epochs.
@@ -29,13 +32,62 @@ verification and exact-version archival depend on external availability; design
 S1/E4 contracts before implementing their related major extensions.
 
 The [remaining roadmap contracts](docs/development/remaining_roadmap_contracts.md)
-specify the next bounded units for all seven items. The 2026-10-16 review adds
+specify the next bounded units for all seven items. The 2026-10-16 bounded review added
 terminal-stop LLM completion admission and consistent direct cpomdp options;
 these corrections do not complete S1 or E3. The THRML upstream issue is closed,
-but the inspected latest PyPI release remains 0.1.4, so S3 stays blocked on
+but the inspected latest PyPI release remains 0.1.4 (rechecked 2026-10-21), so S3 stays blocked on
 released compatibility. Full source-preserving multi-request processing,
 independent semantic extraction and coupled/native extension acceptance remain
 required.
+
+## Versioned delivery plan: 4.3.0 through 4.9.0
+
+These are proposed compatible release scopes, not implemented capabilities or
+calendar promises. Each release takes one bounded slice of the stable workstreams
+below; a version does not automatically close its whole S/E item. If implementation
+requires a breaking public contract, review a major-version migration instead.
+The roles named here identify required reviewers, not assigned people.
+
+| Target | Bounded deliverable | Prerequisite and review ownership | Acceptance before release |
+|---|---|---|---|
+| **4.3.0** | **E4 foundation:** independent finite enumeration and linear-Gaussian filtering witnesses for explicitly admitted source contracts | GNN parser/extractor and numerical maintainers; FEP bridge reviewer for changed formal owners | Asymmetric fixtures; independent extraction; declared conditioning/time/precision; axis, source, action-time and covariance negative controls; fresh formal/native/custody receipts remain separate |
+| **4.4.0** | **S1:** complete one declared source-preserving multi-request LLM task with joint synthesis and resumable checkpoints | 4.3 source identity conventions; LLM/provider and run-ownership reviewers; verified tokenizer/context admission | Every selected byte and required prompt accounted for; native terminal completion and cross-part evidence; exact provider/model identity; refusal, resume, cancellation, budget and context-boundary controls |
+| **4.5.0** | **E1:** centralized coupled linear-Gaussian filtering with explicit agent identity and full cross-covariance | 4.3 independent semantic witnesses; continuous/JAX/RxInfer reviewers | Unequal state/observation dimensions, directional coupling and asymmetric covariance; independent reference; zero-coupling recovery and agent-permutation controls; explicit rejection of unsupported compositions |
+| **4.6.0** | **E3:** one explicitly specified cpomdp search extension beyond accepted E3-FA1 finite controls | 4.3 numerical method, source-declared controls and resource supervision; cpomdp/numerical reviewers | Complete policy/component receipts against an independent Kalman/EFE reference; exact authored action order; finite option validation, ties and all-invalid rejection; total evaluation/allocation/deadline bounds; passive mode allocates no search |
+| **4.7.0** | **S3:** admit structural zeros only after a suitable ordinary released THRML fix passes compatibility | External upstream release; dependency and THRML/JAX reviewers | Locked installation on both supported Python/JAX splits; exact-zero/inactive-padding independent witnesses; no NaNs or source/seed/sample changes; unsupported inputs still reject explicitly |
+| **4.8.0** | **E2 first slice:** separately specified coupled finite THRML inference on supported released software | 4.3 semantic witnesses and 4.7 if zeros are required; THRML/scientific reviewers | Independent native categorical witnesses, coupling/admission and process/resource controls on both splits; continuous/hybrid models, policy search, hardware, energy and speed require separate future contracts and evidence |
+| **4.9.0** | **E5 closeout and compatibility review:** exact released source, ordinary distributions, manuscript, citation and checksums archived as one public version record | Archive-owner access and accepted release bytes; release/archive owner plus independent artifact reviewer | DOI resolves to the exact version; download every advertised asset and verify hashes/member inventory; cross-check documented backend/runtime support against accepted matrices; package-index delivery remains separately owned |
+
+E5 may complete earlier when archive access is available. S3 and any dependent E2
+scope stay blocked if no suitable released fix exists; never substitute an epsilon,
+local upstream patch or relabelled receipt to meet a target. Re-scope openly instead
+of shipping an empty version. S1 synthesis and E3 search design must be reviewed
+before coding, because independent fragment answers and exhaustive enumeration
+already have narrower accepted contracts.
+
+### Release iteration and CI work across every minor
+
+Keep one deterministic preflight before dispatch, one dispatch owner, and the
+exact-source workflow collector/artifact acceptance from the
+[release procedure](docs/releases/README.md#repeatable-release-qualification).
+For each target:
+
+- Record cold/warm setup, queue, job and test durations from provider/JUnit
+  receipts; identify the measured bottleneck before changing scheduling.
+- Reuse frozen installations within a job and cache toolchain inputs keyed to
+  their locks. Always rerun actual tests and source-bound artifact checks.
+- Consolidate demonstrably duplicated checks under one workflow owner; preserve
+  required status aggregation, failure diagnostics, marker selections, coverage
+  denominators and native/platform/companion profiles.
+- Compare wall-clock and runner-time receipts before/after on equivalent sources
+  and environments. Accept speed claims only at that measured scope.
+- Keep main/tag qualification concurrent where the existing exact-tree process
+  permits it. Every ref/event still needs its own successful terminal results
+  and independent artifact acceptance before publication.
+
+Detailed scientific contracts remain in
+[remaining_roadmap_contracts.md](docs/development/remaining_roadmap_contracts.md).
+The lists below own outstanding work; this table owns target-version sequencing.
 
 ## Minor work
 

@@ -13,7 +13,7 @@ Executes the comprehensive test suite across all GNN pipeline modules. Manages t
 
 ```bash
 # Run all tests via pipeline step
-python src/2_tests.py --comprehensive
+uv run --frozen --no-sync python src/gnn/2_tests.py --comprehensive
 
 # Run tests directly with pytest
 uv run --extra dev python -m pytest tests/ -v
@@ -52,19 +52,18 @@ tests/
 - Follow existing patterns: fixtures, parametrize, clear assertions
 - Target >80% coverage per module
 
-## Current Status
+## Current status
 
-- **1,522+ tests** passing
-- **100% pipeline success rate**
-- All 25 steps validated
-
+Inspect pytest collection and exact-source workflow receipts for actual outcomes.
+[Coverage and platform acceptance](README.md#coverage-and-release-acceptance)
+retain separate selections and environments; no unconditional pass rate is implied.
 
 ## MCP Tools
 
 This module defines MCP tools in `mcp.py` (`run_all_tests`,
 `run_integration_tests`, `run_unit_tests`) with working handlers, but the
 `tests` package is deliberately excluded from MCP auto-discovery
-(`discovery_excluded_dirs={"tests"}` in `src/mcp/mcp.py`), so these tools are
+(`discovery_excluded_dirs={"tests"}` in `src/gnn/mcp/mcp.py`), so these tools are
 not registered on the live GNN MCP server.
 
 ## References
@@ -72,7 +71,7 @@ not registered on the live GNN MCP server.
 - [AGENTS.md](AGENTS.md) — Module documentation
 - [README.md](README.md) — Usage guide
 - [SPEC.md](SPEC.md) — Module specification
-- [../../pytest.ini](../../pytest.ini) — Pytest configuration
+- [pyproject.toml](../pyproject.toml) — Pytest configuration
 
 
 ---

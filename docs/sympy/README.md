@@ -36,7 +36,7 @@ This directory contains documentation, resources, and implementation guides for 
 
 ## Contents
 
-**Files**: 3 | **Subdirectories**: 0
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ### Core Files
 
@@ -127,5 +127,4 @@ All documentation in this module adheres to professional standards:
 ---
 
 **Status**: MCP tool integration implemented in `src/gnn/mcp/` (8 SymPy tools registered via Step 21); SymPy itself is not a render/execution framework  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new SymPy features and integration capabilities

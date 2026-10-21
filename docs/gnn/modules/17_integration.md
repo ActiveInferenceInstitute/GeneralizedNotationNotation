@@ -35,7 +35,6 @@ Main function for processing system integration tasks.
 
 **Category**: System Integration / Coordination
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
@@ -286,7 +285,6 @@ Registered in `register_tools` (`src/gnn/integration/mcp.py`):
 
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 

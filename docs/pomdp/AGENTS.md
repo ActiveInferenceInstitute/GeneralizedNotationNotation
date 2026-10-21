@@ -8,7 +8,6 @@
 
 This directory contains comprehensive documentation, resources, and implementation guides for **POMDP** (Partially Observable Markov Decision Process) formalization within GNN (Generalized Notation Notation). POMDPs provide the mathematical foundation for Active Inference models, representing sequential decision-making under uncertainty with partial observability.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ## Purpose
@@ -23,7 +22,7 @@ POMDP integration enables:
 
 ## Contents
 
-**Files**:        3 | **Subdirectories**:        1
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ## Quick Navigation
 
@@ -127,6 +126,4 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new POMDP theoretical developments and Active Inference formulations

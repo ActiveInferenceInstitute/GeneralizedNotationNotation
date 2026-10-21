@@ -8,7 +8,6 @@
 
 This document describes common computational patterns used in Active Inference implementations, with references to GNN source code.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ---
@@ -240,5 +239,4 @@ def safe_log(x, eps=1e-10):
 
 ---
 
-**Status**: ✅ Production Ready  
 **Compliance**: GNN documentation standards

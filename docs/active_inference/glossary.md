@@ -250,5 +250,4 @@ This glossary provides definitions for key terms in Active Inference and the Fre
 
 ---
 
-**Status**: ✅ Production Ready  
 **Compliance**: GNN documentation standards
