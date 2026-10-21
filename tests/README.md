@@ -67,6 +67,12 @@ The comprehensive path can require provisioned native tools and extras; do not
 claim a partial local environment ran every profile. Preserve JUnit, process
 outcomes and actual skips. Timing depends on selection and host.
 
+## Exit-code contract
+
+The pipeline uses **0=success, 1=error, 2=success with warnings/skipped**.
+Inspect individual step outcomes and run receipts; warnings do not imply every
+optional backend ran, and a collection error cannot count as successful tests.
+
 ## Coverage and release acceptance
 
 [Native comprehensive coverage](../docs/development/native_comprehensive_coverage.md)

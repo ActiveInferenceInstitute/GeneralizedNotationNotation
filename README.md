@@ -14,6 +14,10 @@ framework-specific code, and inspect the evidence from its execution.**
 [Contributing](#contributing)
 
 **Software:** 4.2.1. [Published release records](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases) own accepted tags and assets.
+
+FEP_Formal compatibility targets the fixed companion revision accepted with
+GNN 4.2.0. Full synchronization is planned for the next major release of both
+projects; see the [baseline policy](docs/development/fep_lean_paired_revision.md#fixed-baseline-for-gnn-421).
 **Page updated:** 2026-10-21. [Package metadata](pyproject.toml) owns the version
 and dependency requirements; [CHANGELOG.md](CHANGELOG.md) owns release history.
 

@@ -6,6 +6,7 @@ the workflow separately executes the actual pinned FEP bridge.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import subprocess
 import sys
@@ -73,6 +74,7 @@ class RuntimeCustodyTests(unittest.TestCase):
         Path(site, "fixture.pth").write_text(str(self.fep / "src"))
         self.receipts = self.root / "receipts"
         self.receipts.mkdir()
+        self.release_flags = []
 
     def git(self, root, *args):
         return subprocess.check_output(
@@ -106,6 +108,7 @@ class RuntimeCustodyTests(unittest.TestCase):
                 self.fep_revision,
                 "--receipts",
                 str(self.receipts),
+                *self.release_flags,
             ],
             text=True,
             capture_output=True,
@@ -115,6 +118,133 @@ class RuntimeCustodyTests(unittest.TestCase):
         if not success:
             self.assertTrue((self.receipts / f"runtime-{stage}-failed.json").is_file())
         return result
+
+    def fixed_pair(self):
+        """Real Git checkouts retain separate baseline and current identities."""
+        (self.gnn / "pyproject.toml").write_text('[project]\nversion = "4.2.0"\n')
+        package = self.gnn / "src/gnn"
+        package.mkdir(parents=True)
+        (package / "__init__.py").write_text('__version__ = "4.2.0"\n')
+        (package / "science.py").write_text("VALUE = 42\n")
+        self.gnn_revision = self.commit(self.gnn)
+        owners = [
+            "pyproject.toml",
+            "uv.lock",
+            "src/gnn/__init__.py",
+            "src/gnn/science.py",
+        ]
+        pin = self.fep / "specs/gnn-bridge-w2-source-custody/source-pin.json"
+        pin.parent.mkdir(parents=True)
+        pin.write_text(
+            json.dumps(
+                {
+                    "gnn": {
+                        "commit": self.gnn_revision,
+                        "owners": {
+                            name: hashlib.sha256(
+                                (self.gnn / name).read_bytes()
+                            ).hexdigest()
+                            for name in owners
+                        },
+                    }
+                }
+            )
+        )
+        package = self.fep / "src/fep_lean/bridge"
+        package.mkdir()
+        (package / "__init__.py").write_text("")
+        (package / "operations.py").write_text(
+            "def owner_roster(root, repository):\n"
+            '    return sorted(["pyproject.toml", "uv.lock"] + '
+            '[p.relative_to(root).as_posix() for p in root.glob("src/gnn/**/*.py")])\n'
+        )
+        self.fep_revision = self.commit(self.fep)
+        self.release = self.root / "release"
+        subprocess.run(
+            ["git", "clone", "-q", str(self.gnn), str(self.release)], check=True
+        )
+        self.git(self.release, "config", "user.name", "Runtime test")
+        self.git(self.release, "config", "user.email", "runtime@example.invalid")
+        (self.release / "pyproject.toml").write_text('[project]\nversion = "4.2.1"\n')
+        (self.release / "src/gnn/__init__.py").write_text('__version__ = "4.2.1"\n')
+        (self.release / "uv.lock").write_text("reviewed refreshed lock\n")
+        (self.release / ".github/fep-lean-pair.json").write_text(
+            json.dumps(
+                {
+                    "repository": "ActiveInferenceInstitute/fep_formal",
+                    "revision": self.fep_revision,
+                }
+            )
+        )
+        (self.release / ".github/fep-release-baseline.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "mode": "fixed-release-baseline",
+                    "fep_revision": self.fep_revision,
+                    "gnn_revision": self.gnn_revision,
+                    "release_version": "4.2.1",
+                    "approved_lock_sha256": hashlib.sha256(
+                        (self.release / "uv.lock").read_bytes()
+                    ).hexdigest(),
+                    "resynchronize": "next-major-release",
+                }
+            )
+        )
+        self.release_flags = [
+            "--gnn-release-root",
+            str(self.release),
+            "--gnn-release-revision",
+            self.commit(self.release),
+        ]
+
+    def test_fixed_pair_preserves_baseline_and_current_bookends(self):
+        self.fixed_pair()
+        for stage in ("installed", "status", "finite", "continuous", "final"):
+            self.run_stage(stage)
+        result = json.loads((self.receipts / "runtime-final.json").read_text())[
+            "before"
+        ]
+        self.assertEqual(result["gnn"]["revision"], self.gnn_revision)
+        binding = result["release_binding"]
+        self.assertEqual(binding["current_release"]["revision"], self.release_flags[-1])
+        self.assertFalse(binding["current_pair_synchronized"])
+        self.assertEqual(
+            set(binding["changed_owners"]),
+            {"pyproject.toml", "src/gnn/__init__.py", "uv.lock"},
+        )
+
+    def test_fixed_pair_rejects_scientific_change(self):
+        self.fixed_pair()
+        (self.release / "src/gnn/science.py").write_text("VALUE = 43\n")
+        self.release_flags[-1] = self.commit(self.release)
+        self.run_stage("installed", success=False)
+
+    def test_fixed_pair_rejects_owner_addition(self):
+        self.fixed_pair()
+        (self.release / "src/gnn/new.py").write_text("VALUE = 42\n")
+        self.release_flags[-1] = self.commit(self.release)
+        self.run_stage("installed", success=False)
+
+    def test_fixed_pair_rejects_metadata_beyond_version(self):
+        self.fixed_pair()
+        with (self.release / "pyproject.toml").open("a") as stream:
+            stream.write('dependencies = ["unreviewed"]\n')
+        self.release_flags[-1] = self.commit(self.release)
+        self.run_stage("installed", success=False)
+
+    def test_fixed_pair_rejects_unreviewed_lock(self):
+        self.fixed_pair()
+        (self.release / "uv.lock").write_text("unreviewed lock\n")
+        self.release_flags[-1] = self.commit(self.release)
+        self.run_stage("installed", success=False)
+
+    def test_fixed_pair_rejects_initializer_code_change(self):
+        self.fixed_pair()
+        with (self.release / "src/gnn/__init__.py").open("a") as stream:
+            stream.write("VALUE = 42\n")
+        self.release_flags[-1] = self.commit(self.release)
+        self.run_stage("installed", success=False)
 
     def test_actual_cli_execution_and_unchanged_environment(self):
         for stage in ("installed", "status", "finite", "continuous", "final"):

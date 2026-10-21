@@ -40,6 +40,16 @@ released compatibility. Full source-preserving multi-request processing,
 independent semantic extraction and coupled/native extension acceptance remain
 required.
 
+## Next major release: synchronize GNN and FEP_Formal
+
+GNN 4.2.1 uses the last accepted fixed FEP baseline under the bounded
+[compatibility policy](docs/development/fep_lean_paired_revision.md#fixed-baseline-for-gnn-421).
+For the next major release of both projects, finish source changes first,
+refresh bridge emissions and Q7 provenance, compile and validate new native
+receipts at new paths, qualify the exact paired heads and replace the temporary
+baseline mode with synchronized checks. Preserve historical receipts. This is
+release coordination work, separate from the seven scientific S/E workstreams.
+
 ## Versioned delivery plan: 4.3.0 through 4.9.0
 
 These are proposed compatible release scopes, not implemented capabilities or

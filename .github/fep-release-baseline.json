@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "mode": "fixed-release-baseline",
+  "fep_revision": "700c362847ce39f20ff18697288cfa42acf5febf",
+  "gnn_revision": "097328f40299de1469df1e4a5c027d535e3c7132",
+  "release_version": "4.2.1",
+  "approved_lock_sha256": "7a9ab8129622686c567cf693f29c8a95369319ab566b0cad65e279438955fd0e",
+  "resynchronize": "next-major-release"
+}

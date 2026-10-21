@@ -9,6 +9,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [4.2.1] - 2026-10-21
 
+### Fixed companion compatibility
+
+- Target the fixed FEP_Formal revision accepted with GNN 4.2.0. Keep strict
+  bridge/Q7 checks on its exact scientific baseline and separately bind the
+  current release, allowing only the canonical version replacement and reviewed
+  frozen dependency lock. Reject scientific changes and retain both source
+  identities. Defer full synchronization to the next major release of both
+  projects; no new synchronized-pair or native-proof claim is made.
+- Restore the canonical pipeline exit-code contract in the test infrastructure
+  guide after ordinary and comprehensive hosted tests detected its omission.
+
 ### Current compatible dependencies
 
 - Refresh the frozen lock to FastAPI 0.159.1, httpcore2/httpx2 2.16.0,
@@ -41,7 +52,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   explicit exclusions and acceptance criteria. Preserve stable S/E workstreams,
   externally blocked THRML/archive work and measured CI iteration requirements.
 
-Publication requires the exact-source manuscript/companion ritual, full candidate,
+Publication requires the exact-source manuscript ritual, fixed-baseline companion
+compatibility, full candidate,
 main and tag qualification, ordinary package verification and public asset parity.
 Version metadata alone does not establish that those steps completed.
 
