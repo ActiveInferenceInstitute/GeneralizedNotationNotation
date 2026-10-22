@@ -1,15 +1,15 @@
 {
   "algorithm": "web-renderer-combine-v1",
-  "binding_sha256": "b758611cf89001904381588bbaa74d8e1c8b12aae0dae1da042d2526a0279d9c",
+  "binding_sha256": "cba131cc16aaafa880f670bdae789816ebf7cd34b4fcc6a0b5a8209f599407d1",
   "combined_path": "output/web/_combined_manuscript.md",
-  "combined_sha256": "53b737647c29a92d4d1d9d195de372e17d91895d8574fd2af8be216aedd57805",
-  "combined_size_bytes": 107630,
+  "combined_sha256": "0c89c7a8d8b1fc39c1259ba8a779fbf216ab669909d07975c1ead678ab5aa868",
+  "combined_size_bytes": 108829,
   "input_root_kind": "hydrated",
   "ordered_inputs": [
     {
       "ordinal": 1,
       "path": "output/manuscript/00_abstract.md",
-      "sha256": "9ec8e3d36f23eb69550037f7d8097cb98e41706f36b194a5a4714ea7c23154c5",
+      "sha256": "699b3bb5f0f45f81f86576ed6cf8908a01679005384fce5bd1b48804e94a1e13",
       "size_bytes": 4160
     },
     {
@@ -21,31 +21,31 @@
     {
       "ordinal": 3,
       "path": "output/manuscript/02_system_context.md",
-      "sha256": "e9513da6d847c64e17ae07343bf620b4c9d2671f940596e1abadfab138763bfc",
+      "sha256": "85aafbb49619ecd6b6770ec0d881580ba6e989cd0402a0606d8f73e6b12dbeaa",
       "size_bytes": 29789
     },
     {
       "ordinal": 4,
       "path": "output/manuscript/03_methods.md",
-      "sha256": "135599ad417f32c1c380f48e34c9ca4e27b99951c453b3d5254e0ddb18e19c2c",
+      "sha256": "3b32725de4aed6a75a88e4ef919dc7d95dae74b8b82d77fa212d2817814b1507",
       "size_bytes": 20766
     },
     {
       "ordinal": 5,
       "path": "output/manuscript/04_artifacts_and_evidence.md",
-      "sha256": "c2d3ef70da7474958f227b55fdebe7760f1c32bcae678b7931a967b89d545252",
-      "size_bytes": 12528
+      "sha256": "8d4c4b1b41c26285cb9651f74028a19ac746387404fd39100154edb918280230",
+      "size_bytes": 13727
     },
     {
       "ordinal": 6,
       "path": "output/manuscript/05_reproducibility.md",
-      "sha256": "a7d2de0f9f76022b124ecc40dfc49319355af1d3880aada713943114931876d3",
+      "sha256": "3758d73f32ddfb3c25d172ea5cecee615a357117238121a588182394e4016543",
       "size_bytes": 7194
     },
     {
       "ordinal": 7,
       "path": "output/manuscript/06_limitations_and_next_steps.md",
-      "sha256": "f5d996778eca99abe76243964d5c53a58c5df447c74ea765eb9692c7746bab3f",
+      "sha256": "7a39f1be53a6b088655856342200636d1997bff395c7799b02137e0fd7c6ab77",
       "size_bytes": 8902
     },
     {
@@ -67,7 +67,7 @@
       "size_bytes": 329
     }
   ],
-  "ordered_inputs_sha256": "00d8d2d3519d3f2e8e475e3fecc10538c27685848eb1bbb9f12db651e9e41428",
+  "ordered_inputs_sha256": "2f6bea3758602269c7098e5113fd0c026c81981367e828b39743bfd3e783b8e8",
   "project": "GeneralizedNotationNotation",
   "schema_version": "template-manuscript-composition-v1"
 }

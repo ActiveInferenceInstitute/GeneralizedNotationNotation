@@ -432,15 +432,6 @@ th {
   color: white;
 }
 
-/* Preserve a complete inline-code header within the table's scroll region. */
-th code {
-  color: inherit;
-  background-color: transparent;
-  white-space: nowrap;
-  overflow-wrap: normal;
-  word-break: normal;
-}
-
 img {
   max-width: 100%;
   height: auto;
@@ -590,7 +581,7 @@ mjx-container[display="true"] {
 <p>This section reports what the project has actually produced and how
 each quantitative claim is grounded. Every number below is substituted
 at render time from the deterministic producer, which reads the
-repository state at commit 7d402507e, so each figure here is regenerated
+repository state at commit d8baec291, so each figure here is regenerated
 from the artifacts it describes rather than transcribed.</p>
 <h2 id="model-family-coverage">Model-Family Coverage</h2>
 <p>GNN ships a curated corpus of model families that exercise the
@@ -735,7 +726,7 @@ declares; the grid is deliberately sparse — most families declare a
 single backend, and only continuous, discrete, and gridworld declare
 several. Read it as declared intent, not as profiled outcomes: the gates
 described below supply the outcomes. The matrix is generated from the
-two registries at commit 7d402507e.</figcaption>
+two registries at commit d8baec291.</figcaption>
 </figure>
 <p>These families are not illustrative prose: they are the inputs over
 which the parser, the type checker, and the cross-framework code
@@ -762,6 +753,24 @@ extraction was correct, that generated inference implements the intended
 mathematics [dacosta2020], or that independent numerical executions
 agree. The gate reports scoped fidelity per selected model and
 format.</p>
+<p>A separate numerical witness foundation independently reads a
+deliberately restricted source subset without importing the production
+parser or renderer. For a small asymmetric categorical model, exhaustive
+latent-path enumeration distinguishes filtering on each observation
+prefix from smoothing on the complete sequence; actual bnlearn filtering
+is compared with the former. For a passive linear-Gaussian model with
+rectangular observations, nonzero means and correlated covariances, an
+independent joint-Gaussian construction conditions each observation
+prefix and is compared with every posterior mean and full covariance
+from the generated JAX filter. The first observation uses the declared
+prior without an extra prediction. Exact source bytes, variable and axis
+identities, conditioning horizons, numerical precision and
+quantity-specific tolerances remain explicit. Counterexamples change
+source identity, orientation, transition/action timing, conditioning,
+initial prediction, covariance or precision. These finite, source-bound
+comparisons do not establish universal extraction or backend
+equivalence, planning correctness or a new Lean proof; formal evidence
+remains separately scoped.</p>
 <p>The cross-framework reliability gate,
 <code>scripts/run_cross_framework_reliability.py</code>, takes a single
 GNN model and renders it across multiple simulation backends, then
@@ -800,7 +809,7 @@ is what makes “interchange” a checkable claim rather than a promise.</p>
 <p>The repository’s scale is itself evidence of the surface that the
 gates and pipeline cover, and it is reported in <span class="citation"
 data-cites="fig:repo_metrics">@fig:repo_metrics</span> directly from the
-tracked files at commit 7d402507e.</p>
+tracked files at commit d8baec291.</p>
 <figure id="fig:repo_metrics">
 <a class="figure-full-size-link" href="../figures/gnn_repo_metrics.png" target="_blank" rel="noopener" aria-label="Open full-size figure, Repository-scale counts on a logarithmic axis: pipeline steps, model families, registered…"><img src="../figures/gnn_repo_metrics.png" style="width:80.0%"
 alt="Horizontal bar chart on a logarithmic axis of repository-scale counts: pipeline steps, model families, registered backends, render-target adapters, MCP tools, source packages, test files, example models and documentation files. Each bar is annotated with its exact value; all values come from output/data/manuscript_variables.json." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
@@ -809,7 +818,7 @@ axis: pipeline steps, model families, registered backends, render-target
 execution adapters, Model Context Protocol tools, source packages, test
 files, example models, and documentation files. Every bar is annotated
 with its exact value, and every value is a producer token read from
-<code>output/data/manuscript_variables.json</code> at commit 7d402507e —
+<code>output/data/manuscript_variables.json</code> at commit d8baec291 —
 the same token map that substitutes the prose counts. The
 figure-freshness suite binds the committed image digest and its recorded
 producer inputs and counts; semantic content and visual correctness
@@ -821,7 +830,7 @@ execution-only Lean bridge and is not a count of observed native runs.
 Read the chart as the scale of the surface the pipeline maintains, not
 as a quality measure.</figcaption>
 </figure>
-<p>The test suite comprises 661 test files containing 6817 test
+<p>The test suite comprises 662 test files containing 6827 test
 functions, exercising a source base of 767 Python files across 44
 packages (226030 lines of source). The pipeline’s step modules — the
 thin orchestrators named in <span class="citation"
