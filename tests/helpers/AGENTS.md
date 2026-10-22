@@ -15,6 +15,7 @@ helpers/
 ├── gnn_samples.py         # SAMPLE_GNN_CONTENT + write_sample_gnn_markdown()
 ├── mcp_stubs.py           # MCPTools: in-memory MCP registry test double; FakeMCPTime: injectable clock stub
 ├── mcp_census.py          # exact MCP census pin (EXPECTED_MCP_TOOLS / EXPECTED_MCP_MODULES / CENSUS_SOURCE)
+├── numerical_witness.py   # independent source reader, finite/joint-Gaussian reference math
 ├── render_recovery.py     # render_gnn_files(): recovery-friendly bulk render
 └── (path helpers in __init__.py for test_data/)
 ```
@@ -29,6 +30,13 @@ helpers/
 - `EXPECTED_MCP_TOOLS` / `EXPECTED_MCP_MODULES` / `CENSUS_SOURCE` — exact MCP census pin from `mcp_census.py`, read from the committed `src/gnn/mcp/audit_report.json`; regenerate the audit and update the constants in the same PR that adds or removes tools/modules
 - `get_test_data_dir()` / `get_sample_gnn_model()` / `load_sample_gnn_spec()` — path helpers for `tests/test_data/`
 - `render_gnn_files()` — render every GNN file in a directory, capturing per-file results for recovery tests
+
+The test-only [`numerical_witness.py`](numerical_witness.py) reference module
+independently reads an explicit source subset and implements finite enumeration,
+joint-Gaussian conditioning and quantity-specific comparisons. Import it directly
+from `tests.helpers.numerical_witness`; it deliberately imports no production GNN
+parser, renderer or native backend. Its numerical/formal evidence boundary is
+owned by the [E4 foundation contract](../../docs/development/remaining_roadmap_contracts.md#e4-foundation-source-bound-numerical-witness-v1).
 
 ## Usage
 
@@ -51,4 +59,4 @@ from tests.helpers.render_recovery import render_gnn_files
 
 See [tests/AGENTS.md](../AGENTS.md) for the overall test architecture.
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../pyproject.toml) (canonical)

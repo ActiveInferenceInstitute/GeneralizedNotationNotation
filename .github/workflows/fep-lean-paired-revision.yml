@@ -10,7 +10,7 @@ name: Paired fep_formal revision
 #   - both revisions plus the pin are retained as receipts, and
 #   - the read-only fep_formal bridge surface runs against this checkout.
 #
-# GNN 4.2.1 deliberately targets the last accepted fixed FEP pair. Strict
+# GNN 4.3.0 retains the 4.2.1 policy and deliberately targets the last accepted fixed FEP pair. Strict
 # bridge/Q7 checks run against its exact GNN scientific baseline; the runner
 # additionally binds the current release and rejects scientific source changes.
 # Only the canonical version bump and explicitly reviewed frozen lock may differ.

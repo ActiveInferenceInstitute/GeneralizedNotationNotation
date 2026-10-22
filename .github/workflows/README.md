@@ -141,3 +141,10 @@ The [release procedure](../../docs/releases/README.md#repeatable-release-qualifi
 uses the [status collector](../release_gate.py) to collect exact commit/attempt/job
 identities and dispatch only missing work. It never retries failed work or
 replaces independent native, archive, companion or manuscript acceptance.
+
+The all-extras suite also retains `e4-finite-filtering.json` and
+`e4-gaussian-filtering.json` in its existing JUnit artifact. Both independent
+numerical witnesses must execute at the actual checkout before their receipt
+step passes. The [E4 foundation contract](../../docs/development/remaining_roadmap_contracts.md#e4-foundation-source-bound-numerical-witness-v1)
+separates those finite numerical comparisons from formal proof and broader backend
+claims. The complete suite selection and coverage ownership remain unchanged.

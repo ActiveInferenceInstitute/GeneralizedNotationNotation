@@ -24,7 +24,7 @@ The package version is owned by `pyproject.toml` and mirrored by
 `gnn.__version__`, the frozen lock and citation metadata. Prepare a minor release
 on an isolated branch; finish content first, then perform the
 [manuscript and companion ritual](../development/fep_lean_paired_revision.md#closeout-ordering-canonical).
-GNN 4.2.1 uses the explicitly bounded
+GNN 4.3.0 retains the explicitly bounded
 [fixed FEP baseline](../development/fep_lean_paired_revision.md#fixed-baseline-for-gnn-421)
 instead of a simultaneous companion release; full pairing is planned for the next
 major release of both repositories. Keep original producer commits reachable. Never renew receipts by editing hashes.

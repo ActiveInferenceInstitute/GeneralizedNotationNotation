@@ -3,7 +3,7 @@
 **Describe an Active Inference generative model once. Validate its structure,
 render framework-specific code, execute admitted models and inspect the evidence.**
 
-[![Version: 4.2.1](https://img.shields.io/badge/version-4.2.1-00a6b8.svg)](../CHANGELOG.md#421---2026-10-21)
+[![Version: 4.3.0](https://img.shields.io/badge/version-4.3.0-00a6b8.svg)](../CHANGELOG.md#430---2026-10-21)
 [![CI](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/actions/workflows/ci.yml)
 [![CI Python: 3.11â€“3.14](https://img.shields.io/badge/CI%20Python-3.11%E2%80%933.14-3776ab.svg)](workflows/ci.yml)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-lightgrey.svg)](../LICENSE.md)
@@ -28,7 +28,7 @@ scientific workflow** spanning parsing, validation, visualization, simulation,
 analysis and publication. Start with the CLI below, or explore the
 [Python and service interfaces](#interfaces).
 
-**Software:** 4.2.1. [Published release records](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases) own accepted tags and assets.
+**Software:** 4.3.0. [Published release records](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases) own accepted tags and assets.
 
 FEP_Formal compatibility targets the fixed companion revision accepted with
 GNN 4.2.0. Full synchronization is planned for the next major release of both
@@ -61,7 +61,7 @@ supported uv-only Gradio/Pillow override. Native GUI callbacks use Python 3.11â€
 ```bash
 git clone https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git
 cd Generalized_Notation_Notation
-git checkout v4.2.1
+git checkout v4.3.0
 uv sync --frozen --python 3.14
 ```
 
@@ -126,6 +126,14 @@ source/prompt requests actually executed.
 - **Several ways to work.** Use CLI, Python, REST, MCP, editor/LSP or GUI;
   optional LLM, audio and ML integrations extend selected workflows.
   [Durable runs](../docs/development/durable-runs.md) support longer sessions.
+
+The **4.3.0** numerical witness foundation independently reads a restricted
+source subset and compares finite path enumeration and joint-Gaussian conditioning
+with actual bnlearn/JAX filtering. It catches source, axis, action-time, horizon,
+covariance and precision mismatches within that explicit scope. It does not
+establish universal equivalence or a new Lean proof. See the
+[minor changelog](../CHANGELOG.md#430---2026-10-21) and
+[E4 contract](../docs/development/remaining_roadmap_contracts.md#e4-foundation-source-bound-numerical-witness-v1).
 
 The **4.2.1** documentation update strengthens same-page/reference navigation
 checks, replaces unsupported configuration examples and scopes the next minor

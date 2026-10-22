@@ -34,6 +34,7 @@ jobs:
     env:
       PYTHONPATH: src
       UV_PYTHON: ${{ matrix.python-version }}
+      GNN_NUMERICAL_WITNESS_DIR: junit
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -160,6 +161,36 @@ jobs:
             --cov=gnn --cov-report=json:junit/coverage-full-extras.json \
             --junitxml=junit/full-extras-${{ matrix.python-version }}.xml
 
+      - name: Verify independent numerical witness receipts
+        run: |
+          uv run --frozen --no-sync python - <<'PYCODE'
+          import hashlib, json, subprocess
+          from pathlib import Path
+          from tests.helpers.numerical_witness import read_source, compare_records
+          revision = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+          for model in ('finite', 'gaussian'):
+              path = Path('junit') / f'e4-{model}-filtering.json'
+              receipt = json.loads(path.read_text())
+              assert receipt['schema'] == 'gnn-independent-numerical-witness-v1'
+              assert receipt['checkout_commit'] == revision
+              assert receipt['checkout_dirty_paths'] == []
+              assert receipt['source_contract']['model'] == model
+              source = receipt['source_utf8'].encode('utf-8')
+              assert read_source(source) == receipt['source_contract']
+              assert hashlib.sha256(source).hexdigest() == receipt['source_contract']['source_sha256']
+              for label in ('script', 'result'):
+                  assert hashlib.sha256(receipt['native'][label + '_utf8'].encode('utf-8')).hexdigest() == receipt['native'][label + '_sha256']
+              result = json.loads(receipt['native']['result_utf8'])
+              for quantity, values in receipt['actual']['quantities'].items():
+                  assert result[quantity] == values
+              assert compare_records(receipt['expected'], receipt['actual']) == receipt['comparisons']
+              assert receipt['comparisons'] and all(item['status'] == 'passed' for item in receipt['comparisons'].values())
+              assert receipt['native']['framework_version']
+              assert receipt['expected']['formal_evidence']['status'] == 'unavailable'
+              if model == 'gaussian':
+                  assert receipt['actual']['runtime_precision'] == {'array_dtype': 'float64', 'jax_enable_x64': True}
+          PYCODE
+
       - name: Record execution counts and source identity
         if: always()
         run: |
@@ -171,7 +202,9 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: pytest-junit-full-extras-${{ matrix.python-version }}
-          path: junit/full-extras-${{ matrix.python-version }}.*
+          path: |
+            junit/full-extras-${{ matrix.python-version }}.*
+            junit/e4-*-filtering.json
           if-no-files-found: warn
           retention-days: 14
 
