@@ -7,9 +7,12 @@ the mechanism GEO_INFER already runs for this repository: its
 `.github/gnn-pair.json`. The GEO_INFER direction (GEO_INFER pinning GNN) is
 covered in the mirror-image section below.
 
-## Fixed baseline for GNN 4.2.1
+<a id="fixed-baseline-for-gnn-421"></a>
 
-GNN 4.2.1 targets the FEP_Formal revision already accepted with GNN 4.2.0,
+## Fixed baseline for GNN 4.3.0
+
+Introduced for GNN 4.2.1 and retained for 4.3.0, this policy targets the
+FEP_Formal revision already accepted with GNN 4.2.0,
 recorded in `.github/fep-lean-pair.json`. It does not wait for, modify or claim
 acceptance of newer FEP_Formal work. Full synchronization of both repositories
 is deferred to their next major release.
@@ -23,6 +26,8 @@ Q7 source checks run on the accepted scientific baseline. Separate current-relea
 bookends verify every covered owner and reject additions, deletions or scientific
 code changes. Only the canonical package-version replacement in `pyproject.toml`
 and `src/gnn/__init__.py`, plus the explicitly reviewed frozen lock, may differ.
+The 4.3.0 numerical witnesses add test/reference and documentation surfaces;
+they do not change covered scientific runtime owners or renew formal proofs.
 The current GNN dependency/runtime matrix is qualified independently by ordinary,
 comprehensive-native, all-extras and installed-wheel workflows.
 

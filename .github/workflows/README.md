@@ -91,6 +91,11 @@ The FEP bridge job selects its companion-required uv 0.13.0 independently of
 GNN-owned uv 0.13.4 installs. Supply-chain requirement resolution uses core Python 3.14 and the declared
 all-extras Python 3.12 profile, rather than prospective Python 3.15.
 
+The docs audit runs the existing exit-code documentation contract immediately
+after its frozen installation. `just release-preflight` runs the same test before
+type checks and broader audits, catching wording drift before a release candidate
+is dispatched. The full ordinary and native test selections remain unchanged.
+
 Deterministic checks have one hosted owner: docs/anchors and terminology in
 `docs-audit.yml`; import boundaries, thin orchestrators, flag/dependency/validation
 and documentation path/pattern gates in `local-gates.yml`; Ruff, mypy, public
@@ -136,3 +141,10 @@ The [release procedure](../../docs/releases/README.md#repeatable-release-qualifi
 uses the [status collector](../release_gate.py) to collect exact commit/attempt/job
 identities and dispatch only missing work. It never retries failed work or
 replaces independent native, archive, companion or manuscript acceptance.
+
+The all-extras suite also retains `e4-finite-filtering.json` and
+`e4-gaussian-filtering.json` in its existing JUnit artifact. Both independent
+numerical witnesses must execute at the actual checkout before their receipt
+step passes. The [E4 foundation contract](../../docs/development/remaining_roadmap_contracts.md#e4-foundation-source-bound-numerical-witness-v1)
+separates those finite numerical comparisons from formal proof and broader backend
+claims. The complete suite selection and coverage ownership remain unchanged.

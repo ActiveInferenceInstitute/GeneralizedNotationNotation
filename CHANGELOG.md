@@ -7,6 +7,46 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+## [4.3.0] - 2026-10-21
+
+### Independent numerical witness foundation
+
+- Add a test-only reader of an explicit, versioned GNN source subset that imports
+  no production parser or renderer. Bind exact source bytes, ordered variable/axis
+  identities, declared equations, initial-time convention, precision and every
+  conditioning horizon; reject ambiguous or unsupported declarations.
+- Compare native stationary finite bnlearn filtering with exhaustive latent-path
+  enumeration on an asymmetric fixed-action fixture. Distinguish filtering prefixes
+  from full-sequence reference smoothing; native smoothing is outside this slice.
+- Compare every posterior mean and full covariance of a generated passive JAX
+  LGSSM against independent joint-Gaussian prefix conditioning, with rectangular
+  observations, nonzero means and correlated covariances. Inspect actual JAX x64
+  configuration and float64 arrays in the native execution process.
+- Add axis/source/precision, transition/action-time, initial prediction,
+  conditioning horizon and covariance counterexamples, including covariance-only
+  corruption and exact-byte newline controls. Retain both native numerical
+  receipts with all-extras JUnit evidence from its actual source checkout.
+- Keep broader E4 work, planning/EFE, general GNN composition, coupled models and
+  universal translation proofs open. These numerical witnesses do not refresh
+  historical Q7/native Lean receipts.
+
+### Release iteration
+
+- Refresh python-dateutil to 3.0.0 within the existing dependency constraints;
+  preserve the named runtime/backend compatibility exceptions.
+- Run the existing exit-code documentation contract immediately after frozen
+  installation in release preflight and the docs workflow. Preserve full test
+  selections, coverage denominators and required native/platform profiles.
+- Retain the last accepted fixed FEP_Formal scientific baseline under the same
+  bounded version/lock compatibility policy. Defer full synchronization to the
+  next major release of both repositories.
+
+Publication requires exact-source manuscript custody, fixed-baseline companion
+compatibility, successful candidate/main/tag qualification, ordinary distribution
+verification and public asset parity. This changelog records implementation scope;
+[GitHub release records](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases)
+establish publication.
+
 ## [4.2.1] - 2026-10-21
 
 ### Fixed companion compatibility

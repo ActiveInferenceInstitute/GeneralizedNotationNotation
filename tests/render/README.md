@@ -36,6 +36,13 @@ This folder contains module-focused tests for render processors, framework gener
 - `test_stigmergic_multi_agent.py` — native stigmergic multi-agent compilation contract (MAJ-03).
 - `test_toml_matrix_parser.py` — parenthesized-tuple matrix parsers in `src/gnn/render/rxinfer/toml_generator.py`.
 
+The [source numerical witness suite](test_source_numerical_witnesses.py) reads an
+explicit, restricted source subset independently of production extraction. Native
+bnlearn filtering is selected by `needs_bnlearn`; generated JAX filtering runs in
+the ordinary dev environment. The [E4 contract](../../docs/development/remaining_roadmap_contracts.md#e4-independent-semantic-witnesses)
+owns precision, conditioning, exclusions and acceptance boundaries. These finite
+fixtures do not prove universal translation equivalence or refresh Lean evidence.
+
 Run:
 
 ```bash

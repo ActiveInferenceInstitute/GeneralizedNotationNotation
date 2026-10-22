@@ -42,7 +42,7 @@ required.
 
 ## Next major release: synchronize GNN and FEP_Formal
 
-GNN 4.2.1 uses the last accepted fixed FEP baseline under the bounded
+GNN 4.3.0 retains the last accepted fixed FEP baseline introduced in 4.2.1 under the bounded
 [compatibility policy](docs/development/fep_lean_paired_revision.md#fixed-baseline-for-gnn-421).
 For the next major release of both projects, finish source changes first,
 refresh bridge emissions and Q7 provenance, compile and validate new native
@@ -52,8 +52,8 @@ release coordination work, separate from the seven scientific S/E workstreams.
 
 ## Versioned delivery plan: 4.3.0 through 4.9.0
 
-These are proposed compatible release scopes, not implemented capabilities or
-calendar promises. Each release takes one bounded slice of the stable workstreams
+The 4.3.0 row names its bounded numerical witness implementation; 4.4.0–4.9.0
+are proposed compatible scopes, not implemented capabilities or calendar promises. Each release takes one bounded slice of the stable workstreams
 below; a version does not automatically close its whole S/E item. If implementation
 requires a breaking public contract, review a major-version migration instead.
 The roles named here identify required reviewers, not assigned people.
@@ -175,6 +175,11 @@ The lists below own outstanding work; this table owns target-version sequencing.
   total RSS. Depends on M2/M3, E4's numerical contracts and M7 resource evidence.
 
 - [ ] **E4 — bind formal statements to numerical semantics (P1).**
+  Progress: the 4.3.0 [witness foundation](docs/development/remaining_roadmap_contracts.md#e4-foundation-source-bound-numerical-witness-v1)
+  independently reads a restricted source subset, enumerates finite paths and
+  conditions joint Gaussians. Native bnlearn/JAX comparisons and counterexamples
+  cover their declared filtering fixtures. Broader source contracts, inference
+  algorithms, translations and formal equivalence remain open.
   Scope: specify independent extraction and semantic witnesses for declared
   finite/continuous models, translations, inference algorithms and precision
   assumptions beyond source/hash/value/shape custody. Accept: exact assumptions,

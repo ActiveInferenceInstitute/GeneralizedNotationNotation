@@ -106,6 +106,61 @@ change EFE sign, omit cross covariance, substitute a source digest and change
 precision. Each must fail or refuse with a quantity-specific diagnosis. Add a
 new witness version before extending its scientific meaning.
 
+### E4 foundation: source-bound numerical witness v1
+
+The [test-only reference reader](../../tests/helpers/numerical_witness.py) and
+[actual source-to-native suite](../../tests/render/test_source_numerical_witnesses.py)
+implement one deliberately restricted subset. The reader imports no GNN parser,
+canonicalizer, renderer or backend. It accepts one-line JSON-valued assignments in
+`InitialParameterization`, colon-delimited scalar `ModelParameters`, exact declared
+equations/state identities and a versioned `NumericalWitness` JSON section. Other
+source grammars and inference contracts refuse explicitly; this is not a second
+complete GNN parser. Syntax accepts CRLF/LF lines while source-byte hashes retain
+the untouched bytes, including line endings and the final newline.
+
+- **Finite:** one stationary categorical state, observation and exogenous action
+  factor; canonical `A[observation,state]` and
+  `B[next_state,previous_state,action]`; normalized A/B/D and zero C. Exact latent
+  path enumeration computes each filtering prefix independently and full-sequence
+  smoothing separately. The asymmetric native fixture has two states, three
+  observations, two transition actions and four observation times. Native bnlearn
+  posterior comparisons cover filtering only; smoothing remains reference evidence.
+- **Gaussian:** one passive stationary LGSSM, with no authored control or policy
+  contract. The asymmetric fixture has three states, two observations, a
+  nonidentity rectangular H, nonzero prior means and correlated positive-definite
+  prior/Q/R. The reference constructs the full joint Gaussian from independent
+  initial/process innovations and conditions each observation prefix. It does not
+  call a Kalman update. Every mean and full covariance is compared with the actual
+  generated JAX program. Its first observation conditions the declared prior;
+  generated one-based time notation maps to result index zero. The test inspects
+  actual JAX float64 arrays and x64 configuration in the execution process.
+
+Reader limits are eight observation times, four state/observation dimensions,
+four finite actions and 4,096 enumerated paths. Deterministic comparisons use
+float64, absolute tolerance 1e-12 and relative tolerance 1e-10 for these small,
+well-conditioned fixtures. These bounds are deliberately wider than observed
+roundoff; they are not Monte Carlo tolerances or permission to substitute float32.
+Records name source, axes, ordered identities, equations, initial time, inference
+question, every conditioning horizon, actual observations/actions and each compared
+quantity. Native receipts additionally retain checkout/dirty state, generated
+source/program/result bytes and hashes, plus actual Python/NumPy/framework
+versions. All-extras CI
+requires both receipts from its actual checkout and retains them with its JUnit
+artifact; missing native execution cannot pass that receipt step.
+
+Counterexamples cover transposed rectangular source matrices, changed transition
+probabilities, shifted action timing, extra initial prediction, erased cross
+covariance, covariance-only corruption, future conditioning, source substitution
+and precision/axis mismatch. Unsupported EFE/sign questions refuse rather than
+borrowing this filtering contract. The suite also rejects duplicate, nonfinite,
+boolean, ambiguous and over-budget source declarations.
+
+These finite tests establish their named numerical comparisons. Formal evidence
+is explicitly unavailable in the witness schema. They do not refresh Q7/native
+Lean receipts or synchronize FEP_Formal, and they do not prove general extraction,
+backend-wide equivalence, planning, causal discovery, coupled models or arbitrary
+GNN compositions. Broader E4 work remains open.
+
 ### E4-P1: authored planning admission
 
 The shared `render/planning_admission.py` guard refuses unsupported source

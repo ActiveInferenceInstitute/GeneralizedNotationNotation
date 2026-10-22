@@ -24,17 +24,17 @@ The package version is owned by `pyproject.toml` and mirrored by
 `gnn.__version__`, the frozen lock and citation metadata. Prepare a minor release
 on an isolated branch; finish content first, then perform the
 [manuscript and companion ritual](../development/fep_lean_paired_revision.md#closeout-ordering-canonical).
-GNN 4.2.1 uses the explicitly bounded
+GNN 4.3.0 retains the explicitly bounded
 [fixed FEP baseline](../development/fep_lean_paired_revision.md#fixed-baseline-for-gnn-421)
 instead of a simultaneous companion release; full pairing is planned for the next
 major release of both repositories. Keep original producer commits reachable. Never renew receipts by editing hashes.
 
 After provisioning the exact uv version from README, run `just release-preflight`
 before publishing a candidate. It installs the frozen dev profile once, then
-checks source types, documentation and module inventories, actual flags, thin
-scripts, release scheduling controls
-and every direct entrypoint. It catches deterministic mistakes before starting
-expensive hosted lanes; full/native/manuscript/companion qualification remains
+checks the canonical exit-code documentation contract before source types,
+documentation and module inventories, actual flags, thin scripts, release
+scheduling controls and every direct entrypoint. It catches deterministic mistakes
+before starting expensive hosted lanes; full/native/manuscript/companion qualification remains
 required. Existing `just quality` retains its broader local gate roster.
 
 Use the stdlib GitHub CLI collector from the repository root:

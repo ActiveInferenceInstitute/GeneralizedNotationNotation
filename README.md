@@ -3,7 +3,7 @@
 **Describe an Active Inference generative model in Markdown, validate it, render
 framework-specific code, and inspect the evidence from its execution.**
 
-[![Version: 4.2.1](https://img.shields.io/badge/version-4.2.1-00a6b8.svg)](pyproject.toml)
+[![Version: 4.3.0](https://img.shields.io/badge/version-4.3.0-00a6b8.svg)](pyproject.toml)
 [![CI](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/actions/workflows/ci.yml)
 [![Python 3.11–3.14](https://img.shields.io/badge/python-3.11%E2%80%933.14-blue.svg)](pyproject.toml)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](LICENSE.md)
@@ -13,7 +13,7 @@ framework-specific code, and inspect the evidence from its execution.**
 [Documentation](#documentation) · [Examples](#examples) ·
 [Contributing](#contributing)
 
-**Software:** 4.2.1. [Published release records](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases) own accepted tags and assets.
+**Software:** 4.3.0. [Published release records](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases) own accepted tags and assets.
 
 FEP_Formal compatibility targets the fixed companion revision accepted with
 GNN 4.2.0. Full synchronization is planned for the next major release of both
@@ -229,7 +229,7 @@ Commands below run from the repository root and reuse the frozen environment.
 ```bash
 git clone https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git
 cd Generalized_Notation_Notation
-git checkout v4.2.1
+git checkout v4.3.0
 uv sync --frozen --python 3.14
 uv run --frozen --no-sync gnn --help
 ```
@@ -387,11 +387,13 @@ their documented producer and re-pin procedures.
 
 [Release records](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases)
 provide accepted version tags and downloadable source-bound artifacts. The
-[4.2.1 changelog](CHANGELOG.md#421---2026-10-21) describes documentation and
-signposting repairs; [4.3–4.9 scope](TO-DO.md#versioned-delivery-plan-430-through-490)
-remains planned work.
+[4.3.0 changelog](CHANGELOG.md#430---2026-10-21) describes independent
+source-bound numerical witnesses and earlier CI documentation checks. The
+[E4 contract](docs/development/remaining_roadmap_contracts.md#e4-foundation-source-bound-numerical-witness-v1)
+states the exact finite/Gaussian scope and its limits; the
+[versioned roadmap](TO-DO.md#versioned-delivery-plan-430-through-490) owns remaining work.
 
-[GNN 4.2.0](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0)
+[GNN 4.2.1](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.1)
 provides the ordinary wheel/sdist, manuscript PDF, overview image, source binding,
 verification records and checksums. Main can contain later documentation changes;
 released artifacts retain their original tag/source identities.
