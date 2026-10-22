@@ -51,6 +51,9 @@ jobs:
       - name: Install dependencies (dev)
         run: uv sync --frozen --extra dev
 
+      - name: Exit-code documentation contract
+        run: uv run --frozen --no-sync python -m pytest tests/utils/test_argument_and_dependency_contracts.py::test_exit_code_contract_docs_use_canonical_wording -q --no-cov
+
       - name: Documentation audit (strict)
         run: uv run --frozen --no-sync python docs/development/docs_audit.py --strict --check-anchors --no-write
 

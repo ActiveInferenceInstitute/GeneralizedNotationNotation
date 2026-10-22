@@ -91,6 +91,11 @@ The FEP bridge job selects its companion-required uv 0.13.0 independently of
 GNN-owned uv 0.13.4 installs. Supply-chain requirement resolution uses core Python 3.14 and the declared
 all-extras Python 3.12 profile, rather than prospective Python 3.15.
 
+The docs audit runs the existing exit-code documentation contract immediately
+after its frozen installation. `just release-preflight` runs the same test before
+type checks and broader audits, catching wording drift before a release candidate
+is dispatched. The full ordinary and native test selections remain unchanged.
+
 Deterministic checks have one hosted owner: docs/anchors and terminology in
 `docs-audit.yml`; import boundaries, thin orchestrators, flag/dependency/validation
 and documentation path/pattern gates in `local-gates.yml`; Ruff, mypy, public

@@ -319,6 +319,7 @@ profile-backend *ARGS:
 # Install once; every subsequent command reuses that exact frozen environment.
 release-preflight:
     uv sync --frozen --extra dev
+    uv run --frozen --no-sync python -m pytest tests/utils/test_argument_and_dependency_contracts.py::test_exit_code_contract_docs_use_canonical_wording -q --no-cov
     uv run --frozen --no-sync mypy src .github/release_gate.py --config-file pyproject.toml
     uv run --frozen --no-sync python docs/development/docs_audit.py --strict --check-anchors --no-write
     uv run --frozen --no-sync python scripts/check_flag_parity.py
