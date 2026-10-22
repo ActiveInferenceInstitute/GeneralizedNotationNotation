@@ -15,6 +15,7 @@ helpers/
 ├── gnn_samples.py         # SAMPLE_GNN_CONTENT + write_sample_gnn_markdown()
 ├── mcp_stubs.py           # MCPTools: in-memory MCP registry test double; FakeMCPTime: injectable clock stub
 ├── mcp_census.py          # exact MCP census pin (EXPECTED_MCP_TOOLS / EXPECTED_MCP_MODULES / CENSUS_SOURCE)
+├── numerical_witness.py   # independent source reader, finite/joint-Gaussian reference math
 ├── render_recovery.py     # render_gnn_files(): recovery-friendly bulk render
 └── (path helpers in __init__.py for test_data/)
 ```
@@ -58,4 +59,4 @@ from tests.helpers.render_recovery import render_gnn_files
 
 See [tests/AGENTS.md](../AGENTS.md) for the overall test architecture.
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../pyproject.toml) (canonical)

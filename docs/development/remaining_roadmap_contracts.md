@@ -1,10 +1,10 @@
 # Remaining roadmap contracts
 
-Design scope: 2026-10-16 review, based on GNN
-`2b105fde2c0f8fcd50eec5a45ab22d9925c01383` plus the uncommitted review patch.
-This document specifies implementation boundaries and acceptance cases. It does
-not complete the seven items in [TO-DO](../../TO-DO.md), certify a release, or
-replace [scientific admission](backend_scientific_contracts.md) and
+This document specifies implementation boundaries and acceptance cases. The
+original 2026-10-16 design review used GNN
+`2b105fde2c0f8fcd50eec5a45ab22d9925c01383`; the E4 foundation section records
+the later 4.3.0 bounded implementation. It does not complete the seven items in
+[TO-DO](../../TO-DO.md), certify a release, or replace [scientific admission](backend_scientific_contracts.md) and
 [run ownership](run_ownership_migration.md).
 
 Target-version sequencing for **4.3.0–4.9.0** is owned by
