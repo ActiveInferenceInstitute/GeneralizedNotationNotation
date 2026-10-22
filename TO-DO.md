@@ -58,6 +58,13 @@ below; a version does not automatically close its whole S/E item. If implementat
 requires a breaking public contract, review a major-version migration instead.
 The roles named here identify required reviewers, not assigned people.
 
+The 4.3.0 foundation adds test/reference and documentation surfaces while retaining
+covered scientific runtime bytes. Later rows that change those covered owners
+cannot ship under the fixed-FEP policy: perform the coordinated major release
+first and reassign their version targets during that planning. The 4.4–4.9 labels
+retain the requested planning horizons; they do not authorize runtime drift or
+promise those exact minor versions under the present baseline.
+
 | Target | Bounded deliverable | Prerequisite and review ownership | Acceptance before release |
 |---|---|---|---|
 | **4.3.0** | **E4 foundation:** independent finite enumeration and linear-Gaussian filtering witnesses for explicitly admitted source contracts | GNN parser/extractor and numerical maintainers; FEP bridge reviewer for changed formal owners | Asymmetric fixtures; independent extraction; declared conditioning/time/precision; axis, source, action-time and covariance negative controls; fresh formal/native/custody receipts remain separate |
