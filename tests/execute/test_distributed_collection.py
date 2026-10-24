@@ -800,8 +800,23 @@ try:
         return {"success": True, "name": name}
     fast = task.remote("fast")
     ray.get(fast, timeout=15)
-    bad, cancelled, slow = (task.remote(name) for name in ("bad", "cancel", "slow"))
+    bad, cancelled = (task.remote(name) for name in ("bad", "cancel"))
     ray.cancel(cancelled)
+    # Ray cancellation is asynchronous. Establish both terminal preconditions
+    # before measuring collection, so scheduler latency cannot spend its budget.
+    try:
+        ray.get(bad, timeout=15)
+    except ray.exceptions.RayTaskError:
+        pass
+    else:
+        raise AssertionError("bad task did not reach its real typed error")
+    try:
+        ray.get(cancelled, timeout=15)
+    except ray.exceptions.TaskCancelledError:
+        pass
+    else:
+        raise AssertionError("cancelled task did not acknowledge real cancellation")
+    slow = task.remote("slow")
     dispatcher = Dispatcher("ray", deadline_monotonic=time.monotonic() + 1)
     start = time.monotonic()
     result = dispatcher._ray_get_bounded([fast, bad, cancelled, slow])
