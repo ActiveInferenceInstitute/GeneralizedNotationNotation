@@ -29,7 +29,7 @@ _CSS = """
   --error:       #fc6c65;
   --text-1:      #ffffff;
   --text-2:      #aeb6c2;
-  --text-3:      #606a78;
+  --text-3:      #929eae;
   --radius:      12px;
   --radius-lg:   16px;
   --shadow:      0 8px 32px rgba(0, 0, 0, 0.5);
@@ -39,6 +39,16 @@ _CSS = """
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth; }
+a:focus-visible, summary:focus-visible, input:focus-visible, button:focus-visible {
+  outline: 3px solid var(--accent-2);
+  outline-offset: 4px;
+}
+.skip-link { position: fixed; top: -100px; left: 16px; z-index: 200; }
+.skip-link:focus { top: 16px; background: #07090f; padding: 12px; color: var(--accent-2); }
+.mobile-nav { display: none; }
+.dash-files a { color: var(--accent-2); overflow-wrap: anywhere; }
+.dash-files a:hover { text-decoration: underline; }
+.badge-running { color: var(--accent-2); background: rgba(0, 240, 255, 0.1); }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -498,6 +508,8 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 
 /* ── Site search (client-side filter over the inline search index) ── */
 .site-search { margin-bottom: 32px; }
+.site-search label { display: block; margin-bottom: 8px; font-weight: 600; }
+.search-status { color: var(--text-2); margin-top: 8px; font-size: 13px; }
 #gnn-site-search {
   width: 100%;
   max-width: 420px;
@@ -517,11 +529,18 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .sidebar { position: fixed; transform: translateX(-100%); z-index: 100; transition: transform 0.3s; }
-  .sidebar.open { transform: translateX(0); }
+  body { flex-direction: column; }
+  .sidebar { display: none; }
+  .mobile-nav { display: block; margin: 16px 20px 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); }
+  .mobile-nav > summary { padding: 12px 16px; cursor: pointer; font-weight: 600; }
+  .mobile-nav nav { padding: 0 12px 12px; }
   .main { padding: 20px; }
   .page-header h1 { font-size: 26px; }
   .stat-card .value { font-size: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 """
 
@@ -531,12 +550,14 @@ _SEARCH_JS = """(function () {
   var dataEl = document.getElementById('gnn-search-data');
   var input = document.getElementById('gnn-site-search');
   var list = document.getElementById('gnn-search-results');
+  var status = document.getElementById('gnn-search-status');
   if (!dataEl || !input || !list) { return; }
   var pages = [];
   try { pages = (JSON.parse(dataEl.textContent) || {}).pages || []; }
   catch (err) { return; }
   function render(matches) {
     list.textContent = '';
+    if (status) { status.textContent = matches.length + (matches.length === 1 ? ' matching page.' : ' matching pages.'); }
     if (matches.length === 0) {
       var empty = document.createElement('li');
       empty.className = 'gnn-search-empty';
@@ -562,6 +583,7 @@ _SEARCH_JS = """(function () {
     if (!query) {
       list.hidden = true;
       list.textContent = '';
+      if (status) { status.textContent = ''; }
       return;
     }
     var matches = [];
@@ -600,8 +622,9 @@ def _page(
     nav_html = ""
     for icon, label, href, key in nav_items:
         cls = "nav-link active" if key == active else "nav-link"
+        current = ' aria-current="page"' if key == active else ""
         nav_html += (
-            f'<a href="{root}{href}" class="{cls}">'
+            f'<a href="{root}{href}" class="{cls}"{current}>'
             f'<span class="icon">{icon}</span>{label}</a>\n'
         )
 
@@ -650,19 +673,24 @@ def _page(
   <style>{_CSS}</style>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to results</a>
   <aside class="sidebar">
     <div class="sidebar-logo">
       <h2>GNN Pipeline</h2>
       <p>Generated {ts}</p>
     </div>
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav" aria-label="Main navigation">
       <div class="nav-section">
         <div class="nav-label">Navigation</div>
         {nav_html}
       </div>
     </nav>
   </aside>
-  <main class="main">
+  <details class="mobile-nav">
+    <summary>Navigate results</summary>
+    <nav aria-label="Mobile navigation">{nav_html}</nav>
+  </details>
+  <main class="main" id="main-content" tabindex="-1">
     {breadcrumb_nav}
     {body}
   </main>

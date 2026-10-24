@@ -81,11 +81,14 @@ literal.
 ## Validating interchange
 
 The validation harness lives in the GEO-INFER-TEST module of the sibling
-checkout. Run it from the GEO_INFER checkout, pointing it at this repo:
+checkout. First install the separate environments using the
+[paired-runtime procedure](../../development/geo_infer_2026_09.md#independent-uv-toolchains):
+GNN requires uv 0.13.4; the GEO installation alone requires uv 0.13.1.
+Then run the installed GEO interpreter from its checkout, pointing it at this repo:
 
 ```
 cd ../GEO_INFER
-uv run python GEO-INFER-TEST/validate_gnn_interchange.py \
+.venv/bin/python GEO-INFER-TEST/validate_gnn_interchange.py \
   --gnn-repo ../Generalized_Notation_Notation \
   --gnn-python ../Generalized_Notation_Notation/.venv/bin/python
 ```

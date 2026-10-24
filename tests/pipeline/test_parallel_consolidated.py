@@ -337,3 +337,41 @@ def test_parallel_receipts_measure_workers_before_ordered_future_collection(
     assert datetime.fromisoformat(
         records["5_type_checker.py"]["end_time"]
     ) < datetime.fromisoformat(records["3_gnn.py"]["end_time"])
+
+
+@pytest.mark.parametrize("limit", [1, 2])
+def test_step_worker_limit_controls_actual_concurrency_and_receipt(
+    isolated_run: PipelineArguments, monkeypatch: pytest.MonkeyPatch, limit: int
+) -> None:
+    _inject_steps(monkeypatch, isolated_run)
+    isolated_run.step_workers = limit
+    isolated_run.file_workers = 3
+    lock = threading.Lock()
+    barrier = threading.Barrier(2)
+    active = peak = 0
+    fake = _subprocess_fake([], lock)
+
+    def worker(script_name, *args, **kwargs):
+        nonlocal active, peak
+        if script_name not in {"3_gnn.py", "5_type_checker.py"}:
+            return fake(script_name, *args, **kwargs)
+        with lock:
+            active += 1
+            peak = max(peak, active)
+        try:
+            if limit == 2:
+                barrier.wait(timeout=5)
+            time.sleep(0.01)
+            return fake(script_name, *args, **kwargs)
+        finally:
+            with lock:
+                active -= 1
+
+    monkeypatch.setattr(orchestrator, "execute_pipeline_step", worker)
+    assert orchestrator.main(isolated_run) == 0
+    receipt = read_receipt(isolated_run)
+    assert peak == limit
+    assert receipt["execution_resources"]["file_workers_requested"] == 3
+    assert receipt["execution_resources"]["step_workers_requested"] == limit
+    tier = next(row for row in receipt["parallel_tiers"] if len(row["step_names"]) == 2)
+    assert tier["workers_used"] == limit

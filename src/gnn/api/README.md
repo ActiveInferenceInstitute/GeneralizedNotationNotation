@@ -96,6 +96,17 @@ Both run and job requests accept `steps`, `parallel` and `consolidated_steps`;
 prerequisites are included in the execution plan and reported total. Omitted
 `steps` selects all; explicit `[]` is rejected. JSON flags must be booleans
 (strings and numeric coercions are rejected), and unknown request keys fail.
+Run, process and single-tool requests also accept `file_workers` (default `1`)
+and `step_workers` (default `null`). File limits control independent source-file
+work in Steps 3/5; step limits bound concurrent tiers when `parallel=true`.
+Both admit only integer limits from 1 through 256, excluding booleans, strings
+and floats. Only the step limit accepts null for automatic selection.
+For example, a process request can include
+`{"steps":[3,5],"file_workers":4,"parallel":true,"step_workers":2}`.
+The normalized run request, run identity, job record, polling response and
+subprocess arguments retain those requested limits. They describe configured
+limits rather than actual worker use or measured speedup. Step-12 execution
+worker configuration remains outside these request schemas.
 The operator sets `GNN_API_ROOT` to an absolute existing workspace for installed
 packages; an ordinary installed API without that workspace refuses filesystem
 admission. A recognized source checkout retains its checkout-root default.
@@ -103,6 +114,8 @@ Pipeline code always comes from the installed package, independently of this
 workspace. Output cannot equal or contain the input target. MCP
 `gnn_submit_job` accepts the same flags and an optional `output_dir`, and creates
 a pending record; callers explicitly start `execute_job_async` when appropriate.
+Its manifest publishes the same bounded file/step worker limits and defaults;
+direct handler calls receive the same strict pipeline admission checks.
 Job/run status exposes the supervisor's optional `process_cleanup` receipt,
 including the observed containment boundary and whether cleanup was verified.
 Workspace/code preparation errors finish failed instead of leaving a running job.

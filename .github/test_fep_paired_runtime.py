@@ -34,6 +34,43 @@ def main(argv):
 """
 
 
+class WorkflowConfigurationTests(unittest.TestCase):
+    def test_active_pair_uses_current_source_and_archived_policy_is_immutable(self):
+        """Current CI cannot admit the historical release-baseline exception."""
+        root = Path(__file__).resolve().parents[1]
+        workflow = (root / ".github/workflows/fep-lean-paired-revision.yml").read_text()
+        self.assertEqual(workflow.count("uses: actions/checkout@"), 2)
+        self.assertNotIn("gnn-baseline", workflow)
+        self.assertNotIn("--gnn-release-", workflow)
+        self.assertNotIn(".github/fep-release-baseline.json", workflow)
+        self.assertEqual(workflow.count('--gnn-root "$GITHUB_WORKSPACE/gnn"'), 2)
+        self.assertEqual(
+            workflow.count(
+                '--gnn-revision "${{ github.event.pull_request.head.sha || github.sha }}"'
+            ),
+            2,
+        )
+        self.assertIn("for stage in installed status finite continuous final", workflow)
+        self.assertIn("fep_paired_runtime.py q7-source", workflow)
+        self.assertIn("if: matrix.python == '3.14'", workflow)
+        self.assertIn('python: ["3.11", "3.12", "3.14"]', workflow)
+        self.assertIn("--frozen --no-sync --python", workflow)
+        self.assertIn("if: always()", workflow)
+        self.assertFalse((root / ".github/fep-release-baseline.json").exists())
+        archive = root / "docs/releases/fep_4_3_0_baseline.json"
+        self.assertEqual(
+            hashlib.sha256(archive.read_bytes()).hexdigest(),
+            "b2de77c03736ff8113640c9becc8e389ca06e9e48f65eb582bd1994d0c39ec34",
+        )
+        historical = json.loads(archive.read_text())
+        self.assertEqual(historical["release_version"], "4.3.0")
+        self.assertEqual(historical["mode"], "fixed-release-baseline")
+
+        freshness = (root / ".github/workflows/pair-pin-freshness.yml").read_text()
+        self.assertIn("repository: ActiveInferenceInstitute/fep_formal", freshness)
+        self.assertNotIn("repository: ActiveInferenceInstitute/fep_lean", freshness)
+
+
 class RuntimeCustodyTests(unittest.TestCase):
     def setUp(self):
         self.root = Path(tempfile.mkdtemp(prefix="fep-runtime-control-"))

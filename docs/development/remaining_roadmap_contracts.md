@@ -161,6 +161,61 @@ Lean receipts or synchronize FEP_Formal, and they do not prove general extractio
 backend-wide equivalence, planning, causal discovery, coupled models or arbitrary
 GNN compositions. Broader E4 work remains open.
 
+### E4 replayable semantic evidence v2
+
+The additive `gnn witness` command and
+[`validation/semantic_witness.py`](../../src/gnn/validation/semantic_witness.py)
+make the restricted source contract above available outside the test suite.
+The source reader imports no production parser, extractor, renderer or backend.
+It independently sums finite latent paths or conditions joint Gaussian prefixes.
+The independent test oracle remains separate; FEP_Formal's audit uses forward
+Bayes and recursive Kalman/Joseph updates instead of those reference algorithms.
+This extends evidence delivery and replay, not the admitted model semantics.
+
+`gnn-semantic-witness-v2` retains exact UTF-8 source/result/program bytes and
+digests, the independently read source contract, reference quantities, native
+metadata, assumptions and per-quantity comparisons. Native outputs report their
+actual dtype, runtime parameters, seed, axis convention, prior-first timing and
+conditioning horizon. Missing declarations stay unavailable; contradictory
+declarations refuse admission. Ordered source labels remain a declared mapping
+of numeric axes; they are not manufactured native label provenance. Filtering
+and smoothing remain distinct; the native adapters here admit filtering only.
+
+Reference parameters must exactly match reported float64 runtime parameters.
+Admitted posterior comparisons retain absolute tolerance `1e-12` and relative
+tolerance `1e-10`, full covariance and explicit error diagnostics. A failed,
+refused or unavailable admission cannot acquire posterior agreement from matching
+arrays. Replay recomputes the complete receipt from retained raw artifacts,
+including its reference; a coherently edited saved reference/result cannot borrow
+an earlier passing verdict. `gnn witness --verify` additionally requires the
+replayed numerical outcome to pass before returning success. Output paths cannot
+alias source/result/program inputs.
+
+The byte digest of a supplied program does not authenticate its execution.
+`execution_source_verified` remains false and formal evidence remains unavailable
+in GNN receipts. FEP_Formal's separate `fep-semantic-witness-audit-v1` replays the
+source independently and records qualified theorem references, source digests,
+unmatched assumptions and live checkout identities. General multidimensional
+Gaussian filtering remains a structural analogue of the referenced scalar
+formalism. Source custody, a targeted Lean compilation and numerical agreement
+are separate observations; none establishes universal translation equivalence.
+Historical pins/native receipts are preserved until coordinated qualification.
+
+The companion's bounded `specs/gnn-semantic-witness-v1/semantic_laws.lean`
+adds finite-weight normalization/reconstruction/nonnegativity and scalar
+arbitrary-observation-gain measurement identities, Joseph/Schur covariance
+agreement and posterior-variance positivity. Its native verifier retains the
+positive compilation, axiom output and expected rejection of zero-normalizer
+and omitted-observation-noise claims. These algebraic laws do not prove the
+GNN parser, generated program, multidimensional filter or translation correct.
+The website presents their compiler receipt separately from numerical replay.
+
+Step 20 displays these records in the existing Analysis page with offline
+filters, explicit per-quantity outcomes and separate proof/execution/custody
+fields. The viewer labels saved receipts as unverified reported evidence; it
+does not rerun a numerical algorithm or compiler in the browser. E4 remains open
+for broader source grammars, model compositions, inference algorithms and proofs.
+
 ### E4-P1: authored planning admission
 
 The shared `render/planning_admission.py` guard refuses unsupported source

@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="generator" content="pandoc 3.11" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>04_artifacts_and_evidence.md.web</title>
   <style>
@@ -11,10 +11,7 @@
     */
     html {
       color: #1a1a1a;
-      color: light-dark(#1a1a1a, #fdfdfd);
       background-color: #fdfdfd;
-      background-color: light-dark(#fdfdfd, #1a1a1a);
-      color-scheme: light dark;
     }
     body {
       margin: 0 auto;
@@ -39,16 +36,11 @@
     }
     @media print {
       html {
-        color-scheme: light only;
+        background-color: white;
       }
-      html, body, pre, code {
+      body {
         background-color: transparent;
-      }
-      body, a, a:visited, blockquote {
         color: black;
-      }
-      pre, code {
-        padding: 0;
       }
       p, h2, h3 {
         orphans: 3;
@@ -61,8 +53,11 @@
     p {
       margin: 1em 0;
     }
-    a, a:visited {
-      color: inherit;
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
     }
     img {
       max-width: 100%;
@@ -91,11 +86,8 @@
     blockquote {
       margin: 1em 0 1em 1.7em;
       padding-left: 1em;
-      border-left: 2px solid;
-      border-color: #e6e6e6;
-      border-color: light-dark(#e6e6e6, #4c4c4c);
+      border-left: 2px solid #e6e6e6;
       color: #606060;
-      color: light-dark(#606060, #b6b6b6);
     }
     code {
       white-space: pre-wrap;
@@ -119,7 +111,7 @@
     }
     hr {
       border: none;
-      border-top: 1px solid currentColor;
+      border-top: 1px solid #1a1a1a;
       height: 1px;
       margin: 1em 0;
     }
@@ -136,11 +128,11 @@
     }
     tbody {
       margin-top: 0.5em;
-      border-top: 1px solid currentColor;
-      border-bottom: 1px solid currentColor;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
     }
     th {
-      border-top: 1px solid currentColor;
+      border-top: 1px solid #1a1a1a;
       padding: 0.25em 0.5em 0.25em 0.5em;
     }
     td {
@@ -251,7 +243,7 @@ mjx-container[display="true"] { max-width: 100%; overflow: visible; }
   outline: 3px solid var(--brand-1);
   outline-offset: 3px;
 }
-.table-scroll > table { margin-block: 0; min-width: 100%; width: max-content; }
+.table-scroll > table { margin-block: 0; display: table; min-width: 100%; width: 100%; }
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -412,8 +404,9 @@ table {
 
 .table-scroll > table {
   margin-block: 0;
+  display: table;
   min-width: 100%;
-  width: max-content;
+  width: 100%;
 }
 
 figure {
@@ -430,6 +423,15 @@ th, td {
 th {
   background-color: #1f6f8b;
   color: white;
+}
+
+/* Preserve a complete inline-code header within the table's scroll region. */
+th code {
+  color: inherit;
+  background-color: transparent;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 img {
@@ -581,7 +583,7 @@ mjx-container[display="true"] {
 <p>This section reports what the project has actually produced and how
 each quantitative claim is grounded. Every number below is substituted
 at render time from the deterministic producer, which reads the
-repository state at commit d8baec291, so each figure here is regenerated
+repository state at commit b2cb74eb7, so each figure here is regenerated
 from the artifacts it describes rather than transcribed.</p>
 <h2 id="model-family-coverage">Model-Family Coverage</h2>
 <p>GNN ships a curated corpus of model families that exercise the
@@ -726,7 +728,7 @@ declares; the grid is deliberately sparse — most families declare a
 single backend, and only continuous, discrete, and gridworld declare
 several. Read it as declared intent, not as profiled outcomes: the gates
 described below supply the outcomes. The matrix is generated from the
-two registries at commit d8baec291.</figcaption>
+two registries at commit b2cb74eb7.</figcaption>
 </figure>
 <p>These families are not illustrative prose: they are the inputs over
 which the parser, the type checker, and the cross-framework code
@@ -771,6 +773,28 @@ initial prediction, covariance or precision. These finite, source-bound
 comparisons do not establish universal extraction or backend
 equivalence, planning correctness or a new Lean proof; formal evidence
 remains separately scoped.</p>
+<p>The replayable <code>gnn-semantic-witness-v2</code> receipt retains
+the exact source, native result and generated-program bytes together
+with the independently reconstructed reference and per-quantity
+outcomes. The <code>gnn witness</code> interface rebuilds the entire
+receipt before accepting a passing numerical outcome; saved arrays or a
+prior verdict cannot replace this reconstruction. FEP_Formal
+independently replays the same restricted cases with forward Bayes and
+recursive Kalman/Joseph updates, using different algorithms from finite
+path enumeration and joint-Gaussian conditioning. Separate Lean checks
+establish finite-weight normalization and scalar measurement/covariance
+identities under their explicit assumptions. These scalar laws are a
+structural analogue of the multidimensional Gaussian fixture, not a
+proof of its parser, runner or complete translation. Numerical
+agreement, source custody, actual program execution and formal
+compilation remain separate evidence planes.</p>
+<p>The generated website exposes reported outcomes through offline
+status/text filters, posterior and covariance-variance traces, and
+residual views, with full tables and raw receipts available alongside
+them. Changing a display control does not rerun a numerical reference or
+a proof compiler. Missing or incompatible evidence remains unavailable
+or refused; an informative visualization cannot strengthen its
+underlying scientific claim.</p>
 <p>The cross-framework reliability gate,
 <code>scripts/run_cross_framework_reliability.py</code>, takes a single
 GNN model and renders it across multiple simulation backends, then
@@ -809,7 +833,7 @@ is what makes “interchange” a checkable claim rather than a promise.</p>
 <p>The repository’s scale is itself evidence of the surface that the
 gates and pipeline cover, and it is reported in <span class="citation"
 data-cites="fig:repo_metrics">@fig:repo_metrics</span> directly from the
-tracked files at commit d8baec291.</p>
+tracked files at commit b2cb74eb7.</p>
 <figure id="fig:repo_metrics">
 <a class="figure-full-size-link" href="../figures/gnn_repo_metrics.png" target="_blank" rel="noopener" aria-label="Open full-size figure, Repository-scale counts on a logarithmic axis: pipeline steps, model families, registered…"><img src="../figures/gnn_repo_metrics.png" style="width:80.0%"
 alt="Horizontal bar chart on a logarithmic axis of repository-scale counts: pipeline steps, model families, registered backends, render-target adapters, MCP tools, source packages, test files, example models and documentation files. Each bar is annotated with its exact value; all values come from output/data/manuscript_variables.json." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
@@ -818,7 +842,7 @@ axis: pipeline steps, model families, registered backends, render-target
 execution adapters, Model Context Protocol tools, source packages, test
 files, example models, and documentation files. Every bar is annotated
 with its exact value, and every value is a producer token read from
-<code>output/data/manuscript_variables.json</code> at commit d8baec291 —
+<code>output/data/manuscript_variables.json</code> at commit b2cb74eb7 —
 the same token map that substitutes the prose counts. The
 figure-freshness suite binds the committed image digest and its recorded
 producer inputs and counts; semantic content and visual correctness
@@ -830,9 +854,9 @@ execution-only Lean bridge and is not a count of observed native runs.
 Read the chart as the scale of the surface the pipeline maintains, not
 as a quality measure.</figcaption>
 </figure>
-<p>The test suite comprises 662 test files containing 6827 test
-functions, exercising a source base of 767 Python files across 44
-packages (226030 lines of source). The pipeline’s step modules — the
+<p>The test suite comprises 666 test files containing 6882 test
+functions, exercising a source base of 771 Python files across 44
+packages (229212 lines of source). The pipeline’s step modules — the
 thin orchestrators named in <span class="citation"
 data-cites="tbl:pipeline_steps">[@tbl:pipeline_steps]</span> — number
 25, one per numbered step. The Model Context Protocol surface — which

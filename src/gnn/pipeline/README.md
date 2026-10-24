@@ -160,7 +160,7 @@ Returns the standardized per-step output directory (e.g. `output/3_gnn_output/`)
 
 ### Pipeline Execution (`execution.py`)
 
-#### `run_pipeline(pipeline_data=None, *, target_dir=None, output_dir=None, steps=None, verbose=None, strict=None, parallel=None, consolidated_steps=None) -> dict`
+#### `run_pipeline(pipeline_data=None, *, target_dir=None, output_dir=None, steps=None, verbose=None, strict=None, parallel=None, consolidated_steps=None, file_workers=None, step_workers=None) -> dict`
 Executes the pipeline through `main.py` and returns a compact summary dict
 (`success`, `steps_executed`, `errors`, `exit_code`, `duration`, ...).
 Explicit keyword flags override `pipeline_data`, including `False`; omitted
@@ -334,7 +334,7 @@ classes in this module.
 
 ## Performance Optimization
 
-- **Parallel Execution**: `execution_workers` controls script-level parallelism in Step 12; `PipelineConfig.parallel` covers orchestration
+- **Parallel Execution**: `file_workers` (default 1) bounds spawned CPU file jobs in Steps 3/5; `step_workers` (default automatic) bounds concurrent tiers under `--parallel`, retaining memory throttling and the eight-step ceiling. `execution_workers` separately controls script-level parallelism in Step 12. Worker counts are concurrency limits, not CPU affinity or quotas.
 - **Incremental Processing**: matrix routing runs per-folder step lists from `input/config.yaml`
 
 ## Testing and Validation

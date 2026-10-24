@@ -47,10 +47,17 @@ from gnn.utils.pipeline_orchestration.pipeline_template import (
 
 
 def _type_check_dispatch(
-    target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs: Any
+    target_dir: Path,
+    output_dir: Path,
+    logger: logging.Logger,
+    *,
+    cancel_token: Any = None,
+    **kwargs: Any,
 ) -> bool | int:
     """Dispatch to GNNTypeChecker."""
-    return GNNTypeChecker().validate_gnn_files(target_dir, output_dir, **kwargs)
+    return GNNTypeChecker().validate_gnn_files(
+        target_dir, output_dir, cancel_token=cancel_token, **kwargs
+    )
 
 
 run_script = create_standardized_pipeline_script(

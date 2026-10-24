@@ -149,6 +149,8 @@ if FASTAPI_AVAILABLE:
                     "steps": request.steps,
                     "parallel": request.parallel,
                     "consolidated_steps": request.consolidated_steps,
+                    "file_workers": request.file_workers,
+                    "step_workers": request.step_workers,
                     "output_dir": str(output_path),
                 },
             )
@@ -165,6 +167,8 @@ if FASTAPI_AVAILABLE:
                     status=runs[run_hash]["status"],
                     started_at=runs[run_hash].get("started_at"),
                     current_step=runs[run_hash].get("current_step"),
+                    file_workers=request.file_workers,
+                    step_workers=request.step_workers,
                 )
                 return success_envelope(
                     response.model_dump(mode="json"),
@@ -198,7 +202,11 @@ if FASTAPI_AVAILABLE:
                 _execute_pipeline, run_hash, normalized_request, runs
             )
             response = RunStatus(
-                run_hash=run_hash, status="queued", started_at=run_entry["started_at"]
+                run_hash=run_hash,
+                status="queued",
+                started_at=run_entry["started_at"],
+                file_workers=request.file_workers,
+                step_workers=request.step_workers,
             )
             return success_envelope(
                 response.model_dump(mode="json"),
@@ -221,6 +229,8 @@ if FASTAPI_AVAILABLE:
                 steps_completed=entry.get("steps_completed", 0),
                 total_steps=entry.get("total_steps", PIPELINE_STEP_COUNT),
                 errors=entry.get("errors", []),
+                file_workers=entry.get("request", {}).get("file_workers", 1),
+                step_workers=entry.get("request", {}).get("step_workers"),
                 process_cleanup=entry.get("process_cleanup"),
             )
             return success_envelope(
@@ -440,6 +450,8 @@ if FASTAPI_AVAILABLE:
                 strict=request.strict,
                 parallel=request.parallel,
                 consolidated_steps=request.consolidated_steps,
+                file_workers=request.file_workers,
+                step_workers=request.step_workers,
             )
             invocation_id = uuid.uuid4().hex
             entry["run_id"] = invocation_id

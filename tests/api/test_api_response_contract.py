@@ -83,6 +83,37 @@ def test_tool_endpoint_rejects_silently_ignored_kwargs() -> None:
     assert "not supported" in str(envelope["error"]["details"])
 
 
+@pytest.mark.parametrize("route", ["/api/v1/process", "/api/v1/tools/3"])
+def test_job_routes_retain_worker_limits_and_reject_invalid_values(
+    route: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    async def queued_without_execution(job_id: str) -> None:
+        return None
+
+    monkeypatch.setattr(job_mgr, "execute_job_async", queued_without_execution)
+    client = TestClient(job_app)
+    before = set(job_mgr._JOBS)
+    invalid = client.post(route, json={"target_dir": ".", "file_workers": True})
+    assert invalid.status_code == 422
+    assert set(job_mgr._JOBS) == before
+    response = client.post(
+        route,
+        json={"target_dir": ".", "file_workers": 4, "step_workers": 2},
+    )
+    assert response.status_code == 200
+    data = _assert_envelope(response.json(), status="success")["data"]
+    job_id = data["job_id"]
+    try:
+        assert data["file_workers"] == 4 and data["step_workers"] == 2
+        job = job_mgr.get_job(job_id)
+        assert job is not None
+        assert job["file_workers"] == 4 and job["step_workers"] == 2
+        polled = client.get(f"/api/v1/jobs/{job_id}").json()["data"]
+        assert polled["file_workers"] == 4 and polled["step_workers"] == 2
+    finally:
+        job_mgr._JOBS.pop(job_id, None)
+
+
 def test_processor_rejects_invalid_steps_before_registering_job() -> None:
     before = set(job_mgr._JOBS)
     with pytest.raises(ValueError, match="between 0 and 24"):

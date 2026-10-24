@@ -34,7 +34,7 @@ from gnn.api.process_supervision import (
     request_process_stop,
     supervise_api_process,
 )
-from gnn.pipeline.admission import validate_boolean
+from gnn.pipeline.admission import validate_boolean, validate_worker_count
 from gnn.pipeline.step_registry import STEPS
 from gnn.utils.runtime_safety.filesystem import directory_handle, is_redirect
 
@@ -76,6 +76,8 @@ def create_job(
     strict: bool = False,
     parallel: bool = False,
     consolidated_steps: bool = False,
+    file_workers: int = 1,
+    step_workers: int | None = None,
 ) -> str:
     """
     Create a new pipeline job and return its ID.
@@ -87,6 +89,8 @@ def create_job(
         skip_steps: Steps to skip
         verbose: Enable verbose output
         strict: Treat warnings as errors
+        file_workers: Requested Steps 3/5 worker limit, one by default
+        step_workers: Requested concurrent tier limit, None for automatic
 
     Returns:
         Unique job ID string
@@ -97,6 +101,8 @@ def create_job(
     validate_boolean(strict, field_name="strict")
     validate_boolean(parallel, field_name="parallel")
     validate_boolean(consolidated_steps, field_name="consolidated_steps")
+    validate_worker_count(file_workers, field_name="file_workers")
+    validate_worker_count(step_workers, field_name="step_workers", allow_none=True)
     overlap = set(steps or ()) & set(skip_steps or ())
     if overlap:
         raise ValueError(f"steps and skip_steps must not overlap: {sorted(overlap)}")
@@ -117,6 +123,8 @@ def create_job(
         "strict": strict,
         "parallel": parallel,
         "consolidated_steps": consolidated_steps,
+        "file_workers": file_workers,
+        "step_workers": step_workers,
         "progress_step": None,
         "steps_completed": [],
         "steps_failed": [],
@@ -354,6 +362,8 @@ async def execute_job_async(job_id: str) -> None:
             strict=job.get("strict", False),
             parallel=job.get("parallel", False),
             consolidated_steps=job.get("consolidated_steps", False),
+            file_workers=job.get("file_workers", 1),
+            step_workers=job.get("step_workers"),
         )
         invocation_start_ns = time.time_ns()
         proc = await asyncio.create_subprocess_exec(

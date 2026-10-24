@@ -212,6 +212,21 @@ def run_simulation():
         "controls_finite": bool(np.all(np.isfinite(np.asarray(controls)))),
     }
     results = {
+        "schema_version": "gnn_lgssm_filter_v1",
+        "inference_contract": "gnn_lgssm_filter_v1",
+        "inference_mode": "gaussian_filtering",
+        "dtype": str(F.dtype).split(".")[-1],
+        "initial_time": "first_observation_uses_prior",
+        "conditioning_horizon": list(range(1, T + 1)),
+        "random_seed": RANDOM_SEED,
+        "axes": {"F": ["next_state", "previous_state"], "H": ["observation", "state"]},
+        "belief_axes": ["timestep", "state"],
+        "covariance_axes": ["timestep", "state_row", "state_column"],
+        "parameters": {"F": to_list(F), "H": to_list(H), "Q": to_list(Q), "R": to_list(R),
+                       "prior_mean": to_list(prior_mean), "prior_cov": to_list(prior_cov)},
+        "generated_script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "python_version": sys.version,
+        "numpy_version": np.__version__,
         "model_name": MODEL_NAME,
         "framework": FRAMEWORK,
         "model_kind": "continuous",
@@ -415,6 +430,7 @@ Generative model:
 Control: {control_desc}
 Inference: online Kalman filter (Joseph-form covariance update).
 """
+import hashlib
 import json
 import os
 import sys

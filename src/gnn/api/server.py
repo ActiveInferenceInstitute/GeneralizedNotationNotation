@@ -135,6 +135,8 @@ def create_app() -> FastAPI:
                 strict=request.strict,
                 parallel=request.parallel,
                 consolidated_steps=request.consolidated_steps,
+                file_workers=request.file_workers,
+                step_workers=request.step_workers,
             )
         except ValueError as err:
             raise HTTPException(status_code=400, detail=str(err)) from err
@@ -152,6 +154,8 @@ def create_app() -> FastAPI:
             status=JobStatus.PENDING,
             created_at=datetime.fromisoformat(job["created_at"]),
             steps_requested=request.steps,
+            file_workers=job["file_workers"],
+            step_workers=job["step_workers"],
             message=f"Job {job_id} queued. Poll GET /api/v1/jobs/{job_id} for status.",
         )
         return success_envelope(
@@ -181,6 +185,8 @@ def create_app() -> FastAPI:
             exit_code=job.get("exit_code"),
             error_message=job.get("error_message"),
             output_dir=job.get("output_dir"),
+            file_workers=job.get("file_workers", 1),
+            step_workers=job.get("step_workers"),
             process_cleanup=job.get("process_cleanup"),
         )
         return success_envelope(
@@ -256,6 +262,8 @@ def create_app() -> FastAPI:
                 output_dir=str(output_path),
                 steps=[step],
                 verbose=request.verbose,
+                file_workers=request.file_workers,
+                step_workers=request.step_workers,
             )
         except ValueError as err:
             raise HTTPException(status_code=400, detail=str(err)) from err
@@ -273,6 +281,8 @@ def create_app() -> FastAPI:
             status=JobStatus.PENDING,
             created_at=datetime.fromisoformat(job["created_at"]),
             steps_requested=[step],
+            file_workers=job["file_workers"],
+            step_workers=job["step_workers"],
             message=f"Step {step} ({step_name}) queued as job {job_id}",
         )
         return success_envelope(

@@ -8,14 +8,15 @@ for GNN specifications. This keeps the numbered step script thin.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 from datetime import datetime
+from functools import partial
 from pathlib import Path
 from typing import Any, Dict, List, Sequence, Tuple, cast
 
 from gnn.parsers.common import get_extension_for_format, get_supported_gnn_extensions
-from gnn.processing.discovery import is_model_source_path
 from gnn.utils import log_step_error, log_step_start, log_step_success
 
 
@@ -37,12 +38,125 @@ def _formats_for_serialize_preset(
     return list(supported_formats), label
 
 
+_PARSER_WORKER_SYSTEM: Any = None
+
+
+def _parse_file_job(
+    job: tuple[Path, list[Any], str | None], *, system: Any = None
+) -> dict[str, Any]:
+    """Parse and serialize one input without writing pipeline artifacts."""
+    from gnn.parsers import GNNParsingSystem
+
+    path, formats, expected_hash = job
+    record: dict[str, Any] = {"file_name": path.name, "file_path": str(path)}
+    try:
+        if (
+            expected_hash
+            and hashlib.sha256(path.read_bytes()).hexdigest() != expected_hash
+        ):
+            raise ValueError("Model source changed after run planning")
+        if system is None:
+            global _PARSER_WORKER_SYSTEM
+            if _PARSER_WORKER_SYSTEM is None:
+                _PARSER_WORKER_SYSTEM = GNNParsingSystem(strict_validation=True)
+            system = _PARSER_WORKER_SYSTEM
+        parsed = system.parse_file(path)
+        record.update(
+            parse_success=parsed.success, errors=parsed.errors, warnings=parsed.warnings
+        )
+        if not parsed.success:
+            return record
+        model = parsed.model
+        record.update(
+            source_format=model.source_format.value if model.source_format else None,
+            model_info={
+                "name": model.model_name,
+                "version": model.version,
+                "variables_count": len(model.variables),
+                "connections_count": len(model.connections),
+                "parameters_count": len(model.parameters),
+                "equations_count": len(model.equations),
+            },
+            generated_formats={},
+            _parsed_payload=model.to_dict(),
+            _serialized={},
+        )
+        for format_enum in formats:
+            try:
+                record["_serialized"][format_enum.value] = system.serialize(
+                    model, format_enum
+                )
+                record["generated_formats"][format_enum.value] = {"success": True}
+            except Exception as exc:
+                record["generated_formats"][format_enum.value] = {
+                    "success": False,
+                    "error": str(exc),
+                }
+        if (
+            expected_hash
+            and hashlib.sha256(path.read_bytes()).hexdigest() != expected_hash
+        ):
+            raise ValueError("Model source changed during parsing")
+        return record
+    except Exception as exc:
+        return {
+            "file_name": path.name,
+            "file_path": str(path),
+            "parse_success": False,
+            "error": str(exc),
+        }
+
+
+def _publish_parse_result(
+    record: dict[str, Any],
+    output: Path,
+    formats: list[Any],
+    provenance: dict[str, str],
+    deadline: float | None,
+    cancel_token: Any,
+) -> int:
+    """Publish one computed result in the parent, retaining per-format failures."""
+    from gnn.utils.file_workers import check_file_work
+
+    path = Path(record["file_path"])
+    destination = output / path.stem
+    check_file_work(deadline, cancel_token)
+    destination.mkdir(exist_ok=True)
+    parsed_file = destination / f"{path.stem}_parsed.json"
+    payload = record.pop("_parsed_payload")
+    if provenance:
+        payload["_gnn_provenance"] = dict(provenance)
+    parsed_file.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
+    record["parsed_model_file"] = str(parsed_file)
+    serialized = record.pop("_serialized")
+    generated = 0
+    for format_enum in formats:
+        check_file_work(deadline, cancel_token)
+        out_file = (
+            destination
+            / f"{path.stem}_{format_enum.value}{get_extension_for_format(format_enum)}"
+        )
+        info = record["generated_formats"][format_enum.value]
+        info["output_file"] = str(out_file)
+        if info["success"]:
+            try:
+                out_file.write_text(serialized[format_enum.value], encoding="utf-8")
+                info["file_size"] = out_file.stat().st_size
+                generated += 1
+            except TimeoutError:
+                raise
+            except (OSError, TypeError, ValueError) as exc:
+                info.update(success=False, error=str(exc))
+    return generated
+
+
 def process_gnn_multi_format(
     target_dir: Path,
     output_dir: Path,
     logger: logging.Logger,
     recursive: bool = True,
     verbose: bool = False,
+    cancel_token: Any = None,
     **kwargs: Any,
 ) -> bool:
     """Discover, parse, and serialize GNN models to all supported formats.
@@ -93,17 +207,30 @@ def process_gnn_multi_format(
         )
         logger.info(f"Available serializers: {list(available_serializers.keys())}")
 
-        # Discover GNN files
+        # A run projects its frozen model selection; standalone calls discover normally.
+        from gnn.pipeline.run_context import (
+            current_run_context,
+            selected_model_sources,
+        )
+        from gnn.utils.file_workers import (
+            check_file_work,
+            ordered_file_map,
+            resolve_file_workers,
+        )
+
+        run_context = current_run_context()
+        requested_workers, executor_mode = resolve_file_workers(
+            kwargs.get("file_workers"), "process"
+        )
+        deadline = run_context.deadline_monotonic if run_context else None
+        check_file_work(deadline, cancel_token)
         target_path = Path(target_dir)
-        gnn_files: List[Path] = []
-        extensions = get_supported_gnn_extensions()
-        if recursive:
-            for ext in extensions:
-                gnn_files.extend(target_path.rglob(f"*{ext}"))
-        else:
-            for ext in extensions:
-                gnn_files.extend(target_path.glob(f"*{ext}"))
-        gnn_files = [path for path in gnn_files if is_model_source_path(path)]
+        gnn_files = selected_model_sources(
+            target_path,
+            3,
+            recursive=recursive,
+            extensions=get_supported_gnn_extensions(),
+        )
 
         logger.info(f"Found {len(gnn_files)} potential GNN files")
 
@@ -134,155 +261,97 @@ def process_gnn_multi_format(
                 "formats_per_file": {},
             },
         }
-        from gnn.pipeline.run_context import current_run_context
-
-        run_context = current_run_context()
         if run_context is not None:
             processing_results["run_id"] = run_context.run_id
             processing_results["model_selection"] = [
                 m.__dict__ for m in run_context.selected_models(3)
             ]
 
-        for file_path in gnn_files:
-            try:
-                logger.info(f"Processing: {file_path}")
-                parse_result = parsing_system.parse_file(file_path)
-
-                if not parse_result.success:
-                    logger.warning(
-                        f"Failed to parse {file_path}: {parse_result.errors}"
-                    )
-                    processing_results["processed_files"].append(
-                        {
-                            "file_name": file_path.name,
-                            "file_path": str(file_path),
-                            "parse_success": False,
-                            "errors": parse_result.errors,
-                            "warnings": parse_result.warnings,
-                        }
-                    )
-                    processing_results["summary"]["failed_parses"] += 1
-                    continue
-
-                # File-specific output directory
-                file_output_dir = step_output_dir / file_path.stem
-                file_output_dir.mkdir(exist_ok=True)
-
-                # Save parsed model JSON
-                parsed_model_file = file_output_dir / f"{file_path.stem}_parsed.json"
-                parsed_payload = parse_result.model.to_dict()
-                if run_context is not None:
-                    from gnn.pipeline.run_context import model_provenance
-
-                    parsed_payload["_gnn_provenance"] = model_provenance(file_path, 3)
-                with open(parsed_model_file, "w", encoding="utf-8") as f:
-                    json.dump(parsed_payload, f, indent=2, default=str)
-
-                file_result: Dict[str, Any] = {
-                    "file_name": file_path.name,
-                    "file_path": str(file_path),
-                    "parse_success": True,
-                    "parsed_model_file": str(parsed_model_file),
-                    "source_format": (
-                        parse_result.model.source_format.value
-                        if parse_result.model.source_format
-                        else None
-                    ),
-                    "model_info": {
-                        "name": parse_result.model.model_name,
-                        "version": parse_result.model.version,
-                        "variables_count": len(parse_result.model.variables),
-                        "connections_count": len(parse_result.model.connections),
-                        "parameters_count": len(parse_result.model.parameters),
-                        "equations_count": len(parse_result.model.equations),
-                    },
-                    "generated_formats": {},
-                    "errors": parse_result.errors,
-                    "warnings": parse_result.warnings,
+        provenance_by_stem = (
+            {
+                model.artifact_stem: {
+                    "model_id": model.model_id,
+                    "source_path": model.source_path,
+                    "source_relative_path": model.relative_path,
+                    "source_sha256": model.sha256,
                 }
-                if run_context is not None:
-                    reference = next(
-                        m
-                        for m in run_context.selected_models(3)
-                        if m.artifact_stem == file_path.stem
+                for model in run_context.selected_models(3)
+            }
+            if run_context
+            else {}
+        )
+        worker_metadata: dict[str, Any] = {
+            "requested_workers": requested_workers,
+            "effective_workers": min(requested_workers, len(gnn_files)),
+        }
+        processing_results["worker_execution"] = worker_metadata
+        jobs = (
+            (
+                path,
+                formats_to_emit,
+                provenance_by_stem.get(path.stem, {}).get("source_sha256"),
+            )
+            for path in gnn_files
+        )
+        compute = (
+            _parse_file_job
+            if worker_metadata["effective_workers"] > 1
+            else partial(_parse_file_job, system=parsing_system)
+        )
+        for file_result in ordered_file_map(
+            compute,
+            jobs,
+            workers=min(requested_workers, len(gnn_files)),
+            executor=executor_mode,
+            deadline=deadline,
+            cancel_token=cancel_token,
+            metadata=worker_metadata,
+        ):
+            check_file_work(deadline, cancel_token)
+            file_path = Path(file_result["file_path"])
+            if file_result["parse_success"]:
+                try:
+                    formats_generated = _publish_parse_result(
+                        file_result,
+                        step_output_dir,
+                        formats_to_emit,
+                        provenance_by_stem.get(file_path.stem, {}),
+                        deadline,
+                        cancel_token,
                     )
-                    file_result.update(
-                        model_id=reference.model_id,
-                        source_path=reference.source_path,
-                        source_relative_path=reference.relative_path,
-                        source_sha256=reference.sha256,
-                    )
-
-                formats_generated = 0
-
-                for format_enum in formats_to_emit:
-                    ext = get_extension_for_format(format_enum)
-                    try:
-                        out_file = (
-                            file_output_dir
-                            / f"{file_path.stem}_{format_enum.value}{ext}"
-                        )
-                        serialized = parsing_system.serialize(
-                            parse_result.model, format_enum
-                        )
-                        with open(out_file, "w", encoding="utf-8") as f:
-                            f.write(serialized)
-
-                        file_result["generated_formats"][format_enum.value] = {
-                            "output_file": str(out_file),
-                            "file_size": out_file.stat().st_size,
-                            "success": True,
-                        }
-                        formats_generated += 1
-
-                        if verbose:
-                            logger.info(
-                                f"  Generated {format_enum.value}: {out_file.stat().st_size} bytes"
-                            )
-                    except Exception as gen_err:  # Continue on per-format failure
-                        logger.warning(
-                            f"  Failed to generate {format_enum.value}: {gen_err}"
-                        )
-                        file_result["generated_formats"][format_enum.value] = {
-                            "output_file": str(
-                                file_output_dir
-                                / f"{file_path.stem}_{format_enum.value}{ext}"
-                            ),
-                            "error": str(gen_err),
-                            "success": False,
-                        }
-
-                processing_results["summary"]["formats_per_file"][file_path.name] = (
-                    formats_generated
-                )
-                processing_results["summary"]["total_formats_generated"] += (
-                    formats_generated
-                )
-                logger.info(
-                    f"Generated {formats_generated} formats for {file_path.name}"
-                )
-
-                processing_results["processed_files"].append(file_result)
-                processing_results["summary"]["successful_parses"] += 1
-            except Exception as e:
-                logger.error(f"Error processing {file_path}: {e}")
-                processing_results["processed_files"].append(
-                    {
+                except TimeoutError:
+                    raise
+                except (OSError, TypeError, ValueError) as exc:
+                    file_result = {
                         "file_name": file_path.name,
                         "file_path": str(file_path),
                         "parse_success": False,
-                        "error": str(e),
+                        "error": str(exc),
                     }
-                )
+                else:
+                    processing_results["summary"]["formats_per_file"][
+                        file_path.name
+                    ] = formats_generated
+                    processing_results["summary"]["total_formats_generated"] += (
+                        formats_generated
+                    )
+                    processing_results["summary"]["successful_parses"] += 1
+                    logger.info(
+                        "Generated %s formats for %s", formats_generated, file_path.name
+                    )
+            if not file_result["parse_success"]:
                 processing_results["summary"]["failed_parses"] += 1
+                logger.warning(
+                    "Failed to process %s: %s",
+                    file_path,
+                    file_result.get("errors", file_result.get("error")),
+                )
+            file_result.update(provenance_by_stem.get(file_path.stem, {}))
+            processing_results["processed_files"].append(file_result)
 
+        check_file_work(deadline, cancel_token)
         processing_results["summary"]["total_files"] = len(gnn_files)
-        if run_context is not None:
-            from gnn.pipeline.run_context import model_provenance
-
-            for record in processing_results["processed_files"]:
-                record.update(model_provenance(Path(record["file_path"]), 3))
-
+        check_file_work(deadline, cancel_token)
         # Save artifacts
         results_file = step_output_dir / "gnn_processing_results.json"
         with open(results_file, "w", encoding="utf-8") as f:

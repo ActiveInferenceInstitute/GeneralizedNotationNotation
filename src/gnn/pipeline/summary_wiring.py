@@ -399,6 +399,12 @@ def _consolidated_step_selected(
     (not in the consolidated whitelist, or testing-matrix folder dispatch is
     active), the canonical subprocess path runs unchanged.
     """
+    if getattr(args, "file_workers", 1) > 1 and script_name in {
+        "3_gnn.py",
+        "5_type_checker.py",
+    }:
+        # The step supervisor must retain a killable boundary around its pool.
+        return False
     if os.environ.get("GNN_RUN_CONTEXT_FILE"):
         # Threads cannot enforce filesystem quiescence at a hard step deadline.
         # Budgeted top-level invocations keep a killable process boundary.

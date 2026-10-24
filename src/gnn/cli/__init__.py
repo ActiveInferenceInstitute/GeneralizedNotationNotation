@@ -47,6 +47,7 @@ from gnn.cli.handlers_ops import (
     _cmd_preflight,
     _cmd_report,
     _cmd_reproduce,
+    _cmd_witness,
 )
 from gnn.cli.handlers_pipeline import (
     _cmd_extract,
@@ -118,6 +119,7 @@ COMMAND_HANDLERS: Final[dict[str, str]] = {
     "mcp": "_cmd_mcp",
     "benchmark": "_cmd_benchmark",
     "complexity": "_cmd_complexity",
+    "witness": "_cmd_witness",
 }
 
 

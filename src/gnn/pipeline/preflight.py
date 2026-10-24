@@ -177,6 +177,23 @@ def validate_config(config_path: Optional[Path] = None) -> PreflightReport:
     # exact integers in 0..24). Catching a bad list here — before a container
     # plan or a pipeline run consumes it — is the whole point of preflight.
     pipeline_section = config.get("pipeline")
+    if isinstance(pipeline_section, dict):
+        from gnn.pipeline.admission import validate_worker_count
+
+        for name in ("file_workers", "step_workers"):
+            if name in pipeline_section:
+                try:
+                    validate_worker_count(
+                        pipeline_section[name],
+                        field_name=name,
+                        allow_none=name == "step_workers",
+                    )
+                except ValueError as exc:
+                    report.add_issue(
+                        "config", "error", f"Invalid pipeline.{name}: {exc}"
+                    )
+                else:
+                    report.add_pass(f"pipeline.{name}: {pipeline_section[name]}")
     if isinstance(pipeline_section, dict) and "skip_steps" in pipeline_section:
         from gnn.pipeline.pipeline_container_plan import read_skip_steps
 

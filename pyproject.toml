@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "generalized-notation-notation"
-version = "4.3.0"
+version = "5.0.0"
 description = "A text-based language for standardizing Active Inference generative models"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -20,9 +20,9 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
-    # Python 3.14 wheel/native acceptance has a separate installed-platforms
-    # lane; the full source-suite matrix remains 3.11-3.13. Platform support
-    # is conditional on that exact release lane passing.
+    # Ordinary source tests cover Python 3.11-3.14; comprehensive native
+    # coverage retains 3.11-3.13. Wheel/platform support separately requires
+    # the exact installed-platform release lane to pass.
     "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Scientific/Engineering :: Information Analysis",

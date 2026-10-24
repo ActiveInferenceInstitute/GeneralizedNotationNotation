@@ -77,11 +77,13 @@ Its export record stores this repository's revision, the interpreter and
 GEO-INFER's `examples/cascadia/cascadia_study.py` exports a separate exact
 source and artifact for each of `reference`, `uniform_habit` and
 `uninformative_odor`, then replays a declared process-seed grid. Run it in the
-GEO-INFER environment with this checkout's interpreter supplied explicitly:
+GEO-INFER environment with this checkout's interpreter supplied explicitly.
+Install the two environments with their [separate required uv versions](../../development/geo_infer_2026_09.md#independent-uv-toolchains)
+first, then invoke the installed GEO interpreter directly:
 
 ```bash
 cd ../GEO_INFER
-uv run python GEO-INFER-ACT/examples/cascadia/cascadia_study.py \
+.venv/bin/python GEO-INFER-ACT/examples/cascadia/cascadia_study.py \
   --gnn-repo ../Generalized_Notation_Notation \
   --gnn-python ../Generalized_Notation_Notation/.venv/bin/python \
   --output GEO-INFER-ACT/examples/outputs/cascadia_seed_study_new

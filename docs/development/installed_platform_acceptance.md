@@ -5,7 +5,8 @@ accepts an ordinary wheel outside the source checkout. Its candidate matrix is
 Linux/Python 3.11, 3.12 and 3.14, macOS/Python 3.14, and Windows/Python 3.14.
 A supported release must have successful native receipts for its exact source;
 a resolvable wheel plan or classifier alone does not establish support.
-The full source test suite remains a separate Python 3.11–3.13 matrix.
+The ordinary source test suite has a separate Python 3.11–3.14 matrix;
+comprehensive native coverage retains its Python 3.11–3.13 matrix.
 
 ## Version 4.1.0 installed evidence
 

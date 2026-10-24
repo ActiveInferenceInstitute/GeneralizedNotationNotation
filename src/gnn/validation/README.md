@@ -2,6 +2,38 @@
 
 This module provides comprehensive validation capabilities for GNN models, including consistency checking, semantic validation, and quality assessment.
 
+## Source-bound numerical witnesses
+
+`semantic_witness.py` builds and replays `gnn-semantic-witness-v2` records.
+The CLI bounds source inputs to 1 MiB, result/program artifacts to 16 MiB each,
+and serialized receipts to 96 MiB before writing or printing their contents.
+Verification applies the same receipt limit. JSON escaping and receipt metadata
+count toward that limit, so individually admitted artifacts can still exceed the
+combined receipt budget and receive an explicit refusal.
+`witness_source.py` independently reads the explicitly declared restricted
+source subset and implements bounded finite path enumeration and joint-Gaussian
+conditioning. It imports no GNN extractor or renderer. The
+[E4 contract](../../../docs/development/remaining_roadmap_contracts.md#e4-replayable-semantic-evidence-v2)
+owns admitted models, bounds, tolerances and evidence limits.
+
+```bash
+gnn witness model.md --results simulation_results.json --program model.py --output witness.json --json
+gnn witness --verify witness.json --json
+```
+
+The source needs the versioned `NumericalWitness` declaration; ordinary GNN
+models without it refuse this narrow operation. Source labels are conditional
+axis names, not authenticated native labels. Missing or conflicting native
+metadata prevents agreement. Whole-receipt replay recomputes references from raw
+bytes and preserves failed, refused and unavailable outcomes. A replay-valid
+failed record is still unsuccessful for CLI acceptance. Neither file hashes nor
+matching posterior arrays authenticate execution or establish a Lean proof.
+
+For standalone Step 20 browsing, put records under
+`output/16_analysis_output/semantic_witnesses/`. An active run additionally
+requires its owned artifact inventory and selected source identities; directory
+presence alone cannot supply current evidence.
+
 ## Module Structure
 
 ```

@@ -70,3 +70,14 @@ def validate_boolean(value: Any, *, field_name: str) -> bool:
     if not isinstance(value, bool):
         raise ValueError(f"{field_name} must be a boolean")
     return value
+
+
+def validate_worker_count(
+    value: Any, *, field_name: str, allow_none: bool = False
+) -> int | None:
+    """Admit a bounded worker limit without numeric or Boolean coercion."""
+    if value is None and allow_none:
+        return None
+    if type(value) is not int or not 1 <= value <= 256:
+        raise ValueError(f"{field_name} must be an integer between 1 and 256")
+    return value

@@ -15,10 +15,12 @@ from __future__ import annotations
 
 import html
 import logging
+import os
 import time
 from collections.abc import Iterable, Mapping, Sequence
 from pathlib import Path
 from typing import Any, TypedDict
+from urllib.parse import quote
 
 from gnn.pipeline.step_registry import STEPS, StepInfo
 
@@ -67,20 +69,30 @@ _SECTION_PATTERNS: dict[str, tuple[str, ...]] = {
     "6_validation": ("*.json",),
     "7_export": ("*.json", "*.xml", "*.pkl"),
     "8_visualization": ("*.png", "*.svg", "*.csv", "*.json"),
-    "9_advanced_viz": ("*.png", "*.json"),
+    "9_advanced_viz": ("*.png", "*.svg", "*.json", "*.html", "*.csv"),
     "10_ontology": ("*.json",),
-    "11_render": ("*.py", "*.jl", "*.md", "*.json", "*.png"),
-    "12_execute": ("*.txt", "*.json", "*.md", "*.png"),
+    "11_render": ("*.py", "*.jl", "*.stan", "*.md", "*.json", "*.png"),
+    "12_execute": ("*.txt", "*.json", "*.md", "*.png", "*.svg", "*.html", "*.csv"),
     "13_llm": ("*.md", "*.json"),
     "14_ml_integration": ("*.json",),
-    "15_audio": ("*.json", "*.wav"),
-    "16_analysis": ("*.json",),
+    "15_audio": (
+        "*.json",
+        "*.wav",
+        "*.aiff",
+        "*.mp3",
+        "*.ogg",
+        "*.flac",
+        "*.png",
+        "*.sc",
+        "*.scd",
+    ),
+    "16_analysis": ("*.json", "*.md", "*.html", "*.csv", "*.png", "*.svg"),
     "17_integration": ("*.json",),
     "18_security": ("*.json",),
     "19_research": ("*.json",),
     "20_website": ("*.html", "*.json"),
     "21_mcp": ("*.json",),
-    "22_gui": ("*.md", "*.json"),
+    "22_gui": ("*.md", "*.json", "*.mmd"),
     "23_report": ("*.html", "*.md", "*.json"),
     "24_intelligent_analysis": ("*.json", "*.md", "*.html"),
 }
@@ -381,11 +393,13 @@ def generate_html_navigation(
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # Collect output information
-        output_sections, total_files = collect_pipeline_outputs(pipeline_output_dir)
+        output_sections, total_files = collect_pipeline_outputs(
+            pipeline_output_dir, max_files_per_section=None
+        )
 
         # Generate HTML content
         html_content = _build_navigation_html(
-            output_sections, total_files, pipeline_output_dir
+            output_sections, total_files, pipeline_output_dir, output_dir
         )
 
         # Write HTML file
@@ -404,15 +418,27 @@ def generate_html_navigation(
 
 
 def collect_pipeline_outputs(
-    pipeline_output_dir: Path, max_files_per_section: int = MAX_FILES_PER_SECTION
+    pipeline_output_dir: Path,
+    max_files_per_section: int | None = MAX_FILES_PER_SECTION,
 ) -> tuple[list[dict[str, Any]], int]:
     """Discover pipeline artifacts grouped by step output directory.
 
     Returns ``(sections, total_files)`` where each section is
     ``{step_name, step_dir, file_count, files}``. ``file_count`` reports every
-    discovered file while ``files`` is capped at ``max_files_per_section``.
-    Step directories that do not exist are skipped.
+    discovered file while ``files`` is capped at ``max_files_per_section``
+    (``None`` returns all files). An active run admits only indexed artifacts
+    belonging to the GUI's selected models. Standalone use is a filesystem census.
     """
+    from gnn.pipeline.artifact_ownership import current_artifact_files
+    from gnn.pipeline.run_context import current_run_context
+
+    pipeline_output_dir = pipeline_output_dir.resolve()
+    context = current_run_context()
+    selected = (
+        {model.model_id for model in context.selected_models(22)}
+        if context is not None
+        else set()
+    )
     sections: list[dict[str, Any]] = []
     total_files = 0
 
@@ -423,10 +449,21 @@ def collect_pipeline_outputs(
 
         step_files: list[dict[str, Any]] = []
         for pattern in patterns:
-            for file_path in step_path.rglob(pattern):
+            for file_path in current_artifact_files(step_path, pattern):
+                if context is not None:
+                    context.raise_if_expired()
+                    owners = [
+                        model
+                        for model in context.models
+                        if model.artifact_stem in file_path.parts
+                        or file_path.stem == model.artifact_stem
+                        or file_path.stem.startswith(model.artifact_stem + "_")
+                    ]
+                    if any(model.model_id not in selected for model in owners):
+                        continue
                 if file_path.is_file():
                     try:
-                        rel_path = str(file_path.relative_to(pipeline_output_dir))
+                        rel_path = file_path.relative_to(pipeline_output_dir).as_posix()
                         file_size = file_path.stat().st_size
                         file_size_mb = file_size / (1024 * 1024)
 
@@ -443,7 +480,7 @@ def collect_pipeline_outputs(
                         logger.debug(f"Could not read file {file_path}: {e}")
 
         if step_files:
-            step_files.sort(key=lambda x: (x["type"], x["name"]))
+            step_files.sort(key=lambda x: (x["type"], x["name"], x["path"]))
             sections.append(
                 {
                     "step_name": step_name,
@@ -457,9 +494,30 @@ def collect_pipeline_outputs(
 
 
 def _build_navigation_html(
-    output_sections: list[dict[str, Any]], total_files: int, pipeline_output_dir: Path
+    output_sections: list[dict[str, Any]],
+    total_files: int,
+    pipeline_output_dir: Path,
+    output_dir: Path | None = None,
 ) -> str:
     """Build the HTML content for the navigation page."""
+    from gnn.pipeline.run_context import current_run_context
+
+    output_dir = output_dir or pipeline_output_dir / "22_gui_output"
+    context = current_run_context()
+    scope_note = (
+        "Indexed artifacts recorded so far for this run and the selected GUI models. "
+        "File availability does not establish step completion."
+        if context is not None
+        else "Filesystem census of available artifacts; files may belong to earlier runs. "
+        "File availability does not establish current-run completion."
+    )
+    file_types = sorted(
+        {item["type"] for section in output_sections for item in section["files"]}
+    )
+    type_options = "".join(
+        f'<option value="{html.escape(kind, quote=True)}">{html.escape(kind)}</option>'
+        for kind in file_types
+    )
     pipeline_dir_name = html.escape(pipeline_output_dir.name)
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -535,20 +593,38 @@ def _build_navigation_html(
         .file-meta {{ color: #718096; font-size: 12px; margin-top: 8px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }}
         .link {{ color: #3182ce; text-decoration: none; font-weight: 600; transition: color 0.2s; }}
         .link:hover {{ color: #2b6cb0; text-decoration: underline; }}
+        [hidden] {{ display: none !important; }}
+        .filters {{ display: flex; flex-wrap: wrap; gap: 12px; align-items: end; margin: 24px 0; }}
+        .filters label {{ display: grid; gap: 6px; font-weight: 600; }}
+        .filters input, .filters select {{ padding: 10px; border: 1px solid #718096; border-radius: 6px; font: inherit; max-width: 100%; box-sizing: border-box; }}
+        .filters input {{ width: 360px; }}
+        .file-path {{ overflow-wrap: anywhere; color: #4a5568; font-size: 12px; margin-top: 8px; }}
+        .more-files {{ margin-top: 20px; }}
+        summary {{ cursor: pointer; font-weight: 600; padding: 8px 0; }}
+        :focus-visible {{ outline: 3px solid #1a56db; outline-offset: 3px; }}
+        @media (max-width: 600px) {{
+            body {{ padding: 10px; }}
+            .container {{ padding: 18px; }}
+            h1 {{ font-size: 2em; }}
+            .file-list {{ grid-template-columns: minmax(0, 1fr); }}
+            .filters label, .filters input {{ width: 100%; }}
+        }}
+        @media (prefers-reduced-motion: reduce) {{ * {{ transition: none !important; }} }}
     </style>
 </head>
 <body>
-    <div class="container">
+    <main class="container">
         <div class="header">
             <h1>🎯 GNN Pipeline Output Navigation</h1>
             <p>Comprehensive navigation to all pipeline outputs and artifacts</p>
+            <p>{scope_note}</p>
         </div>
 
         <div class="summary">
             <h2>Pipeline Overview</h2>
             <div class="summary-grid">
                 <div class="summary-card">
-                    <div>Pipeline Steps</div>
+                    <div>Steps with listed artifacts</div>
                     <div class="value">{len(output_sections)}</div>
                 </div>
                 <div class="summary-card">
@@ -563,6 +639,17 @@ def _build_navigation_html(
         </div>
 
         <h2>📁 Output Sections</h2>
+        <div class="filters">
+            <label for="artifact-search">Search filenames, paths, or steps
+                <input id="artifact-search" type="search" autocomplete="off">
+            </label>
+            <label for="artifact-type">File type
+                <select id="artifact-type"><option value="">All types</option>{type_options}</select>
+            </label>
+        </div>
+        <p id="artifact-count" role="status" aria-live="polite">{total_files} files available</p>
+        <p id="artifact-empty" hidden>No artifacts match these filters. Clear the search or select another file type.</p>
+        <noscript><p>Search requires JavaScript. Every file remains available in the sections below; expand “More files” to see longer lists.</p></noscript>
 """
 
     # Add each step section
@@ -575,13 +662,25 @@ def _build_navigation_html(
             <p><strong>Files:</strong> {section["file_count"]}</p>
             <div class="file-list">
 """
-        for file_info in section["files"]:
+        for index, file_info in enumerate(section["files"]):
+            if index == MAX_FILES_PER_SECTION:
+                html_content += f"""
+            </div>
+            <details class="more-files"><summary>More files ({len(section["files"]) - MAX_FILES_PER_SECTION})</summary>
+            <div class="file-list">
+"""
             file_name = html.escape(str(file_info["name"]))
             file_path = html.escape(str(file_info["path"]))
+            relative = Path(
+                os.path.relpath(pipeline_output_dir / file_info["path"], output_dir)
+            ).as_posix()
+            file_url = html.escape(quote(relative, safe="/"), quote=True)
+            file_type = html.escape(str(file_info["type"]), quote=True)
             html_content += f"""
-                <div class="file-item">
-                    <a href="../{file_path}" target="_blank">{file_name}</a>
-                    <div class="file-meta">{file_info["type"]} • {file_info["size_mb"]} MB</div>
+                <div class="file-item" data-file-type="{file_type}">
+                    <a href="{file_url}" target="_blank" rel="noopener">{file_name}</a>
+                    <div class="file-path">{file_path}</div>
+                    <div class="file-meta">{file_type} • {file_info["size_mb"]} MB</div>
                 </div>
 """
         if section["file_count"] > len(section["files"]):
@@ -592,21 +691,72 @@ def _build_navigation_html(
 """
         html_content += """
             </div>
+"""
+        if len(section["files"]) > MAX_FILES_PER_SECTION:
+            html_content += "</details>\n"
+        html_content += """
         </div>
 """
 
-    website_link_html = (
-        '<p><a href="../20_website_output/index.html" class="link">Open Website Dashboard</a></p>'
-        if (pipeline_output_dir / "20_website_output" / "index.html").is_file()
-        else ""
-    )
+    crosslinks = []
+    available_paths = {
+        item["path"] for section in output_sections for item in section["files"]
+    }
+    for relative_path, label in (
+        (
+            "23_report_output/comprehensive_analysis_report.html",
+            "View Comprehensive Report",
+        ),
+        ("20_website_output/index.html", "Open Website Dashboard"),
+    ):
+        if relative_path in available_paths:
+            relative_url = Path(
+                os.path.relpath(pipeline_output_dir / relative_path, output_dir)
+            ).as_posix()
+            url = html.escape(quote(relative_url, safe="/"), quote=True)
+            crosslinks.append(f'<p><a href="{url}" class="link">{label}</a></p>')
+    crosslink_html = "\n".join(crosslinks)
     html_content += f"""
         <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #dee2e6; color: #6c757d;">
             <p>Generated by GNN Pipeline GUI Module</p>
-            <p><a href="../23_report_output/comprehensive_analysis_report.html" class="link">View Comprehensive Report</a></p>
-            {website_link_html}
+            {crosslink_html}
         </div>
-    </div>
+    </main>
+    <script>
+    (() => {{
+        const search = document.getElementById('artifact-search');
+        const type = document.getElementById('artifact-type');
+        const count = document.getElementById('artifact-count');
+        const empty = document.getElementById('artifact-empty');
+        const sections = [...document.querySelectorAll('.step-section')];
+        function filterArtifacts() {{
+            const query = search.value.trim().toLowerCase();
+            let matched = 0;
+            for (const section of sections) {{
+                const heading = section.querySelector('.step-header').textContent.toLowerCase();
+                let sectionMatches = 0;
+                for (const file of section.querySelectorAll('[data-file-type]')) {{
+                    const text = heading + ' ' + file.textContent.toLowerCase();
+                    const visible = (!query || text.includes(query)) && (!type.value || file.dataset.fileType === type.value);
+                    file.hidden = !visible;
+                    if (visible) sectionMatches++;
+                }}
+                section.hidden = sectionMatches === 0;
+                const more = section.querySelector('.more-files');
+                if (more) {{
+                    const overflowMatches = [...more.querySelectorAll('[data-file-type]')].some(file => !file.hidden);
+                    more.hidden = !overflowMatches;
+                    more.open = !!(query || type.value) && overflowMatches;
+                }}
+                matched += sectionMatches;
+            }}
+            count.textContent = matched + ' of {total_files} files match';
+            empty.hidden = matched !== 0;
+        }}
+        search.addEventListener('input', filterArtifacts);
+        type.addEventListener('change', filterArtifacts);
+    }})();
+    </script>
 </body>
 </html>
 """

@@ -53,6 +53,13 @@ processor/
 - POMDP-aware rendering via `POMDPRenderProcessor` (per-model/per-framework output folders)
 - Framework compatibility checks and matrix normalization before rendering
 - Structured summaries written to `render_processing_summary.json`
+- Flat Python LGSSM scripts report the `gnn_lgssm_filter_v1` native result
+  contract: actual runtime array dtype and parameters, Gaussian-filtering mode,
+  prior-first timing, conditioning horizons, matrix/posterior/covariance axes,
+  source seed, generated-script SHA-256 and child runtime versions. Closed-loop
+  status remains explicit; this metadata does not extend passive witness scope
+  to control, coupled models or formal equivalence. State/observation labels
+  are not manufactured from dimensions.
 - **Recursive exemplar discovery**: GNN spec files are discovered recursively with `rglob`, so nested exemplar folders under `input/gnn_files/**` (e.g. `discrete/`, `continuous/`, `basics/`, `hierarchical/`) are all rendered. Model-source files are filtered by `gnn.processing.discovery.is_model_source_path`; the maintained corpus index is `input/gnn_files/INDEX.md`. Current per-framework render/execute outcomes live in the run's `render_processing_summary.json` and `execution_summary.json`, not in this file.
 
 ### Supported Frameworks

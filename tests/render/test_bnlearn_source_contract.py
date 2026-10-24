@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import hashlib
 import json
 import os
 import sys
@@ -151,6 +152,25 @@ def test_native_bnlearn_posteriors_match_independent_forward_filter(tmp_path, pa
     assert saved["true_states"] == []
     assert saved["observations"] == readings
     assert saved["transition_actions"] == actions
+    assert saved["inference_contract"] == "bnlearn_fixed_action_filter_v1"
+    assert saved["dtype"] == "float64"
+    assert saved["initial_time"] == "first_observation_uses_prior"
+    assert saved["conditioning_horizon"] == [1, 2, 3, 4]
+    assert saved["axes"] == {
+        "A": ["observation", "state"],
+        "B": ["next_state", "previous_state", "action"],
+    }
+    assert saved["belief_axes"] == ["timestep", "state"]
+    assert saved["parameters"] == {
+        "A": a.tolist(),
+        "B": b.tolist(),
+        "D": np.asarray(initial["D"]).tolist(),
+    }
+    assert (
+        saved["generated_script_sha256"]
+        == hashlib.sha256(script.read_bytes()).hexdigest()
+    )
+    assert saved["python_version"] and saved["numpy_version"]
     assert "actions" not in saved
     from gnn.analysis.framework_extractors import extract_bnlearn_data
 

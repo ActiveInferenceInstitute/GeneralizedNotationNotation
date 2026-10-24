@@ -2,7 +2,7 @@
 
 Pins that the GUI navigation's step table derives from the canonical
 ``gnn.pipeline.step_registry`` (count, order, output dirs), reproduces the
-established 25-entry table byte-for-byte, and extends automatically when a
+established 25-entry labels and output formats, and extends automatically when a
 new step joins the registry — the drift the derivation removes.
 """
 
@@ -30,20 +30,50 @@ EXPECTED_SECTIONS: tuple[tuple[str, str, tuple[str, ...]], ...] = (
     ("Validation", "6_validation_output", ("*.json",)),
     ("Export", "7_export_output", ("*.json", "*.xml", "*.pkl")),
     ("Visualization", "8_visualization_output", ("*.png", "*.svg", "*.csv", "*.json")),
-    ("Advanced Visualization", "9_advanced_viz_output", ("*.png", "*.json")),
+    (
+        "Advanced Visualization",
+        "9_advanced_viz_output",
+        ("*.png", "*.svg", "*.json", "*.html", "*.csv"),
+    ),
     ("Ontology", "10_ontology_output", ("*.json",)),
-    ("Render", "11_render_output", ("*.py", "*.jl", "*.md", "*.json", "*.png")),
-    ("Execute", "12_execute_output", ("*.txt", "*.json", "*.md", "*.png")),
+    (
+        "Render",
+        "11_render_output",
+        ("*.py", "*.jl", "*.stan", "*.md", "*.json", "*.png"),
+    ),
+    (
+        "Execute",
+        "12_execute_output",
+        ("*.txt", "*.json", "*.md", "*.png", "*.svg", "*.html", "*.csv"),
+    ),
     ("LLM", "13_llm_output", ("*.md", "*.json")),
     ("ML Integration", "14_ml_integration_output", ("*.json",)),
-    ("Audio", "15_audio_output", ("*.json", "*.wav")),
-    ("Analysis", "16_analysis_output", ("*.json",)),
+    (
+        "Audio",
+        "15_audio_output",
+        (
+            "*.json",
+            "*.wav",
+            "*.aiff",
+            "*.mp3",
+            "*.ogg",
+            "*.flac",
+            "*.png",
+            "*.sc",
+            "*.scd",
+        ),
+    ),
+    (
+        "Analysis",
+        "16_analysis_output",
+        ("*.json", "*.md", "*.html", "*.csv", "*.png", "*.svg"),
+    ),
     ("Integration", "17_integration_output", ("*.json",)),
     ("Security", "18_security_output", ("*.json",)),
     ("Research", "19_research_output", ("*.json",)),
     ("Website", "20_website_output", ("*.html", "*.json")),
     ("MCP", "21_mcp_output", ("*.json",)),
-    ("GUI", "22_gui_output", ("*.md", "*.json")),
+    ("GUI", "22_gui_output", ("*.md", "*.json", "*.mmd")),
     ("Report", "23_report_output", ("*.html", "*.md", "*.json")),
     (
         "Intelligent Analysis",
@@ -74,7 +104,7 @@ class TestRegistryDerivation:
     @pytest.mark.unit
     @pytest.mark.fast
     def test_sections_reproduce_established_table(self) -> None:
-        """The derivation reproduces the known-good 25-entry table exactly."""
+        """The derivation preserves labels and the supported output formats."""
         assert PIPELINE_OUTPUT_SECTIONS == EXPECTED_SECTIONS
 
     @pytest.mark.unit

@@ -1,5 +1,14 @@
 # GNN Processing Module - Agent Scaffolding
 
+Per-file concurrency belongs to `gnn.utils.file_workers`: explicit `workers`
+on the lightweight APIs defaults to spawned processes, while existing
+`parallel=True` retains threads. Step 3 consumes `file_workers` (default 1).
+Windows process pools cap effective concurrency at 61 while retaining the
+requested limit; threads retain their selected-file capacity.
+Each file is one bounded-queue job; workers compute only, and the parent owns
+artifact publication. Preserve frozen selection, source hashes, stable order,
+deadline/cancellation checks and supervised step cleanup when extending this.
+
 ## Module Overview
 
 **Purpose**: GNN file processing — corpus discovery, lightweight

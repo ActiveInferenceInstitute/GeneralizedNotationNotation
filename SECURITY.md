@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Security Policy | **Audience**: All Users | **Complexity**: Intermediate  
-> **Last Updated**: 2026-10-21 | **Status**: Maintained\
+> **Last Updated**: 2026-10-23 | **Status**: Maintained\
 > **Cross-References**: [Comprehensive Security Guide](docs/security/README.md) | [Deployment Security](docs/deployment/README.md) | [MCP Security](docs/mcp/README.md)
 
 ## 🔒 Comprehensive Security Framework
@@ -38,7 +38,8 @@ We are committed to ensuring the security of the GeneralizedNotationNotation (GN
 
 | Version | Supported | Security Coverage |
 | ------- | ------------------ | ----------------- |
-| 4.3.0 | Release line; exact native gates required | aiohttp >=3.14.4 and Pillow >=13.0.0; frozen uv GUI override and audit scope documented in README |
+| 5.0.0 | Candidate line; exact release qualification pending | Existing dependency floors, bounded receipt admission and owned process cleanup; platform/native evidence required |
+| 4.3.0 | Previous published release; exact native gates required | aiohttp >=3.14.4 and Pillow >=13.0.0; frozen uv GUI override and audit scope documented in README |
 | 4.1.0 | Previous published release; exact native gates required | Descriptor-relative POSIX operations and verified owned cleanup; Windows direct-worker limits are explicit |
 | 4.0.1 | Previous published release | Verified dependency and GUI complexity repairs; provider alert closure and exact checks recorded |
 | 4.0.0 | Previous release | Current-run identity and bounded execution; upgrade to 4.0.1 for the recorded security repairs |

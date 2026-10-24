@@ -68,6 +68,8 @@ _FALLBACK_DEFAULTS: Mapping[str, Any] = MappingProxyType(
         "execution_benchmark_repeats": 1,
         "execution_summary_detail": False,
         "execution_workers": 1,
+        "file_workers": 1,
+        "step_workers": None,
         "advanced_stats": False,
         "generate_animations": True,
     }

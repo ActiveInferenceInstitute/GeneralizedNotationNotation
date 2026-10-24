@@ -16,10 +16,16 @@ def main(argv: list[str] | None = None) -> int:
         "--output-dir", type=Path, default=Path("output/backend_profile")
     )
     parser.add_argument("--repeats", type=int, default=5)
+    parser.add_argument("--workers", type=int, help="Explicit file workers (1..256)")
+    parser.add_argument("--executor", choices=("process", "thread"))
     args = parser.parse_args(argv)
     try:
         report = profile_directory(
-            args.target_dir, args.output_dir, repeats=args.repeats
+            args.target_dir,
+            args.output_dir,
+            repeats=args.repeats,
+            workers=args.workers,
+            executor=args.executor,
         )
     except KeyboardInterrupt:
         print(json.dumps({"status": "cancelled", "error": "Profiling interrupted"}))

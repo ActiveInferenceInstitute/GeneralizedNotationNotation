@@ -166,7 +166,8 @@ jobs:
           uv run --frozen --no-sync python - <<'PYCODE'
           import hashlib, json, subprocess
           from pathlib import Path
-          from tests.helpers.numerical_witness import read_source, compare_records
+          from tests.helpers.numerical_witness import read_source, compare_records, enumerate_finite, condition_joint_gaussian, record
+          from gnn.validation.semantic_witness import verify_semantic_witness
           revision = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
           for model in ('finite', 'gaussian'):
               path = Path('junit') / f'e4-{model}-filtering.json'
@@ -181,14 +182,31 @@ jobs:
               for label in ('script', 'result'):
                   assert hashlib.sha256(receipt['native'][label + '_utf8'].encode('utf-8')).hexdigest() == receipt['native'][label + '_sha256']
               result = json.loads(receipt['native']['result_utf8'])
+              contract = read_source(source)
+              observations = result['observations' if model == 'finite' else 'observations_continuous']
+              actions = result['transition_actions'] if model == 'finite' else []
+              if model == 'finite':
+                  quantities = {'beliefs': enumerate_finite(contract, observations, actions)}
+              else:
+                  means, covariances = condition_joint_gaussian(contract, observations)
+                  quantities = {'beliefs': means, 'posterior_cov': covariances}
+              recomputed = record(contract, observations, actions, quantities)
+              assert recomputed == receipt['expected'], 'saved reference differs from independent source recomputation'
               for quantity, values in receipt['actual']['quantities'].items():
                   assert result[quantity] == values
-              assert compare_records(receipt['expected'], receipt['actual']) == receipt['comparisons']
+              assert compare_records(recomputed, receipt['actual']) == receipt['comparisons']
               assert receipt['comparisons'] and all(item['status'] == 'passed' for item in receipt['comparisons'].values())
               assert receipt['native']['framework_version']
               assert receipt['expected']['formal_evidence']['status'] == 'unavailable'
               if model == 'gaussian':
                   assert receipt['actual']['runtime_precision'] == {'array_dtype': 'float64', 'jax_enable_x64': True}
+              semantic = json.loads((Path('junit') / f'e4-{model}-semantic-v2.json').read_text())
+              assert semantic['schema'] == 'gnn-semantic-witness-v2'
+              assert semantic['status'] == 'passed'
+              assert verify_semantic_witness(semantic) == []
+              assert semantic['artifacts']['source']['utf8'] == receipt['source_utf8']
+              assert semantic['artifacts']['program']['utf8'] == receipt['native']['script_utf8']
+              assert semantic['artifacts']['result']['utf8'] == receipt['native']['result_utf8']
           PYCODE
 
       - name: Record execution counts and source identity

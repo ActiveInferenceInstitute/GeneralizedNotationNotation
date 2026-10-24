@@ -229,28 +229,43 @@ async def test_isolated_auth_failure_is_typed_and_suppresses_retries(
 def test_exhaustion_preserves_full_structural_coverage_and_partial_receipt(
     corpus: Any, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root, output, events = corpus
+    from types import SimpleNamespace
 
-    class Slow:
+    from gnn.llm import corpus_runner
+
+    root, output, events = corpus
+    clock = {"now": 100.0}
+    budget = 30.0
+    # Exhaust the corpus budget at a known provider boundary. Filesystem work
+    # cannot consume a scheduler-dependent 50ms allowance in this contract test.
+    monkeypatch.setattr(
+        corpus_runner, "time", SimpleNamespace(monotonic=lambda: clock["now"])
+    )
+
+    class Exhausting:
         async def initialize(self) -> bool:
             return True
 
         async def get_response(self, **_: Any) -> Any:
-            await asyncio.sleep(1)
+            events.append("request")
+            clock["now"] += budget + 1
+            raise asyncio.TimeoutError("controlled corpus exhaustion")
 
         async def close(self) -> None:
             pass
 
-    monkeypatch.setattr(api, "LLMProcessor", lambda **_: Slow())
+    monkeypatch.setattr(api, "LLMProcessor", lambda **_: Exhausting())
     assert not api.process_llm(
         root,
         output,
-        llm_timeout=0.05,
-        max_prompt_timeout=0.02,
+        llm_timeout=budget,
+        max_prompt_timeout=budget,
         llm_config={"model": "configured:exact"},
         custom_prompts=[],
     )
     results = json.loads((output / "llm_results.json").read_text())
+    assert all(event.startswith("structure:") for event in events[:3])
+    assert events[3:] == ["request"]
     assert results["status"] == "timed_out"
     assert results["coverage"]["structural_completed"] == 3
     assert results["coverage"]["summaries_completed"] == 0

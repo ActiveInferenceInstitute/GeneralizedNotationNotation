@@ -114,6 +114,15 @@ When working with this module:
 2. The `models.py` is the API contract -- update schemas and tests together
 3. Add new endpoints in `server.py` (job/tool surface) or `app.py` (run/runs surface) following the canonical envelope pattern
 
+Pipeline-submitting requests share strict file/step worker admission through
+`gnn.pipeline.admission.validate_worker_count`: `file_workers=1`,
+`step_workers=None`, integer bounds 1–256, no Boolean/numeric coercion and null
+only for automatic step limits. Preserve those requested values in job/run
+records, run identity, responses, MCP schemas and the shared subprocess argv
+builder. `parallel` enables concurrent tiers; limits do not establish actual
+concurrency or speedup. Step-12 execution worker configuration is not admitted
+by these API requests.
+
 
 ---
 ## Documentation

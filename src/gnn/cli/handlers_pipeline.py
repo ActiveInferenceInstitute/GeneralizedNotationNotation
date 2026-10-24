@@ -64,6 +64,13 @@ def _cmd_run(args: argparse.Namespace) -> int:
         for flag in ("strict", "parallel", "consolidated_steps"):
             if getattr(args, flag, False):
                 extra_args.append("--" + flag.replace("_", "-"))
+        for name in ("file_workers", "step_workers"):
+            value = getattr(args, name, None)
+            if value is not None:
+                from gnn.pipeline.admission import validate_worker_count
+
+                validate_worker_count(value, field_name=name)
+                extra_args.extend(["--" + name.replace("_", "-"), str(value)])
         checked_skip = validate_steps(args.skip_steps, field_name="skip_steps")
         checked_only = validate_steps(
             getattr(args, "only_steps", None), field_name="steps", allow_empty=False

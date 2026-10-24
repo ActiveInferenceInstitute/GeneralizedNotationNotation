@@ -524,6 +524,15 @@ def _initialize_pipeline_summary(
         "overall_status": "RUNNING",
         "total_duration_seconds": None,
         "environment_info": get_environment_info(),
+        "execution_resources": {
+            "file_workers_requested": args.file_workers,
+            "step_workers_requested": args.step_workers,
+            "execution_workers_requested": args.execution_workers,
+            "logical_cpus_available": (
+                getattr(os, "process_cpu_count", os.cpu_count)() or 1
+            ),
+        },
+        "parallel_tiers": [],
         "performance_summary": {
             "peak_memory_mb": 0.0,
             "total_steps": len(steps_to_execute),
@@ -898,11 +907,16 @@ def main(
         incoming_context = os.environ.get("GNN_RUN_CONTEXT_FILE")
         os.environ["GNN_RUN_ID"] = incoming_run_id or uuid.uuid4().hex
         try:
-            from gnn.pipeline.admission import validate_boolean, validate_steps
+            from gnn.pipeline.admission import (
+                validate_boolean,
+                validate_steps,
+                validate_worker_count,
+            )
             from gnn.pipeline.output_lease import OutputLease, OutputLeaseError
 
             probe_args, _ = _build_main_args(override_args)
             try:
+                _admit_configured_worker_limits(override_config)
                 validate_steps(
                     probe_args.only_steps,
                     field_name="steps",
@@ -914,6 +928,12 @@ def main(
                 )
                 for flag in ("verbose", "strict", "parallel", "consolidated_steps"):
                     validate_boolean(getattr(probe_args, flag), field_name=flag)
+                for name in ("file_workers", "step_workers"):
+                    validate_worker_count(
+                        getattr(probe_args, name),
+                        field_name=name,
+                        allow_none=name == "step_workers",
+                    )
             except ValueError as error:
                 print(f"Pipeline admission failure: {error}", file=sys.stderr)
                 return 1
@@ -934,6 +954,31 @@ def main(
                 os.environ.pop("GNN_RUN_CONTEXT_FILE", None)
             else:
                 os.environ["GNN_RUN_CONTEXT_FILE"] = incoming_context
+
+
+def _admit_configured_worker_limits(config: Optional[Dict[str, Any]]) -> None:
+    """Reject invalid configured limits before creating a lease or log files."""
+    from gnn.pipeline.admission import validate_worker_count
+
+    if config is None:
+        try:
+            from yaml import YAMLError
+        except ImportError:
+            return  # The ordinary preflight retains dependency diagnostics.
+        try:
+            config = _read_input_config(Path("input/config.yaml"))
+        except (OSError, YAMLError) as exc:
+            raise ValueError(f"Cannot read pipeline configuration: {exc}") from exc
+    if not isinstance(config, dict):
+        raise ValueError("Pipeline configuration must be a mapping")
+    settings = config.get("pipeline") or {}
+    if not isinstance(settings, dict):
+        raise ValueError("pipeline configuration must be a mapping")
+    for name in ("file_workers", "step_workers"):
+        if name in settings:
+            validate_worker_count(
+                settings[name], field_name=name, allow_none=name == "step_workers"
+            )
 
 
 def _run_pipeline(
@@ -1039,6 +1084,13 @@ def _run_pipeline(
                 if not tier_steps:
                     continue
                 if len(tier_steps) == 1:
+                    pipeline_summary["parallel_tiers"].append(
+                        {
+                            "tier_index": tier_idx,
+                            "step_names": [tier_steps[0][0]],
+                            "workers_used": 1,
+                        }
+                    )
                     script_name, description = tier_steps[0]
                     updated_session = _execute_pipeline_iteration(
                         current_step_counter,
@@ -1056,7 +1108,7 @@ def _run_pipeline(
                         run_session = updated_session
                     current_step_counter += 1
                 else:
-                    max_cpu = os.cpu_count() or 4
+                    max_cpu = getattr(os, "process_cpu_count", os.cpu_count)() or 1
                     # Calculate estimated tier memory requirement to prevent overcommit
                     tier_memory_est = sum(
                         (
@@ -1075,10 +1127,20 @@ def _run_pipeline(
                         for s in tier_steps
                     )
                     # Dynamically throttle worker concurrency if aggregate memory footprint is high
-                    worker_cap = max_cpu
+                    worker_cap = (
+                        args.step_workers if args.step_workers is not None else max_cpu
+                    )
                     if tier_memory_est > 800:
                         worker_cap = min(worker_cap, 4)
                     dynamic_workers = max(1, min(len(tier_steps), worker_cap, 8))
+                    pipeline_summary["parallel_tiers"].append(
+                        {
+                            "tier_index": tier_idx,
+                            "step_names": [step[0] for step in tier_steps],
+                            "workers_used": dynamic_workers,
+                            "memory_estimate_mb": tier_memory_est,
+                        }
+                    )
                     logger.info(
                         "⚡ Running Tier %d in parallel (%d steps, %d workers, ~%dMB est memory): %s",
                         tier_idx,

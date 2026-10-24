@@ -2,7 +2,7 @@
 """
 Argument parser construction for the GNN ``gnn`` command.
 
-``build_parser`` assembles all 20 subcommands with their flags and choices;
+``build_parser`` assembles the registered subcommands with their flags and choices;
 the argparse type parsers validate step numbers and TCP ports. Extracted
 from ``cli.__init__``.
 """
@@ -61,7 +61,7 @@ def _tcp_port(value: str) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    """Construct the ``gnn`` argument parser with all 20 subcommands.
+    """Construct the ``gnn`` argument parser with all registered subcommands.
 
     Pure construction — no parsing side effects — so programmatic callers
     can introspect flags and choices without dispatching.
@@ -74,6 +74,30 @@ def build_parser() -> argparse.ArgumentParser:
         "--verbose", "-v", action="store_true", help="Enable verbose output"
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    witness_p = subparsers.add_parser(
+        "witness", help="Compare or replay source-bound numerical evidence"
+    )
+    witness_p.add_argument(
+        "source", nargs="?", type=Path, help="restricted witness GNN source"
+    )
+    witness_p.add_argument(
+        "--results", type=Path, help="native simulation_results.json"
+    )
+    witness_p.add_argument(
+        "--program",
+        type=Path,
+        help="generated program whose digest is reported by the result",
+    )
+    witness_p.add_argument(
+        "--verify", type=Path, help="replay an existing semantic witness receipt"
+    )
+    witness_p.add_argument(
+        "--output",
+        type=Path,
+        help="write receipt (for Step20 use 16_analysis_output/semantic_witnesses)",
+    )
+    witness_p.add_argument("--json", action="store_true", help="standard JSON envelope")
 
     # ── gnn run ──────────────────────────────────────────────────────────────
     run_p = subparsers.add_parser("run", help="Execute the full pipeline")
@@ -103,6 +127,16 @@ def build_parser() -> argparse.ArgumentParser:
         "--parallel",
         action="store_true",
         help="Execute independent pipeline tiers concurrently",
+    )
+    run_p.add_argument(
+        "--file-workers",
+        type=int,
+        help="Maximum CPU file workers for Steps 3/5 (1-256)",
+    )
+    run_p.add_argument(
+        "--step-workers",
+        type=int,
+        help="Maximum concurrent steps with --parallel (1-256)",
     )
     run_p.add_argument(
         "--consolidated-steps",

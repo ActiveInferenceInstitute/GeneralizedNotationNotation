@@ -11,11 +11,15 @@ not at the pinned revision before running any round trip.
 from __future__ import annotations
 
 import json
+import re
+import shlex
 import subprocess
 import sys
+import tomllib
 from pathlib import Path
 
 import pytest
+import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 PIN_FILE = ROOT / ".github/gnn-pair.json"
@@ -117,3 +121,75 @@ def test_runner_rejects_malformed_pins(tmp_path: Path, broken: dict[str, str]) -
         timeout=120,
     )
     assert completed.returncode == 2
+
+
+def test_workflow_installs_each_repository_with_its_exact_uv_toolchain() -> None:
+    """Track the active tool through both installs and the later GNN check."""
+    workflow = yaml.safe_load(
+        (ROOT / ".github/workflows/geo-infer-interchange.yml").read_text(
+            encoding="utf-8"
+        )
+    )
+    job = workflow["jobs"]["geo-infer-interchange"]
+    assert job["strategy"]["matrix"]["python"] == ["3.11", "3.12"]
+    gnn_version = tomllib.loads((ROOT / "uv.toml").read_text())[
+        "required-version"
+    ].removeprefix("==")
+    expected_versions = {"geo-infer": "0.13.1", "gnn": gnn_version}
+    active_uv = None
+    installs = {}
+    setup_versions = []
+    qualification_checked = False
+    for step in job["steps"]:
+        action = step.get("uses", "")
+        if action.startswith("astral-sh/setup-uv@"):
+            assert re.fullmatch(r"astral-sh/setup-uv@[0-9a-f]{40}", action)
+            active_uv = step["with"]["version"]
+            setup_versions.append(active_uv)
+        for line in step.get("run", "").replace("\\\n", " ").splitlines():
+            command = shlex.split(line)
+            if command[:2] == ["uv", "sync"]:
+                project = command[command.index("--project") + 1]
+                assert project not in installs
+                assert active_uv == expected_versions[project]
+                installs[project] = command
+            if command[:2] == ["uv", "run"]:
+                assert step["working-directory"] == "gnn"
+                assert active_uv == gnn_version
+                assert command[2:5] == ["--frozen", "--no-sync", "--python"]
+                qualification_checked = True
+    assert setup_versions == ["0.13.1", gnn_version]
+    assert list(installs) == ["geo-infer", "gnn"]
+    assert installs["gnn"] == [
+        "uv",
+        "sync",
+        "--project",
+        "gnn",
+        "--locked",
+        "--python",
+        "3.11",
+        "--extra",
+        "dev",
+        "--extra",
+        "geo-infer",
+    ]
+    assert installs["geo-infer"] == [
+        "uv",
+        "sync",
+        "--project",
+        "geo-infer",
+        "--locked",
+        "--python",
+        "$GEO_PYTHON",
+        "--all-packages",
+        "--all-extras",
+        "--no-install-package",
+        "cupy",
+        "--no-install-package",
+        "mayavi",
+        "--no-install-package",
+        "vaex",
+        "--no-install-package",
+        "vaex-core",
+    ]
+    assert qualification_checked

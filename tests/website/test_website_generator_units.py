@@ -229,7 +229,7 @@ class TestStepStatusTruthSource:
         assert statuses[3] == "ok"
         assert statuses[9] == "skip"  # summary record, not dir existence
         assert statuses[12] == "error"  # dir exists, recorded FAILED → error
-        assert statuses[13] == "ok"
+        assert statuses[13] == "warning"
         assert statuses[20] == "pending"  # absent from the summary
 
     @pytest.mark.unit

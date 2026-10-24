@@ -13,6 +13,8 @@ GNN model validation including semantic, structural, and mathematical validation
 - `performance_profiler.py` - Complexity, memory, and parallelization estimation
 - `consistency_checker.py` - Naming, style, structure, and reference consistency
 - `mcp.py` - MCP tool registration
+- `witness_source.py` - Independently read restricted authored sources; bounded finite/joint-Gaussian references
+- `semantic_witness.py` - Versioned byte-bound numerical comparisons and complete raw-artifact replay; no execution or proof authentication
 
 ## Validation Levels
 - `basic` - Structure checks

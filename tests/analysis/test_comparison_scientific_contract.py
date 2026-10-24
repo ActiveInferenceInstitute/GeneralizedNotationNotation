@@ -84,6 +84,15 @@ def test_same_model_has_value_bound_witness_and_public_parity() -> None:
         ("belief_axes", ["state", "timestep"], "unaligned belief_axes"),
         ("observations", [1, 0, 0], "unaligned observations"),
         ("actions", [1, 1, 1], "unaligned actions"),
+        ("transition_actions", [1, 0], "unaligned transition_actions"),
+        (
+            "initial_time",
+            "predict_before_first_observation",
+            "incompatible initial_time",
+        ),
+        ("conditioning_horizon", [3, 3, 3], "unaligned conditioning_horizon"),
+        ("state_ids", ["right", "left"], "unaligned state_ids"),
+        ("observation_ids", ["green", "red"], "unaligned observation_ids"),
         ("posterior_semantics", "full_sequence", "incompatible posterior_semantics"),
         ("input_sha256", "c" * 64, "incompatible input_sha256"),
     ],
@@ -92,11 +101,29 @@ def test_same_shapes_or_display_stems_do_not_admit_different_models(
     key: str, value: Any, reason: str
 ) -> None:
     left, right = _categorical(), _categorical()
+    for item in (left, right):
+        item.update(
+            transition_actions=[0, 1],
+            initial_time="first_observation_uses_prior",
+            conditioning_horizon=[1, 2, 3],
+            state_ids=["left", "right"],
+            observation_ids=["red", "green"],
+        )
     right[key] = value
     pair = _pair(left, right)
     assert pair["status"] == "not_comparable"
     assert reason in pair["reasons"]
     assert "views" not in pair
+    # A declaration present on just one side must not be silently dropped.
+    if key in {
+        "transition_actions",
+        "initial_time",
+        "conditioning_horizon",
+        "state_ids",
+        "observation_ids",
+    }:
+        del right[key]
+        assert _pair(left, right)["status"] == "not_comparable"
 
 
 @pytest.mark.parametrize(

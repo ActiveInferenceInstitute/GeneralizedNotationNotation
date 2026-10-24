@@ -11,6 +11,9 @@ Pipeline orchestration, configuration, and execution utilities.
 - `execution.py` - `run_pipeline`, `execute_pipeline_step(s)`, `get_pipeline_status`
 - `dag.py` - `resolve_execution_order`, `visualize_dag`
 - `step_executor.py` - Opt-in consolidated in-process step execution (ADR 0001)
+- `admission.py` - Strict step/flag and bounded worker-count admission. `file_workers`
+  limits per-file CPU processes in Steps 3/5; `step_workers` limits parallel tiers.
+  Summaries distinguish requested limits from actual tier widths and file-result PIDs.
 
 ### Validation & Health
 - `pipeline_runtime_validator.py` - E2E pipeline validation in the caller's workspace;

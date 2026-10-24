@@ -8,9 +8,13 @@ compatibility or evidence profiles. Existing acceptance receipts retain their
 original source, runtime and tool identities; this configuration change does
 not renew those receipts.
 
-GEO qualification controls reuse the installed Python 3.11 environment with
-`--frozen --no-sync`; they do not let the local default replace its H3-enabled
-runtime. Manuscript audit artifacts retain the full render output and the render
+The GEO pair installs each repository with its own exact tool: uv 0.13.1 is
+a companion-only exception for GEO_INFER, while GNN retains uv 0.13.4.
+Separate pinned setup steps install GEO first and GNN last, so the later GNN
+qualification controls also use uv 0.13.4. These controls reuse the installed
+Python 3.11 environment with `--frozen --no-sync`; the local default does not
+replace its H3-enabled runtime. The [local paired-runtime procedure](../../docs/development/geo_infer_2026_09.md#independent-uv-toolchains)
+uses the same split. Manuscript audit artifacts retain the full render output and the render
 step outcome even when strict comparison rejects the older committed chain.
 Those diagnostic artifacts require normal verification and an artifact commit
 before they become accepted publication evidence.
@@ -30,7 +34,7 @@ YAML workflows for CI, MCP tool-count audit, weekly all-extras suite, documentat
 | [ci.yml](ci.yml) | `push` / `pull_request` → `main` (no path filter); `workflow_dispatch` | Full Python 3.11/3.12/3.13/3.14 unit/integration selections with JUnit and coverage. Independent 3.12 quality checks run in parallel; `test (3.12)` accepts only successful `pytest (3.12)` and `quality (3.12)` lanes. Quality retains Ruff, types, documentation/contracts, collection and MCP tests, and v3 orchestration acceptance. Pipeline contracts and extras retain separate mandatory lanes. Security retains Bandit SARIF, artifacts and failure on findings. |
 | [installed-platforms.yml](installed-platforms.yml) | `push` / `pull_request` → `main`; `workflow_dispatch` | Five native installed-wheel lanes: Linux/Python 3.11, 3.12, 3.14; macOS/3.14; Windows/3.14. Frozen hashed binary runtime installation outside the checkout, native JAX/THRML, CLI/templates, API scratch concurrency, owned worker cancellation/RSS and platform boundary tests. Selected skips prevent acceptance; receipts retain exact source, wheel, lock and platform identities. |
 | [local-gates.yml](local-gates.yml) | `push` / `pull_request` → `main`; `workflow_dispatch` | Repository gates for manuscript tokens, hydrated prose, figure freshness, MCP/skills, import boundaries, numbered orchestrators, flags, dependency consumers, validation surfaces and documentation paths/patterns. |
-| [fep-lean-paired-revision.yml](fep-lean-paired-revision.yml) | `push` / `pull_request` → `main`; tags; `workflow_dispatch` | Fixed FEP baseline compatibility on Python 3.11/3.12/3.14: strict baseline bridge/Q7 checks plus current-release source/lock bookends and rejection of scientific changes. Full synchronization is deferred to the next major release; no new native proof claim. [Policy](../../docs/development/fep_lean_paired_revision.md#fixed-baseline-for-gnn-421). |
+| [fep-lean-paired-revision.yml](fep-lean-paired-revision.yml) | `push` / `pull_request` → `main`; tags; `workflow_dispatch` | Strict current-source bridge and Q7 checks on Python 3.11/3.12/3.14 against the exact pinned FEP companion, retaining both revisions and runtime/source bookends. Historical fixed-baseline receipts cannot admit GNN 5.0; native proof and release acceptance remain separate. [Policy](../../docs/development/fep_lean_paired_revision.md#current-source-qualification-for-gnn-500). |
 | [geo-infer-interchange.yml](geo-infer-interchange.yml) | `push` / `pull_request` → `main`; `workflow_dispatch` | Python 3.11/3.12 categorical, Gaussian and factored interchange with the pinned GEO companion, deterministic replay and artifact digests. H3 state labels alone do not establish geographic or inference claims. |
 | [mcp-audit.yml](mcp-audit.yml) | `push` / `pull_request` → `main`; `workflow_dispatch` | MCP tool count ≥ 140 via `tests.mcp.test_mcp_audit.count_mcp_tools`. |
 | [full-extras.yml](full-extras.yml) | Weekly cron Sunday 06:00 UTC (`0 6 * * 0`); `workflow_dispatch` | `uv sync --frozen --all-extras`, optional-import checks (audio, GUI, research/scaling), full pytest suite under all extras (Python 3.12). |

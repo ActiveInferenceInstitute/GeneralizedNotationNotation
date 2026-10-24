@@ -323,8 +323,9 @@ def test_parser_receipt_projects_only_selected_consumer_models(
         selected_parse_receipt(receipt, 6)
 
 
+@pytest.mark.parametrize("file_workers", [1, 2])
 def test_current_parser_failure_does_not_claim_complete_selected_coverage(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, file_workers: int
 ) -> None:
     from gnn.processing.multi_format_processor import process_gnn_multi_format
 
@@ -340,6 +341,7 @@ def test_current_parser_failure_does_not_claim_complete_selected_coverage(
         Path(context.output_root),
         logging.getLogger(__name__),
         serialize_preset="minimal",
+        file_workers=file_workers,
     )
     receipt = json.loads(
         (

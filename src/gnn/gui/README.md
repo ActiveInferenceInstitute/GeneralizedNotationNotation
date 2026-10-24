@@ -65,10 +65,12 @@ python src/gnn/22_gui.py --gui-types "gui_1,gui_2,gui_3,oxdraw" --target-dir inp
 
 ### Navigation.html
 The `navigation.html` file provides a centralized navigation interface for all pipeline outputs:
-- **Pipeline Overview**: Summary statistics (total steps, total files)
-- **Output Sections**: Organized by all 25 pipeline steps with file listings
-- **File Metadata**: File type, size, and direct links to all artifacts
-- **Integration**: Links to comprehensive reports and visualizations
+- **Artifact Overview**: Counts of steps with available artifacts and listed files. Standalone navigation is a filesystem census and can contain earlier-run outputs; active pipeline navigation uses the current artifact index and Step 22 model selection. File availability does not establish step completion.
+- **Output Sections**: Organized by pipeline step. The first 20 files appear immediately; expand **More files** to access the remainder without JavaScript.
+- **Search and File Types**: Offline filters search filenames, paths, and step names, with a live match count and an explicit empty state.
+- **File Metadata**: File type, size, full relative path, and URL-encoded links that also work when navigation is generated outside the pipeline output directory.
+- **Interactive and Native Outputs**: Includes advanced-visualization/analysis HTML dashboards, CSV data, rendered Stan programs, audio and waveform files, and Oxdraw Mermaid exports.
+- **Integration**: Dashboard and comprehensive-report links appear when their artifacts are available to the navigation census.
 - **Access**: Open `output/22_gui_output/navigation.html` in a web browser
 
 ## Public API
@@ -140,7 +142,7 @@ process_gui(
   artifact in this module is written temp-file-then-replace.
 - `process_gui(..., logger=...)`: pass a logger to capture GUI logs in your
   own handler; omitted means the `gui.processor` module logger.
-- `navigation.html` file names and paths are HTML-escaped at render time.
+- `navigation.html` file names and paths are HTML-escaped at render time, with separate URL encoding for links. Search uses text matching and never interprets artifact names as HTML.
 
 ## Architecture
 

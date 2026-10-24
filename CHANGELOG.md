@@ -7,6 +7,64 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+## [5.0.0] - 2026-10-23
+
+### Replayable numerical and formal evidence
+
+- Add `gnn witness` and whole-receipt replay from retained source, native result
+  and generated-program bytes. Independently enumerate finite paths and condition
+  joint Gaussian prefixes under a restricted declared filtering contract.
+- Require exact parameter, dtype, axis, timing, source and conditioning admission;
+  compare every posterior mean and full covariance with explicit tolerances.
+  Keep failed, refused and unavailable quantities visible and reject unbounded,
+  nonfinite or ambiguous sources and aliased output destinations.
+- Add an independent FEP_Formal audit using forward Bayes and Kalman/Joseph
+  recursions, plus separately compiled finite-normalization and scalar Gaussian
+  algebraic laws. Program digests do not authenticate execution; scalar laws do
+  not prove the parser, multidimensional filtering or universal translation.
+
+### Website, GUI and artifacts
+
+- Add offline evidence filters and interactive posterior, covariance-variance and
+  residual traces, with readable tables and retained raw receipts. Distinguish
+  reported numerical, proof, runtime and custody evidence in the generated site.
+- Preserve reciprocal model/site/GUI navigation, nested model identity, unique
+  page names, current-run asset provenance and explicit unsupported output states.
+- Avoid repeated pretty-printing and escaping of large raw evidence bodies;
+  retain the complete receipt once alongside compact provenance summaries.
+- Display configured CPU limits and recorded independent-step tier widths from
+  actual pipeline summaries, without promoting configuration into speed claims.
+
+### Configurable workers and measured processing
+
+- Add strict `file_workers` and `step_workers` controls across CLI, YAML, typed
+  Python configuration, API jobs and MCP. Defaults retain serial file processing;
+  Step 12 keeps its separate execution-worker contract.
+- Use bounded spawned processes for Step 3 parsing/serialization and Step 5
+  validation/analysis. The parent publishes ordered artifacts; frozen selection,
+  source hashes, deadlines, cancellation, crashes and partial failures remain
+  explicit. Effective process counts respect Windows' executor capacity.
+- Fix variable-extraction regex backtracking with corpus-equivalent Unicode
+  boundary and possessive-quantifier controls. Retain source-bound unprofiled
+  samples and deterministic Python 3.15 traces, separate parent/child CPU time,
+  actual worker identities and explicit unavailable statistical sampling.
+- Preserve the frozen scientific runtime and compatibility profiles. Measured
+  local lightweight improvements do not establish whole-pipeline acceleration;
+  process startup can outweigh parallelism on small selections.
+
+### Joint release qualification
+
+- Restore current-source paired workflow execution for the coordinated GNN 5 /
+  FEP_Formal 2 campaign. Preserve the historical 4.2.1/4.3 fixed-baseline policy
+  and its original evidence separately; it cannot admit new scientific changes.
+- Require final manuscript rendering, current bridge/Q7 native qualification,
+  exact companion pins, candidate/main/tag hosted profiles, ordinary distribution
+  verification and downloaded public-asset parity before publication.
+
+These entries describe implementation scope. The public release record
+owns acceptance. The seven broad scientific/archive TODO workstreams retain
+their bounded scopes and remaining proof, provider or external prerequisites.
+
 ## [4.3.0] - 2026-10-21
 
 ### Independent numerical witness foundation

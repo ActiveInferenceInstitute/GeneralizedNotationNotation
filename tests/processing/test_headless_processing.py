@@ -1,6 +1,8 @@
 """Headless consumer failures, dependency isolation and actual profiling outputs."""
 
 import json
+import pstats
+import re
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
@@ -8,7 +10,11 @@ from pathlib import Path
 
 import pytest
 
-from gnn.processing import process_gnn_directory, process_gnn_directory_lightweight
+from gnn.processing import (
+    parse_gnn_file,
+    process_gnn_directory,
+    process_gnn_directory_lightweight,
+)
 from gnn.processing.profiling import profile_directory
 
 
@@ -146,7 +152,9 @@ def test_profile_retains_distinct_unprofiled_and_traced_work(
     assert result["input_bookends_equal"] and result["backend_source_bookends_equal"]
     assert result["trace"]["included_in_timing_samples"] is False
     assert (output / "trace.pstats").stat().st_size > 0
-    assert "_extract_variables_lightweight" in (output / "trace.txt").read_text()
+    assert "function calls" in (output / "trace.txt").read_text()
+    statistics = pstats.Stats(str(output / "trace.pstats"))
+    assert any(key[2] == "_extract_variables_lightweight" for key in statistics.stats)
     assert json.loads((output / "profile_report.json").read_text()) == result
     with pytest.raises(FileExistsError):
         profile_directory(models, output)
@@ -175,3 +183,83 @@ def test_profile_refuses_output_within_selected_input(models: Path) -> None:
     with pytest.raises(ValueError, match="outside the selected input"):
         profile_directory(models, models / "profile")
     assert not (models / "profile").exists()
+
+
+@pytest.mark.parametrize("executor", ["process", "thread"])
+def test_profile_worker_results_preserve_models_and_disclose_trace_scope(
+    models: Path, tmp_path: Path, executor: str
+) -> None:
+    (models / "second.md").write_text((models / "model.md").read_text())
+    serial = profile_directory(models, tmp_path / "serial", repeats=1)
+    parallel = profile_directory(
+        models, tmp_path / executor, repeats=2, workers=2, executor=executor
+    )
+    assert parallel["status"] == "success"
+    assert (
+        parallel["normalized_model_result_sha256"]
+        == serial["normalized_model_result_sha256"]
+    )
+    assert parallel["controls"]["effective_workers"] == 2
+    assert parallel["controls"]["executor"] == executor
+    assert parallel["trace"]["coverage"] == "calling thread only"
+    assert parallel["trace"]["worker_execution_included"] is False
+    assert "not traced" in parallel["trace"]["warning"]
+    for sample in parallel["unprofiled_samples"]:
+        assert sample["worker_execution"]["worker_pids"]
+        assert sample["worker_execution"]["executor"] == executor
+        assert (
+            sample["children_cpu_seconds"] is None
+            or sample["children_cpu_seconds"] >= 0
+        )
+
+
+@pytest.mark.parametrize(
+    "workers,executor", [(0, None), (True, None), (257, None), (2, "unknown")]
+)
+def test_profile_worker_admission_precedes_output_creation(
+    models: Path, tmp_path: Path, workers: int, executor: str | None
+) -> None:
+    output = tmp_path / "profile"
+    with pytest.raises(ValueError):
+        profile_directory(models, output, workers=workers, executor=executor)
+    assert not output.exists()
+
+
+def test_lightweight_variable_boundaries_preserve_unicode_and_multiline_matches() -> (
+    None
+):
+    content = "z" * 10000 + "\nα: float\nprefix=4;\nx \n =2\nz[3]\nα=7\n变量2 = -1"
+    parsed = parse_gnn_file("inline.md", content=content)
+    assert parsed["success"]
+    assert parsed["variables"] == ["α", "prefix", "x", "变量2", "z"]
+
+
+@pytest.mark.parametrize(
+    "content",
+    [
+        "word" * 2500 + "\nα: float\nx \n =2\nz[3]\n变量2 = -1",
+        "Δ\n [first,\n second]\nΓ \n : \n Real\nπ = 3.14;\nΓ[2]\n",
+        "not_a_variable" * 750 + "! name=one; value: int\narray[unterminated",
+        "__123\u00a0:\u2003 int\n9_array\u2028[one,[two]]\n__123\u2009=\u3000 4;\nδ_7[[]]\n",
+    ],
+    ids=[
+        "long-word",
+        "unicode-multiline",
+        "unclosed-array",
+        "unicode-space-digits-nested",
+    ],
+)
+def test_lightweight_variable_extraction_matches_legacy_oracle(content: str) -> None:
+    patterns = [
+        r"(\w+)\s*:\s*(\w+)",
+        r"(\w+)\s*=\s*([^;\n]+)",
+        r"(\w+)\s*\[([^\]]+)\]",
+    ]
+    expected = list(
+        dict.fromkeys(
+            match.group(1)
+            for pattern in patterns
+            for match in re.finditer(pattern, content)
+        )
+    )
+    assert parse_gnn_file("inline.md", content=content)["variables"] == expected

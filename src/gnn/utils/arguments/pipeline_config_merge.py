@@ -33,6 +33,18 @@ def apply_input_config_defaults(
     uv_sync = uv_block.get("sync") or {}
     pipe_cfg = full_config.get("pipeline") or {}
 
+    from gnn.pipeline.admission import validate_worker_count
+
+    for name in ("file_workers", "step_workers"):
+        if not hasattr(parsed, name) and name in pipe_cfg:
+            setattr(
+                args,
+                name,
+                validate_worker_count(
+                    pipe_cfg[name], field_name=name, allow_none=name == "step_workers"
+                ),
+            )
+
     if not hasattr(parsed, "dev"):
         cfg_dev = setup_cfg.get("dev")
         if cfg_dev is None:

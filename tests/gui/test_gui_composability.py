@@ -19,8 +19,11 @@ import json
 import logging
 import sys
 import types
+from dataclasses import replace
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
+from urllib.parse import unquote, urlsplit
 
 import pytest
 
@@ -210,6 +213,9 @@ class TestRunnerPlumbing:
 
         target = isolated_temp_dir / "input"
         target.mkdir()
+        for scaffold in ("AGENTS.md", "README.md", "INDEX.md", "a.template.md"):
+            (target / scaffold).write_text("documentation")
+        (target / "000_unreadable.md").write_bytes(b"\xff\xfe")
         (target / "aaa.md").write_text("plain")
         (target / "zzz_pomdp.md").write_text("pomdp")
         (target / "sub").mkdir()
@@ -221,6 +227,36 @@ class TestRunnerPlumbing:
         (target / "aaa.md").unlink()
         (target / "zzz_pomdp.md").unlink()
         assert load_first_markdown(target) == "nested"
+
+    @pytest.mark.unit
+    @pytest.mark.fast
+    def test_load_first_markdown_honors_frozen_selection(
+        self, isolated_temp_dir: Any, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from dataclasses import replace
+
+        from gnn.gui.runner import load_first_markdown
+        from gnn.pipeline.run_context import build_run_context
+
+        target = isolated_temp_dir / "input"
+        target.mkdir()
+        selected = target / "selected.md"
+        selected.write_text("selected model")
+        context = build_run_context(
+            target, isolated_temp_dir / "output", "gui-starter", [22], {}
+        )
+        context_path = context.write(isolated_temp_dir / "run_context.json")
+        monkeypatch.setenv("GNN_RUN_CONTEXT_FILE", str(context_path))
+        monkeypatch.setenv("GNN_RUN_ID", context.run_id)
+        (target / "aaa_pomdp.md").write_text("unselected later source")
+
+        assert load_first_markdown(target, ("*pomdp*.md",)) == "selected model"
+        selected.write_text("changed after planning")
+        with pytest.raises(ValueError, match="Model source changed"):
+            load_first_markdown(target)
+
+        replace(context, models=()).write(context_path)
+        assert load_first_markdown(target) is None
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -257,7 +293,7 @@ class TestCollectPipelineOutputs:
     @pytest.mark.unit
     @pytest.mark.fast
     def test_discovers_files_and_skips_missing_dirs(
-        self, isolated_temp_dir: Any
+        self, isolated_temp_dir: Any, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         pipeline_output = isolated_temp_dir / "output"
         gnn_dir = pipeline_output / "3_gnn_output"
@@ -274,6 +310,48 @@ class TestCollectPipelineOutputs:
         assert section["file_count"] == 2
         assert [f["name"] for f in section["files"]] == ["a.json", "b.json"]
 
+        # During a run, prior files and a model excluded from Step 22 cannot
+        # enter navigation merely because their directories still exist.
+        from gnn.pipeline.run_context import build_run_context
+
+        target = isolated_temp_dir / "input"
+        target.mkdir()
+        (target / "chosen.md").write_text("chosen model")
+        (target / "excluded.md").write_text("excluded model")
+        context = build_run_context(target, pipeline_output, "gui-nav", [3, 22], {})
+        context = replace(
+            context,
+            models=tuple(
+                replace(
+                    model, steps=(3, 22) if model.relative_path == "chosen.md" else (3,)
+                )
+                for model in context.models
+            ),
+        )
+        owned = []
+        for model in context.models:
+            artifact = gnn_dir / f"{model.artifact_stem}_parsed.json"
+            artifact.write_text("{}")
+            owned.append({"path": artifact.relative_to(pipeline_output).as_posix()})
+        summary_dir = pipeline_output / "00_pipeline_summary"
+        summary_dir.mkdir()
+        (summary_dir / "current_summary.json").write_text(
+            json.dumps({"run_id": context.run_id, "steps": [{"artifacts": owned}]})
+        )
+        context_file = context.write(pipeline_output / "context.json")
+        monkeypatch.setenv("GNN_RUN_CONTEXT_FILE", str(context_file))
+        monkeypatch.setenv("GNN_RUN_ID", context.run_id)
+        sections, total = collect_pipeline_outputs(pipeline_output)
+        assert total == 1
+        assert sections[0]["files"][0]["name"].startswith("chosen")
+        gui_output = pipeline_output / "22_gui_output"
+        assert generate_html_navigation(
+            pipeline_output, gui_output, logging.getLogger("test_nav")
+        )
+        content = (gui_output / "navigation.html").read_text()
+        assert "Indexed artifacts recorded so far for this run" in content
+        assert "excluded" not in content
+
     @pytest.mark.unit
     @pytest.mark.fast
     def test_caps_listing_but_counts_all_files(self, isolated_temp_dir: Any) -> None:
@@ -287,6 +365,58 @@ class TestCollectPipelineOutputs:
         assert total == MAX_FILES_PER_SECTION + 5
         assert sections[0]["file_count"] == MAX_FILES_PER_SECTION + 5
         assert len(sections[0]["files"]) == MAX_FILES_PER_SECTION
+        complete, _ = collect_pipeline_outputs(
+            pipeline_output, max_files_per_section=None
+        )
+        assert len(complete[0]["files"]) == MAX_FILES_PER_SECTION + 5
+        gui_output = pipeline_output / "22_gui_output"
+        assert generate_html_navigation(
+            pipeline_output, gui_output, logging.getLogger("test_nav")
+        )
+        content = (gui_output / "navigation.html").read_text()
+        assert 'class="more-files"' in content
+        assert "More files (5)" in content
+        assert 'href="../3_gnn_output/f24.json"' in content
+        assert 'id="artifact-search"' in content
+        assert 'id="artifact-type"' in content
+        assert 'role="status"' in content
+        assert "files may belong to earlier runs" in content
+        for step in ("9_advanced_viz_output", "16_analysis_output"):
+            interactive = pipeline_output / step
+            interactive.mkdir()
+            (interactive / "interactive_dashboard.html").write_text(
+                "<h1>Dashboard</h1>"
+            )
+            (interactive / "measurements.csv").write_text("time,value\n0,1\n")
+        assert generate_html_navigation(
+            pipeline_output, gui_output, logging.getLogger("test_nav")
+        )
+        content = (gui_output / "navigation.html").read_text()
+        for step in ("9_advanced_viz_output", "16_analysis_output"):
+            assert f'href="../{step}/interactive_dashboard.html"' in content
+            assert f'href="../{step}/measurements.csv"' in content
+        for step, filename in (
+            ("11_render_output", "authored.stan"),
+            ("12_execute_output", "trajectory.csv"),
+            ("15_audio_output", "sonification.flac"),
+            ("15_audio_output", "waveform.png"),
+            ("22_gui_output", "diagram.mmd"),
+        ):
+            directory = pipeline_output / step
+            directory.mkdir(exist_ok=True)
+            (directory / filename).write_text("artifact")
+        assert generate_html_navigation(
+            pipeline_output, gui_output, logging.getLogger("test_nav")
+        )
+        content = (gui_output / "navigation.html").read_text()
+        for filename in (
+            "authored.stan",
+            "trajectory.csv",
+            "sonification.flac",
+            "waveform.png",
+            "diagram.mmd",
+        ):
+            assert f'{filename}" target="_blank"' in content
 
 
 class TestNavigationEscaping:
@@ -296,20 +426,35 @@ class TestNavigationEscaping:
     @pytest.mark.fast
     def test_file_names_are_html_escaped(self, isolated_temp_dir: Any) -> None:
         pipeline_output = isolated_temp_dir / "output"
-        gui_output = pipeline_output / "22_gui_output"
+        gui_output = isolated_temp_dir / "elsewhere" / "nested" / "navigation"
         gui_output.mkdir(parents=True)
         hostile = pipeline_output / "3_gnn_output"
-        hostile.mkdir()
-        (hostile / 'a"<b>&c.json').write_text("{}")
+        hostile.mkdir(parents=True)
+        artifact = hostile / 'a"<b>&c #?%.json'
+        artifact.write_text("{}")
 
         assert generate_html_navigation(
             pipeline_output, gui_output, logging.getLogger("test_nav")
         )
 
         content = (gui_output / "navigation.html").read_text()
-        assert "a&quot;&lt;b&gt;&amp;c.json" in content
+        assert "a&quot;&lt;b&gt;&amp;c #?%.json" in content
         # the hostile name must never appear raw inside an attribute or element
-        assert 'a"<b>&c.json' not in content
+        assert 'a"<b>&c #?%.json' not in content
+
+        class Links(HTMLParser):
+            def handle_starttag(
+                self, tag: str, attrs: list[tuple[str, str | None]]
+            ) -> None:
+                if tag == "a":
+                    links.append(dict(attrs).get("href", ""))
+
+        links: list[str | None] = []
+        Links().feed(content)
+        artifact_url = next(link for link in links if link and "3_gnn_output" in link)
+        parsed = urlsplit(artifact_url)
+        assert not parsed.fragment and not parsed.query
+        assert (gui_output / unquote(parsed.path)).resolve() == artifact.resolve()
 
 
 class TestProcessGuiLogger:
