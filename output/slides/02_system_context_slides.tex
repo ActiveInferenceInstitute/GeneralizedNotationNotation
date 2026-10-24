@@ -142,6 +142,48 @@
 \usepackage{listings}
 \lstset{basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible}
 
+\usepackage{fvextra}
+\fvset{breaklines=true,breakanywhere=true,breaknonspaceingroup=true,breaksymbolleft={},breaksymbolright={},breakanywheresymbolpre={},breakanywheresymbolpost={}}
+\RecustomVerbatimEnvironment{verbatim}{Verbatim}{}
+
+\makeatletter
+\newbox\archive@titlebox
+\newdimen\archive@available
+\newcommand*\archivefigurebounded[1]{%
+  \sbox\pandoc@box{#1}%
+  \archive@available=\textheight%
+  \ifx\beamer@frametitle\@empty\else%
+    \setbox\archive@titlebox=\vbox{\vbox{}{\parskip0pt\usebeamertemplate***{frametitle}\vskip0.25em}}%
+    \advance\archive@available by-\ht\archive@titlebox%
+    \advance\archive@available by-\dp\archive@titlebox%
+  \fi%
+  \advance\archive@available by-\beamer@frametopskip%
+  \advance\archive@available by-2\baselineskip%
+  \ifdim\archive@available<1pt%
+    \PackageError{template}{Archive image frame has no title-safe image area}{}%
+  \fi%
+  \Gscale@div\@tempa{\archive@available}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{0.98\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi%
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}\fi%
+}
+\newcommand*\archivefigurecaptionnumber[2]{#2}
+\newenvironment{archivecaptionframe}{\par\begingroup}{\par\endgroup}
+\newenvironment{archiveimageframe}{\par\begingroup\centering\let\pandocbounded\archivefigurebounded}{\par\endgroup}
+\ifdefined\pandocbounded
+\renewcommand*\pandocbounded[1]{%
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{0.40\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{0.98\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi%
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+\fi
+\makeatother
+
 % Slide layout defaults for warning-clean scientific decks.
 \usepackage{etoolbox}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{}
@@ -333,11 +375,14 @@ verified on JAX and RxInfer in the v4 acceptance ledger;
 committed models.}\label{tbl:model_kinds}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-Model kind
+M\allowbreak{}o\allowbreak{}d\allowbreak{}e\allowbreak{}l
+k\allowbreak{}i\allowbreak{}n\allowbreak{}d
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Notation block
+N\allowbreak{}o\allowbreak{}t\allowbreak{}a\allowbreak{}t\allowbreak{}i\allowbreak{}o\allowbreak{}n
+b\allowbreak{}l\allowbreak{}o\allowbreak{}c\allowbreak{}k
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Exemplar folder
+E\allowbreak{}x\allowbreak{}e\allowbreak{}m\allowbreak{}p\allowbreak{}l\allowbreak{}a\allowbreak{}r
+f\allowbreak{}o\allowbreak{}l\allowbreak{}d\allowbreak{}e\allowbreak{}r
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Renderer(s)
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -347,11 +392,14 @@ Executor(s)
 \endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-Model kind
+M\allowbreak{}o\allowbreak{}d\allowbreak{}e\allowbreak{}l
+k\allowbreak{}i\allowbreak{}n\allowbreak{}d
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Notation block
+N\allowbreak{}o\allowbreak{}t\allowbreak{}a\allowbreak{}t\allowbreak{}i\allowbreak{}o\allowbreak{}n
+b\allowbreak{}l\allowbreak{}o\allowbreak{}c\allowbreak{}k
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Exemplar folder
+E\allowbreak{}x\allowbreak{}e\allowbreak{}m\allowbreak{}p\allowbreak{}l\allowbreak{}a\allowbreak{}r
+f\allowbreak{}o\allowbreak{}l\allowbreak{}d\allowbreak{}e\allowbreak{}r
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Renderer(s)
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -387,7 +435,9 @@ process over a horizon \(T\), factorized as in
 eq.~\ref{eq:generative_model} following the standard formulation (Da
 Costa et al. 2020; Smith et al. 2022).
 
-\begin{equation}\protect\phantomsection\label{eq:generative_model}{P(o_{1:T},\, s_{1:T},\, \pi) \;=\; P(\pi)\; P(s_1) \prod_{t=1}^{T} P(o_t \mid s_t) \prod_{t=2}^{T} P(s_t \mid s_{t-1},\, \pi)}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq:generative_model}{
+P(o_{1:T},\, s_{1:T},\, \pi) \;=\; P(\pi)\; P(s_1) \prod_{t=1}^{T} P(o_t \mid s_t) \prod_{t=2}^{T} P(s_t \mid s_{t-1},\, \pi)
+}\end{equation}
 
 The four matrices named in the \texttt{StateSpaceBlock} are exactly the
 factors of eq.~\ref{eq:generative_model}, and this correspondence is
@@ -398,7 +448,9 @@ states to observation outcomes, given in eq.~\ref{eq:likelihood}.
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{The Discrete Categorical Kind}
-\begin{equation}\protect\phantomsection\label{eq:likelihood}{P(o_t = i \mid s_t = j) \;=\; A_{ij}, \qquad \sum_i A_{ij} = 1}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq:likelihood}{
+P(o_t = i \mid s_t = j) \;=\; A_{ij}, \qquad \sum_i A_{ij} = 1
+}\end{equation}
 
 The \texttt{B} matrix is the controlled transition dynamics: one
 column-stochastic slice per action, as in eq.~\ref{eq:transition}. The
@@ -412,16 +464,22 @@ on request, as described in sec.~4.
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{The Discrete Categorical Kind}
-\begin{equation}\protect\phantomsection\label{eq:transition}{P(s_{t+1} = i \mid s_t = j,\, u_t = k) \;=\; B^{(k)}_{ij}, \qquad \sum_i B^{(k)}_{ij} = 1}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq:transition}{
+P(s_{t+1} = i \mid s_t = j,\, u_t = k) \;=\; B^{(k)}_{ij}, \qquad \sum_i B^{(k)}_{ij} = 1
+}\end{equation}
 
 The \texttt{C} vector holds log-preferences over observations, which
 enter inference as the biased outcome distribution of
 eq.~\ref{eq:preference}; the \texttt{D} vector is the prior over initial
 hidden states, eq.~\ref{eq:prior}.
 
-\begin{equation}\protect\phantomsection\label{eq:preference}{\tilde{P}(o_t = i) \;=\; \sigma(C)_i \;=\; \frac{\exp C_i}{\sum_j \exp C_j}}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq:preference}{
+\tilde{P}(o_t = i) \;=\; \sigma(C)_i \;=\; \frac{\exp C_i}{\sum_j \exp C_j}
+}\end{equation}
 
-\begin{equation}\protect\phantomsection\label{eq:prior}{P(s_1 = i) \;=\; D_i, \qquad \sum_i D_i = 1}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq:prior}{
+P(s_1 = i) \;=\; D_i, \qquad \sum_i D_i = 1
+}\end{equation}
 
 Given those factors, perception is approximate Bayesian inference: a
 variational posterior \(Q(s)\) is fitted by minimizing the variational
@@ -431,14 +489,21 @@ and an accuracy term (Friston 2010).
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{The Discrete Categorical Kind}
-\begin{equation}\protect\phantomsection\label{eq:vfe}{F[Q] \;=\; \underbrace{D_{\mathrm{KL}}\!\left[\,Q(s) \,\|\, P(s)\,\right]}_{\text{complexity}} \;-\; \underbrace{\mathbb{E}_{Q(s)}\!\left[\ln P(o \mid s)\right]}_{\text{accuracy}}}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq:vfe}{
+F[Q] \;=\; \underbrace{D_{\mathrm{KL}}\!\left[\,Q(s) \,\|\, P(s)\,\right]}_{\text{complexity}} \;-\; \underbrace{\mathbb{E}_{Q(s)}\!\left[\ln P(o \mid s)\right]}_{\text{accuracy}}
+}\end{equation}
 
 Action is expected-free-energy minimization: each policy \(\pi\) is
 scored over future steps \(\tau\) by eq.~\ref{eq:efe}, whose two terms
 are the information gain a policy is expected to yield and the extent to
 which its predicted outcomes match \texttt{C} (Da Costa et al. 2020).
 
-\begin{equation}\protect\phantomsection\label{eq:efe}{G(\pi) \;=\; -\underbrace{\mathbb{E}_{Q(o_\tau,\, s_\tau \mid \pi)}\!\left[\ln Q(s_\tau \mid o_\tau, \pi) - \ln Q(s_\tau \mid \pi)\right]}_{\text{epistemic value}} \;-\; \underbrace{\mathbb{E}_{Q(o_\tau \mid \pi)}\!\left[\ln \tilde{P}(o_\tau)\right]}_{\text{pragmatic value}}}\end{equation}
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Discrete Categorical Kind}
+\begin{equation}\protect\phantomsection\label{eq:efe}{
+G(\pi) \;=\; -\underbrace{\mathbb{E}_{Q(o_\tau,\, s_\tau \mid \pi)}\!\left[\ln Q(s_\tau \mid o_\tau, \pi) - \ln Q(s_\tau \mid \pi)\right]}_{\text{epistemic value}} \;-\; \underbrace{\mathbb{E}_{Q(o_\tau \mid \pi)}\!\left[\ln \tilde{P}(o_\tau)\right]}_{\text{pragmatic value}}
+}\end{equation}
 
 The policy posterior then combines those scores with the habit prior
 \texttt{E} declared in the specification, as in eq.~\ref{eq:policy}, and
@@ -447,7 +512,9 @@ the selected action \(u\) is sampled from it.
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{The Discrete Categorical Kind}
-\begin{equation}\protect\phantomsection\label{eq:policy}{Q(\pi) \;=\; \sigma\!\left(\ln E - G\right)}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq:policy}{
+Q(\pi) \;=\; \sigma\!\left(\ln E - G\right)
+}\end{equation}
 
 The discrete categorical kind is the language's original and most
 densely exercised target: 29 of the 38 exemplar specifications in the
@@ -463,10 +530,10 @@ factors (a factored model), per-level and per-agent matrix declarations
 (sec.~\breaktt{sec:structural\_variants}), and Dirichlet priors that turn a
 declared matrix into a learned latent
 (sec.~7) are all extensions of this same
-categorical substrate.
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{The Discrete Categorical Kind}
+categorical substrate.
 
 Recent work continues to refine how expected-free-energy objectives
 relate to variational inference and to alternative but equivalent
@@ -481,10 +548,10 @@ and, if dynamic, how the horizon \(T\) and its discretization are
 organized. Because every one of these sections is explicit text, a GNN
 file is at once human-readable, diffable under version control, and
 unambiguous to a parser --- the property that makes the declared source
-contract inspectable; numerical replay also depends on the chosen
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{The Discrete Categorical Kind}
+contract inspectable; numerical replay also depends on the chosen
 inference and runtime configuration.
 \end{frame}
 
@@ -498,9 +565,17 @@ state-space model stepped in discrete time: a Gaussian latent state
 \(x_t \in \mathbb{R}^n\) evolves linearly, and a Gaussian observation
 \(y_t \in \mathbb{R}^m\) reads it out linearly.
 
-\begin{equation}\protect\phantomsection\label{eq:lgssm_state}{x_1 \sim \mathcal{N}(\mu_0,\, \Sigma_0), \qquad x_t = F\, x_{t-1} + u_{t-1} + w_t, \qquad w_t \sim \mathcal{N}(0,\, Q)}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq:lgssm_state}{
+x_1 \sim \mathcal{N}(\mu_0,\, \Sigma_0), \qquad x_t = F\, x_{t-1} + u_{t-1} + w_t, \qquad w_t \sim \mathcal{N}(0,\, Q)
+}\end{equation}
 
-\begin{equation}\protect\phantomsection\label{eq:lgssm_obs}{y_t = H\, x_t + v_t, \qquad v_t \sim \mathcal{N}(0,\, R)}\end{equation}
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Continuous Linear-Gaussian
+Kind}
+\begin{equation}\protect\phantomsection\label{eq:lgssm_obs}{
+y_t = H\, x_t + v_t, \qquad v_t \sim \mathcal{N}(0,\, R)
+}\end{equation}
 
 Here \texttt{F} is the state-transition matrix, \texttt{H} the
 observation matrix, \texttt{Q} the process-noise covariance, and
@@ -509,16 +584,16 @@ observation matrix, \texttt{Q} the process-noise covariance, and
 prior over the initial state, so the model's randomness is declared
 entirely in its parameterization rather than in categorical tables. The
 shape contract mirrors the semantics: \texttt{prior\_mean} must carry
-\end{frame}
-
-\begin{frame}[fragile,allowframebreaks]{The Continuous Linear-Gaussian
-Kind}
 exactly \(n\) entries, and \texttt{Q}, \texttt{R}, and
 \texttt{prior\_cov} must be \(n \times n\), \(m \times m\), and
 \(n \times n\) respectively --- a mismatch is a validation-time
 diagnostic in the notation, not a runtime surprise inside a numerical
 backend.
 
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Continuous Linear-Gaussian
+Kind}
 The kind also carries an optional closed-loop control structure. When a
 specification declares \texttt{goal\_mean} (\(\mu^\star\), the preferred
 state) and \texttt{control\_gain} (\(k\), a scalar proportional gain)
@@ -526,12 +601,14 @@ alongside a control input \(u_t\), the rendered model closes the loop on
 beliefs: the controller steers the filtered posterior mean toward the
 preferred state.
 
+\begin{equation}\protect\phantomsection\label{eq:closed_loop}{
+u_t \;=\; k \,\bigl(\mu^\star - \mu_t\bigr), \qquad \mu_t = \mathbb{E}\!\left[x_t \,\middle|\, y_{1:t}\right]
+}\end{equation}
+
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{The Continuous Linear-Gaussian
 Kind}
-\begin{equation}\protect\phantomsection\label{eq:closed_loop}{u_t \;=\; k \,\bigl(\mu^\star - \mu_t\bigr), \qquad \mu_t = \mathbb{E}\!\left[x_t \,\middle|\, y_{1:t}\right]}\end{equation}
-
 This is how
 \breaktt{input/gnn\_files/continuous/continuous\_navigation.md} is built:
 a two-dimensional navigator whose position persists between steps
@@ -565,12 +642,12 @@ than by merging the agents into one joint table.
 exemplar --- three agents coordinating through environmental traces
 (stigmergy) on a shared grid, with no direct communication between them
 --- alongside \breaktt{multi\_agent\_coordination.md} and a compact
+clustered mean-field acceptance fixture.
+
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Multi-Agent, Hierarchical, and
 Structural Kinds}
-clustered mean-field acceptance fixture.
-
 \textbf{Hierarchical.} Per-level matrix keys (\texttt{A\_level1},
 \texttt{B\_level1}, \texttt{A\_level2}, \ldots) declare a multi-level
 model in which one level's beliefs supply another level's context ---
@@ -659,10 +736,10 @@ one hidden-state factor, and three actions --- and every tensor of
 eq.~\ref{eq:generative_model} through eq.~\ref{eq:policy} is present by
 name: \texttt{A} carries the likelihood mapping, \texttt{B} carries the
 controlled transitions in the canonical column-stochastic slice order,
+\texttt{C} holds log-preferences, \texttt{D} the initial-state prior,
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Reading Exemplars by Kind}
-\texttt{C} holds log-preferences, \texttt{D} the initial-state prior,
 and \texttt{E} the habit prior. The \texttt{Connections} section then
 wires the inference cycle explicitly --- \texttt{D\textgreater{}s}
 conditions the initial belief, \texttt{s-A} ties states to observations,
@@ -737,12 +814,12 @@ pipeline run over a mixed-kind corpus neither inflates its failures nor
 hides its gaps. At the execute step the same discipline applies, with
 skipped and degraded lanes recorded as explicit statuses. At the
 analysis and reporting steps, the receipts keep the distinctions
+legible: a continuous model whose categorical-only lanes report
+\texttt{unsupported} by capability reads differently from a discrete
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{What the Kind Classification
 Governs}
-legible: a continuous model whose categorical-only lanes report
-\texttt{unsupported} by capability reads differently from a discrete
 model whose continuous attempt failed, and the per-family acceptance
 ledger that the model-family gate writes carries those statuses per
 family, per backend, per step.
@@ -769,44 +846,57 @@ middle steps render visualizations, export the model to executable
 backends, and run simulations; later steps perform analysis, reporting,
 and downstream integration. The declared orchestration prerequisites
 among the steps form the directed acyclic graph shown in
-fig.~\ref{fig:pipeline}. The graph records which steps must precede
+fig.~2. The graph records which steps must precede
 others; artifact receipts separately identify source inputs and produced
 files, including optional enrichments.
 
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{The Processing Pipeline}
-\begin{figure}
-\centering
-\includegraphics[width=0.9\linewidth,height=0.40\textheight,keepaspectratio,alt={The
-25-step GNN processing pipeline as a directed acyclic graph, arranged in
-rowwise topological order and colored by execution phase (legend above
-the nodes). Each node is the thin step orchestrator under src/gnn/ named
-in tbl.~; each arrow is a required orchestration prerequisite parsed
-from the Data Dependency Graph block of src/gnn/STEP\_INDEX.md, which
-mirrors the live step registry. Parsing (Step 3) precedes many later
-steps. Optional artifact enrichments are documented separately and are
-not shown as required edges. The figure is generated from
-src/gnn/STEP\_INDEX.md at commit d8baec291; its footer restates the step
-count, the number of required prerequisites, and the layout
-rule.}]{../figures/gnn_pipeline_dag.png}
-\caption{The 25-step GNN processing pipeline as a directed acyclic
-graph, arranged in rowwise topological order and colored by execution
-phase (legend above the nodes). Each node is the thin step orchestrator
-under \protect\texttt{src/gnn/} named in tbl.~\ref{tbl:pipeline_steps};
-each arrow is a required orchestration prerequisite parsed from the Data
-Dependency Graph block of \protect\breaktt{src/gnn/STEP\_INDEX.md}, which
-mirrors the live step registry. Parsing (Step 3) precedes many later
-steps. Optional artifact enrichments are documented separately and are
-not shown as required edges. The figure is generated from
-\protect\breaktt{src/gnn/STEP\_INDEX.md} at commit d8baec291; its footer
-restates the step count, the number of required prerequisites, and the
-layout rule.}\label{fig:pipeline}
-\end{figure}
+
+\refstepcounter{figure}\label{fig:pipeline}
+
+\begin{archiveimageframe}
+
+\includegraphics[width=0.9\linewidth,height=0.40\textheight,keepaspectratio,alt={The 25-step GNN processing pipeline as a directed acyclic graph, arranged in rowwise topological order and colored by execution phase (legend above the nodes). Each node is the thin step orchestrator under src/gnn/ named in tbl.~; each arrow is a required orchestration prerequisite parsed from the Data Dependency Graph block of src/gnn/STEP\_INDEX.md, which mirrors the live step registry. Parsing (Step 3) precedes many later steps. Optional artifact enrichments are documented separately and are not shown as required edges. The figure is generated from src/gnn/STEP\_INDEX.md at commit 66078561e; its footer restates the step count, the number of required prerequisites, and the layout rule.}]{../figures/gnn_pipeline_dag.png}
+
+\end{archiveimageframe}
 
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{The Processing Pipeline}
+
+\begin{archivecaptionframe}
+
+\figurename~2:\ The
+25-step GNN processing pipeline as a directed acyclic graph, arranged in
+rowwise topological order and colored by execution phase (legend above
+the nodes). Each node is the thin step orchestrator under
+\texttt{src/gnn/} named in tbl.~\ref{tbl:pipeline_steps}; each arrow is
+a required orchestration prerequisite parsed from the Data Dependency
+Graph block of \breaktt{src/gnn/STEP\_INDEX.md}, which mirrors the live
+step registry. Parsing (Step
+
+\end{archivecaptionframe}
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Processing Pipeline}
+
+\begin{archivecaptionframe}
+
+3) precedes many later steps. Optional artifact enrichments are
+documented separately and are not shown as required edges. The figure is
+generated from \breaktt{src/gnn/STEP\_INDEX.md} at commit 66078561e; its
+footer restates the step count, the number of required prerequisites,
+and the layout rule.
+
+\end{archivecaptionframe}
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Processing Pipeline}
+
 The per-step responsibilities are enumerated in
 tbl.~\ref{tbl:pipeline_steps}; each row names a step and the
 transformation it owns within the 0--24 range.
@@ -821,27 +911,27 @@ transformation it owns within the 0--24 range.
 \caption{The pipeline steps with the thin orchestrator module that owns
 each and the one-line purpose parsed from the master table in
 \protect\breaktt{src/gnn/STEP\_INDEX.md}. Read the Step column against
-the arrows of fig.~\ref{fig:pipeline}: each row's purpose is the
+the arrows of fig.~2: each row's purpose is the
 transformation that module owns, and the table is regenerated from the
 index at every build, so it cannot drift from the code it
 describes.}\label{tbl:pipeline_steps}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedleft
-Step
+S\allowbreak{}t\allowbreak{}e\allowbreak{}p
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Module
+M\allowbreak{}o\allowbreak{}d\allowbreak{}u\allowbreak{}l\allowbreak{}e
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Purpose
+P\allowbreak{}u\allowbreak{}r\allowbreak{}p\allowbreak{}o\allowbreak{}s\allowbreak{}e
 \end{minipage} \\
 \midrule\noalign{}
 \endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedleft
-Step
+S\allowbreak{}t\allowbreak{}e\allowbreak{}p
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Module
+M\allowbreak{}o\allowbreak{}d\allowbreak{}u\allowbreak{}l\allowbreak{}e
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Purpose
+P\allowbreak{}u\allowbreak{}r\allowbreak{}p\allowbreak{}o\allowbreak{}s\allowbreak{}e
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
@@ -857,6 +947,28 @@ estimation \\
 checking \\
 7 & \texttt{7\_export.py} & Multi-format export (JSON, XML, GraphML,
 GEXF, Pickle) \\
+\bottomrule\noalign{}
+\end{longtable}
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Processing Pipeline}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedleft
+S\allowbreak{}t\allowbreak{}e\allowbreak{}p
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+M\allowbreak{}o\allowbreak{}d\allowbreak{}u\allowbreak{}l\allowbreak{}e
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+P\allowbreak{}u\allowbreak{}r\allowbreak{}p\allowbreak{}o\allowbreak{}s\allowbreak{}e
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
 8 & \breaktt{8\_visualization.py} & Graph \& matrix visualization
 generation \\
 9 & \breaktt{9\_advanced\_viz.py} & Interactive / advanced visualization
@@ -871,6 +983,29 @@ interpretation \\
 14 & \breaktt{14\_ml\_integration.py} & Machine learning integration \&
 model training \\
 15 & \texttt{15\_audio.py} & Audio sonification generation (SAPF) \\
+\bottomrule\noalign{}
+\end{longtable}
+}
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Processing Pipeline}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedleft
+S\allowbreak{}t\allowbreak{}e\allowbreak{}p
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+M\allowbreak{}o\allowbreak{}d\allowbreak{}u\allowbreak{}l\allowbreak{}e
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+P\allowbreak{}u\allowbreak{}r\allowbreak{}p\allowbreak{}o\allowbreak{}s\allowbreak{}e
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
 16 & \texttt{16\_analysis.py} & Statistical analysis \& cross-simulation
 aggregation \\
 17 & \breaktt{17\_integration.py} & System integration \& cross-module
@@ -885,10 +1020,34 @@ registration \\
 22 & \texttt{22\_gui.py} & Interactive GNN constructor GUI \\
 23 & \texttt{23\_report.py} & Comprehensive analysis report
 generation \\
+\bottomrule\noalign{}
+\end{longtable}
+}
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Processing Pipeline}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedleft
+S\allowbreak{}t\allowbreak{}e\allowbreak{}p
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+M\allowbreak{}o\allowbreak{}d\allowbreak{}u\allowbreak{}l\allowbreak{}e
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+P\allowbreak{}u\allowbreak{}r\allowbreak{}p\allowbreak{}o\allowbreak{}s\allowbreak{}e
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
 24 & \breaktt{24\_intelligent\_analysis.py} & AI-powered pipeline
 analysis \& executive reports \\
 \bottomrule\noalign{}
 \end{longtable}
+}
 
 \end{frame}
 
@@ -924,47 +1083,67 @@ and factor structure for graphical visualization, and input to supported
 executable renderers. Source identity and validation receipts connect
 these representations to the authored model; runtime readiness and
 model-kind admission govern which simulations can execute.
-fig.~\ref{fig:triple_play} depicts these three faces and the shared
+fig.~3 depicts these three faces and the shared
 specification at their center.
 
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{The Triple Play}
-\begin{figure}
-\centering
-\includegraphics[width=0.7\linewidth,height=0.40\textheight,keepaspectratio,alt={The
+
+\refstepcounter{figure}\label{fig:triple_play}
+
+\begin{archiveimageframe}
+
+\includegraphics[width=0.7\linewidth,height=0.40\textheight,keepaspectratio,alt={The Triple Play: one GNN text specification (left) and its three coordinated projections (right) --- the human-readable text form, graphical model visualizations, and executable simulation code. All three arrows originate at the same source box to show their shared parsed input. Source binding, parameter validation, and semantic-fidelity checks provide evidence of agreement among the projections. The executable node summarizes 12 of 12 registered render targets with implemented Step 12 execution adapters and previews three by name; execution depends on runtime readiness, admitted model kind, and a successful source-bound run receipt. Counts are producer tokens at commit 66078561e, and the panel is generated by scripts/manuscript\_fig\_triple\_play.py. Take-away: a model is authored once and then read, seen, and run from that single source.}]{../figures/gnn_triple_play.png}
+
+\end{archiveimageframe}
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Triple Play}
+
+\begin{archivecaptionframe}
+
+\figurename~3:\ The
 Triple Play: one GNN text specification (left) and its three coordinated
 projections (right) --- the human-readable text form, graphical model
 visualizations, and executable simulation code. All three arrows
 originate at the same source box to show their shared parsed input.
 Source binding, parameter validation, and semantic-fidelity checks
-provide evidence of agreement among the projections. The executable node
-summarizes 12 of 12 registered render targets with implemented Step 12
-execution adapters and previews three by name; execution depends on
-runtime readiness, admitted model kind, and a successful source-bound
-run receipt. Counts are producer tokens at commit d8baec291, and the
-panel is generated by scripts/manuscript\_fig\_triple\_play.py.
-Take-away: a model is authored once and then read, seen, and run from
-that single source.}]{../figures/gnn_triple_play.png}
-\caption{The Triple Play: one GNN text specification (left) and its
-three coordinated projections (right) --- the human-readable text form,
-graphical model visualizations, and executable simulation code. All
-three arrows originate at the same source box to show their shared
-parsed input. Source binding, parameter validation, and
-semantic-fidelity checks provide evidence of agreement among the
-projections. The executable node summarizes 12 of 12 registered render
-targets with implemented Step 12 execution adapters and previews three
-by name; execution depends on runtime readiness, admitted model kind,
-and a successful source-bound run receipt. Counts are producer tokens at
-commit d8baec291, and the panel is generated by
-\protect\breaktt{scripts/manuscript\_fig\_triple\_play.py}. Take-away: a
-model is authored once and then read, seen, and run from that single
-source.}\label{fig:triple_play}
-\end{figure}
+provide evidence of agreement among the projections. The
+
+\end{archivecaptionframe}
 
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{The Triple Play}
+
+\begin{archivecaptionframe}
+
+executable node summarizes 12 of 12 registered render targets with
+implemented Step 12 execution adapters and previews three by name;
+execution depends on runtime readiness, admitted model kind, and a
+successful source-bound run receipt. Counts are producer tokens at
+commit 66078561e, and the panel is generated by
+\breaktt{scripts/manuscript\_fig\_triple\_play.py}. Take-away: a model is
+authored once and then read,
+
+\end{archivecaptionframe}
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Triple Play}
+
+\begin{archivecaptionframe}
+
+seen, and run from that single source.
+
+\end{archivecaptionframe}
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Triple Play}
+
 Each face derives from a shared authored source. The text is the
 contract a researcher reads and reviews; the visualizations expose the
 declared factor-graph structure for inspection and communication; and
