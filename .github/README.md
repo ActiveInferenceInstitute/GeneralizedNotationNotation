@@ -32,7 +32,7 @@ analysis and publication. Start with the CLI below, or explore the
 
 This major version adds replayable numerical witnesses, interactive evidence
 inspection and configurable file workers. It targets coordinated FEP_Formal
-2.0.1 qualification against the current scientific sources; see the
+2 qualification against the current scientific sources; see the
 [paired release procedure](../docs/development/fep_lean_paired_revision.md).
 Version metadata does not establish publication or completed pairing.
 [Candidate release notes](../CHANGELOG.md#501---2026-10-24) describe the changes;
