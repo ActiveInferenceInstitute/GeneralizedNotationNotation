@@ -565,7 +565,7 @@ def test_cli_output_cannot_overwrite_any_input_alias(tmp_path, alias):
             else:
                 output.hardlink_to(model)
         except OSError as exc:
-            pytest.skip(f"host cannot create {alias}: {exc}")
+            pytest.fail(f"Required {alias} creation failed: {exc}")
     before = {key: path.read_bytes() for key, path in inputs.items()}
     assert (
         main(

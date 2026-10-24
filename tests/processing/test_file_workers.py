@@ -187,7 +187,8 @@ def test_hard_worker_exit_and_job_timeout_fail_without_waiting_forever(
 
 
 @pytest.mark.timeout(5)
-@pytest.mark.skipif(os.name == "nt", reason="POSIX SIGTERM-ignore control")
+@pytest.mark.pipeline
+@pytest.mark.needs_posix
 def test_cancellation_kills_worker_even_when_sigterm_is_ignored(tmp_path: Path) -> None:
     marker = tmp_path / "ready"
     before = {p.pid for p in multiprocessing.active_children()}
