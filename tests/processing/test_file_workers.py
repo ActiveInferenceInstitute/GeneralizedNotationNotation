@@ -6,6 +6,7 @@ import multiprocessing
 import os
 import re
 import signal
+import threading
 import time
 from concurrent.futures import Future
 from concurrent.futures.process import BrokenProcessPool
@@ -26,6 +27,11 @@ def _delayed_identity(job: tuple[int, float]) -> int:
     value, delay = job
     time.sleep(delay)
     return value
+
+
+def _mark_worker_ready(directory: str) -> None:
+    """Announce completion of this spawned interpreter's cold imports."""
+    (Path(directory) / str(os.getpid())).touch()
 
 
 def _hard_exit(_job: int) -> int:
@@ -153,37 +159,158 @@ def test_spawned_file_workers_preserve_results_and_cancel_without_children(
     assert {p.pid for p in multiprocessing.active_children()} <= before
 
 
-@pytest.mark.timeout(5)
 @pytest.mark.parametrize("public_kill", [True, False])
 def test_hard_worker_exit_and_job_timeout_fail_without_waiting_forever(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, public_kill: bool
 ) -> None:
+    # Four cold spawn pools can exceed five seconds under xdist/coverage. Each
+    # actual fault still has its own five-second completion/cleanup deadline;
+    # cold interpreter readiness has a separate bounded startup allowance.
+    import gnn.utils.file_workers as workers_module
+
+    pool_type = workers_module.ProcessPoolExecutor
     if not public_kill:
-        monkeypatch.setattr(
-            "gnn.utils.file_workers.ProcessPoolExecutor.kill_workers",
-            None,
-            raising=False,
-        )
+        monkeypatch.setattr(pool_type, "kill_workers", None, raising=False)
     before = {p.pid for p in multiprocessing.active_children()}
-    with pytest.raises(BrokenProcessPool):
-        list(ordered_file_map(_hard_exit, [0, 1], workers=2))
-    with pytest.raises(TimeoutError, match="job timeout"):
-        list(ordered_file_map(_job_timeout, [0, 1], workers=2))
-    with pytest.raises(
-        (AttributeError, TypeError, PicklingError), match="pickle|local"
-    ):
-        list(ordered_file_map(lambda _job: 1, [0, 1], workers=2))
+    phases: list[dict[str, Any]] = []
+    timings: list[dict[str, Any]] = []
+
+    def is_alive(process: Any) -> bool:
+        try:
+            return process.is_alive()
+        except ValueError:
+            return False  # The executor already reaped and closed its Process.
+
+    def kill_owned(processes: tuple[Any, ...]) -> None:
+        for process in processes:
+            try:
+                process.kill()
+            except (OSError, ValueError):
+                pass
+
+    def ready_pool(**kwargs: Any) -> Any:
+        directory = tmp_path / f"pool-{len(phases)}-ready"
+        directory.mkdir()
+        started = time.monotonic()
+        pool = pool_type(
+            **kwargs, initializer=_mark_worker_ready, initargs=(str(directory),)
+        )
+        try:
+            warm = [
+                pool.submit(_delayed_identity, (index, 0.0))
+                for index in range(kwargs["max_workers"])
+            ]
+            owned = tuple(pool._processes.values())
+            startup_deadline = started + 30
+            while not all((directory / str(p.pid)).is_file() for p in owned):
+                assert time.monotonic() < startup_deadline, "spawn startup exceeded 30s"
+                for future in warm:
+                    if future.done():
+                        future.result()
+                time.sleep(0.01)
+            for future in warm:
+                future.result(timeout=max(0.001, startup_deadline - time.monotonic()))
+            assert time.monotonic() < startup_deadline, "spawn startup exceeded 30s"
+        except BaseException:
+            owned = tuple((getattr(pool, "_processes", None) or {}).values())
+            kill_owned(owned)
+            for process in owned:
+                try:
+                    process.join(timeout=1)
+                except ValueError:
+                    pass
+            pool.shutdown(wait=False, cancel_futures=True)
+            raise
+        expired = threading.Event()
+
+        def overrun() -> None:
+            expired.set()
+            # Test emergency cleanup only: retain the failure, and signal only
+            # captured Process objects belonging to this one actual pool.
+            kill_owned(owned)
+
+        timer = threading.Timer(5, overrun)
+        timer.daemon = True
+        phase = {
+            "owned": owned,
+            "pids": tuple(p.pid for p in owned),
+            "expired": expired,
+            "timer": timer,
+            "ready_at": time.monotonic(),
+            "startup_seconds": time.monotonic() - started,
+        }
+        phases.append(phase)
+        timer.start()
+        return pool
+
+    monkeypatch.setattr(workers_module, "ProcessPoolExecutor", ready_pool)
+
+    def check_fault(
+        function: Any, jobs: Any, expected: Any, match: str | None = None
+    ) -> None:
+        previous = len(phases)
+        try:
+            with pytest.raises(expected, match=match):
+                list(ordered_file_map(function, jobs, workers=2))
+        finally:
+            if len(phases) > previous:
+                phase = phases[-1]
+                phase["timer"].cancel()
+                phase["timer"].join(timeout=1)
+                finished = time.monotonic()
+                leaked = [
+                    pid
+                    for p, pid in zip(phase["owned"], phase["pids"], strict=True)
+                    if is_alive(p)
+                ]
+                # Ensure an assertion failure does not leave test-owned children.
+                if leaked:
+                    kill_owned(phase["owned"])
+                    for process in phase["owned"]:
+                        try:
+                            process.join(timeout=1)
+                        except ValueError:
+                            pass
+                elapsed = finished - phase["ready_at"]
+                timings.append(
+                    {
+                        "fault": function.__name__,
+                        "startup_seconds": phase["startup_seconds"],
+                        "lifecycle_seconds": elapsed,
+                        "worker_pids": list(phase["pids"]),
+                        "watchdog_fired": phase["expired"].is_set(),
+                        "leaked_on_return": leaked,
+                    }
+                )
+                assert not phase["timer"].is_alive(), "lifecycle watchdog did not stop"
+                assert not phase["expired"].is_set(), (
+                    "file-worker lifecycle exceeded 5s"
+                )
+                assert elapsed < 5, "ready-to-exception/cleanup exceeded 5s"
+                assert not leaked, "file workers survived the expected failure"
+                assert {p.pid for p in multiprocessing.active_children()} <= before
+        assert len(phases) == previous + 1, "fault occurred before worker readiness"
+
+    check_fault(_hard_exit, [0, 1], BrokenProcessPool)
+    check_fault(_job_timeout, [0, 1], TimeoutError, "job timeout")
+    check_fault(
+        lambda _job: 1,
+        [0, 1],
+        (AttributeError, TypeError, PicklingError),
+        "pickle|local",
+    )
     if os.name != "nt":
         marker = str(tmp_path / "ignoring_peer_ready")
-        with pytest.raises(BrokenProcessPool):
-            list(
-                ordered_file_map(
-                    _crash_with_ignoring_peer,
-                    [(True, marker), (False, marker)],
-                    workers=2,
-                )
-            )
-    assert {p.pid for p in multiprocessing.active_children()} <= before
+        check_fault(
+            _crash_with_ignoring_peer,
+            [(True, marker), (False, marker)],
+            BrokenProcessPool,
+        )
+        assert Path(marker).is_file(), "SIGTERM-ignoring peer never became ready"
+    (tmp_path / "lifecycle-timings.json").write_text(
+        json.dumps(timings, indent=2) + "\n"
+    )
+    print("file_worker_lifecycle " + json.dumps(timings))
 
 
 @pytest.mark.timeout(5)
