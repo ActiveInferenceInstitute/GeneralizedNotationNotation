@@ -544,18 +544,54 @@ def test_unverified_runtime_cannot_post_whole_context(
 
 
 def test_runtime_check_and_chat_share_the_original_deadline(
-    daemon: Callable[..., Any],
+    daemon: Callable[..., Any], monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    host, received, _ = daemon(version_delay=0.02, delay=0.055)
-    start = time.monotonic()
-    with pytest.raises(TimeoutError):
+    requests: list[tuple[module._ChatRequest, float]] = []
+    posts: list[module._ChatRequest] = []
+    original_init = module._ChatRequest.__init__
+    original_remaining = module._ChatRequest.remaining
+    original_exchange = module._ChatRequest._exchange
+
+    def track(request: module._ChatRequest, *args: Any) -> None:
+        original_init(request, *args)
+        requests.append((request, request.deadline))
+
+    def remaining(request: module._ChatRequest) -> float:
+        if requests and request is requests[0][0]:
+            assert request.deadline == requests[0][1]
+        return original_remaining(request)
+
+    def exchange(
+        request: module._ChatRequest, method: str, path: str, body: bytes | None = None
+    ) -> None:
+        if method == "POST":
+            assert request is requests[0][0]
+            assert request.deadline == requests[0][1]
+            posts.append(request)
+        original_exchange(request, method, path, body)
+
+    def expire_after_post() -> None:
+        assert posts == [requests[0][0]]
+        # Invoke the real guard's expiry after actual HTTP admission, rather
+        # than requiring runner scheduling and preflight to fit inside 80ms.
+        requests[0][0]._expire()
+
+    host, received, _ = daemon(after_chat=expire_after_post)
+    monkeypatch.setattr(module._ChatRequest, "__init__", track)
+    monkeypatch.setattr(module._ChatRequest, "remaining", remaining)
+    monkeypatch.setattr(module._ChatRequest, "_exchange", exchange)
+    provider = OllamaProvider(base_url=host, timeout=30)
+    assert provider.initialize()
+    with pytest.raises(TimeoutError, match="deadline"):
         asyncio.run(
-            _provider(host).generate_response(
-                [LLMMessage("user", "hello")], LLMConfig(model=MODEL, timeout=0.08)
+            provider.generate_response(
+                [LLMMessage("user", "hello")], LLMConfig(model=MODEL, timeout=30)
             )
         )
     assert len(received) == 1
-    assert time.monotonic() - start < 0.2
+    assert received.get_paths == ["/api/version", "/api/tags", "/api/version"]
+    assert len(requests) == 2  # Generation owner and its bounded preflight.
+    assert all(not request._guard.is_alive() for request, _ in requests)
 
 
 def test_postflight_cannot_renew_generation_deadline(
