@@ -132,6 +132,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import sys
 import time
 
 import bnlearn as bn
@@ -190,6 +191,12 @@ def run_simulation(observations=None, transition_actions=None):
             truth.append(state)
     results = {
         "schema_version": "bnlearn_fixed_action_filter_v1", "framework": "bnlearn",
+        "inference_contract": "bnlearn_fixed_action_filter_v1",
+        "dtype": str(A.dtype), "initial_time": "first_observation_uses_prior",
+        "conditioning_horizon": list(range(1, steps + 1)),
+        "axes": {"A": ["observation", "state"], "B": ["next_state", "previous_state", "action"]},
+        "belief_axes": ["timestep", "state"],
+        "python_version": sys.version, "numpy_version": np.__version__,
         "model_name": PAYLOAD["model_name"], "model_kind": "discrete",
         "inference_mode": "exact_categorical_filtering", "control_mode": "fixed_transition_actions",
         "num_timesteps": steps, "num_states": n, "num_observations": m,

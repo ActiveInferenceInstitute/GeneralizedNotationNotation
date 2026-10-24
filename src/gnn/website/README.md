@@ -14,6 +14,7 @@ src/gnn/website/
 ├── renderer.py        # process_website + embed_* helpers + get_module_info
 ├── collection.py      # collect_website_data + private artifact collectors
 ├── generator.py       # Site orchestration and dataset-specific page content
+├── evidence.py        # Read-only recorded numerical/formal evidence in analysis.html
 ├── templates.py       # Offline page shell, styles, search script and escaping
 ├── inspection.py      # inspect_website / list_website_pages (pure site queries)
 └── mcp.py             # MCP tool registration (6 tools)
@@ -59,8 +60,15 @@ flowchart LR
 
 The site aggregates Step 8/9 visualizations, Step 16 analysis JSON, and
 reports from every numbered output dir under the `pipeline_output_root`
-(defaults to `output_dir.parent`). Step statuses come from
-`00_pipeline_summary/pipeline_execution_summary.json`.
+(defaults to `output_dir.parent`). Active runs use the matching
+`00_pipeline_summary/current_summary.json` and owned artifact inventory;
+standalone browsing uses `pipeline_execution_summary.json`. Missing current
+evidence leaves steps pending. Directory discovery is a standalone fallback.
+Running, warning, skipped and failed steps retain distinct badges.
+
+Every page provides keyboard focus indicators, a skip link, reduced-motion
+styles and a native mobile navigation disclosure that also works without
+JavaScript. The model search has an explicit label and announces result counts.
 
 ## API
 
@@ -101,6 +109,91 @@ variables/edges tables and embedded visualization assets — plus
 `search-index.json`. `create_pages(output_dir, data)` is an
 alternate entry point that performs the same build.
 
+Model pages retain associated images and interactive HTML visualizations.
+Artifact attachment uses exact model identity when provenance is available;
+standalone sites retain the filename matching convention. Interactive artifacts
+have an open link and a lazy, sandboxed preview. Viewers that need access blocked
+by the embedded sandbox can be opened through the adjacent link.
+
+The dashboard artifact browser links every admitted file relative to the actual
+website directory, including filenames with spaces or URL punctuation. The first
+ten files remain visible and a native disclosure lists the rest. During a bound
+pipeline run, the browser lists only recorded current artifacts for the selected
+models. Standalone generation labels its listing as a filesystem census; file
+presence does not establish a successful step outcome.
+
+### Recorded numerical and formal evidence
+
+`analysis.html` presents `gnn-semantic-witness-v2` receipts,
+`fep-semantic-witness-audit-v1` wrappers and historical
+`gnn-independent-numerical-witness-v1` records alongside existing Step 16
+cross-framework comparisons. The separate `fep-gnn-semantic-native-v1` adapter
+presents retained Lean compiler receipts as global formal artifacts, without
+claiming a source-model numerical binding. Text and reported-status filters work offline.
+Each entry retains per-quantity outcomes, absolute/relative differences and
+tolerances, refusal/unavailable reasons, scientific assumptions, reference and
+candidate records, artifact/runtime provenance and the complete saved receipt.
+Provenance shows retained body byte counts and digests; source, result and
+program text remain complete in the saved-receipt disclosure. JSON text nodes
+escape markup characters while preserving copyable JSON quotes. This avoids
+serializing and embedding the same large artifact bodies twice.
+V2 and wrapped-v2 entries also offer a bounded trace explorer when their recorded
+identities and array metadata permit aligned display. Select a source state axis,
+posterior means/probabilities or covariance diagonal variance, then inspect the
+reference/candidate values or their display residual. Failed numerical quantities
+remain explicitly diagnostic. Refused/unavailable identities, inconsistent
+metadata and malformed or oversized arrays produce no plot. The explorer admits
+at most eight conditioning prefixes and four state axes, uses inline SVG and
+includes a complete value table. Variance is distinct from mean; no confidence
+bands or verification conclusions are inferred.
+FEP formal references and unmatched assumptions remain inspectable separately
+from replay, Lean compilation, execution and pair-custody fields.
+
+The viewer displays unverified saved receipts. It does not replay computations,
+check source hashes or establish native execution, Lean compilation, theorem
+proof or universal equivalence. A reported `comparable` pair retains its
+individual quantity failures. A saved success flag is displayed as reported,
+with the same explicit boundary. The existing Step 16 collector retains
+current-run and selected-model filtering; pure-dict callers can supply the same
+records through the `analysis` dataset without running collectors.
+For a bound run, recognized witness receipts must declare a source SHA-256
+matching one of Step 20's selected original models. V2 receipts and the nested
+GNN witness in a FEP audit additionally require retained source UTF-8 bytes whose
+computed hash matches that identity; missing, inconsistent or unselected source
+identities are excluded even when their neutrally named receipt file is current.
+This selection check does not validate the recorded numerical or proof outcomes.
+An owned global native compiler receipt remains separate from model-source
+admission. Its table distinguishes positive theorem compilation from the expected
+rejection of false claims; an accepted negative control is a recorded rejection,
+not a failed positive theorem. Compiler/axiom output, errors, warnings, source
+hashes, `has_sorry` and toolchain identities remain inspectable. Its fixed scope is
+finite-weight normalization and scalar arbitrary-H prior measurement algebra;
+it does not establish GNN parsing/execution, matrix Gaussian conditioning or
+universal translation correctness.
+
+### Recorded resources and bounded rendering measurements
+
+When the pipeline summary supplies `execution_resources`, the index displays
+recorded logical CPUs and requested file, step and execution worker limits.
+A null step limit means automatic selection. `parallel_tiers` rows separately
+show recorded tier concurrency and estimated memory. Missing fields stay absent;
+configuration limits do not establish actual file-worker use or speedup.
+
+A local 2026-10-23 presentation measurement used the retained 15 JSON receipts
+(357,355 input bytes) and a deterministic 150-entry repetition. Seven warmed
+render samples excluded the separate profiling and allocation measurements;
+three complete seven-page writes were measured separately. On CPython 3.15.1,
+the 15-entry evidence render median fell from 5.48 ms to 3.62 ms and the
+150-entry median from 52.61 ms to 36.63 ms. HTML fell from 970,280 to 659,913
+bytes for 15 entries; traced peak allocations fell from 5.73 MB to 3.88 MB.
+CPython 3.14.9 produced identical HTML sizes, with render medians changing from
+5.19 ms to 3.71 ms and 53.37 ms to 38.72 ms respectively. These are bounded
+local presentation measurements, without a pipeline, native-inference or
+worker-scaling claim; 3.15 profiling does not change the supported runtime
+matrix. Input/source hashes, interpreter identities, individual samples,
+profiles and the measurement driver are retained under
+`out/e5-website-performance-2026-10-23/` in this workspace.
+
 ### Embedding helpers (`renderer.py`)
 
 All return `bool`:
@@ -120,8 +213,9 @@ All return `bool`:
   validation helper (accepts a dict or a simple string for tests).
 - `collect_website_data(pipeline_output_root, input_dir, assets_dir, *, output_dir=None, user_data=None) -> dict`
   — pure aggregation of all page inputs; step statuses come from
-  `00_pipeline_summary/pipeline_execution_summary.json` (dir-existence
-  heuristic only as fallback); MCP page data is sourced from the
+  the current summary for an active run, or
+  `00_pipeline_summary/pipeline_execution_summary.json` for standalone browsing
+  (directory fallback only in standalone mode); MCP page data is sourced from the
   step-21 artifacts (`21_mcp_output/mcp_processing_summary.json` and
   `registered_tools.json`), degrading to a truthful empty state when absent.
 - `get_pipeline_steps() -> tuple[StepInfo, ...]` — the immutable 25-step

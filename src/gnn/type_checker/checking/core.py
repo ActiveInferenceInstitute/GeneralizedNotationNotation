@@ -5,6 +5,7 @@ Provides the ``GNNTypeChecker`` class which orchestrates type checking
 of GNN files, validating syntax, dimensions, and type consistency.
 """
 
+import hashlib
 import json
 import logging
 import math
@@ -117,6 +118,14 @@ def estimate_file_resources(content: str) -> ResourceEstimate:
     }
 
 
+def _type_check_file_job(job: tuple[Path, bool, bool, str | None]) -> dict[str, Any]:
+    """Compute one validation/analysis pair in a worker, without output writes."""
+    path, verbose, strict, expected_hash = job
+    return GNNTypeChecker(strict_mode=strict)._compute_file(
+        path, verbose, strict, expected_hash
+    )
+
+
 class GNNTypeChecker:
     """Type checker for GNN files.
 
@@ -212,7 +221,12 @@ class GNNTypeChecker:
         )
 
     def validate_gnn_files(
-        self, target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
+        self,
+        target_dir: Path,
+        output_dir: Path,
+        verbose: bool = False,
+        cancel_token: Any = None,
+        **kwargs: Any,
     ) -> bool | int:
         """Validate every GNN file in a directory.
 
@@ -236,6 +250,22 @@ class GNNTypeChecker:
         logger = logging.getLogger("type_checker")
 
         try:
+            from gnn.pipeline.run_context import (
+                current_run_context,
+                selected_model_sources,
+            )
+            from gnn.utils.file_workers import (
+                check_file_work,
+                ordered_file_map,
+                resolve_file_workers,
+            )
+
+            context = current_run_context()
+            deadline = context.deadline_monotonic if context else None
+            requested_workers, executor_mode = resolve_file_workers(
+                kwargs.get("file_workers"), "process"
+            )
+            check_file_work(deadline, cancel_token)
             log_step_start(logger, "Processing type checker")
 
             output_dir.mkdir(parents=True, exist_ok=True)
@@ -253,7 +283,30 @@ class GNNTypeChecker:
             strict = bool(kwargs.get("strict", self.strict_mode))
             estimate_resources = bool(kwargs.get("estimate_resources", False))
 
-            gnn_files = self._discover_gnn_files(target_dir)
+            if context is not None:
+                from gnn.parsers.common import get_supported_gnn_extensions
+
+                gnn_files = selected_model_sources(
+                    target_dir,
+                    5,
+                    extensions=get_supported_gnn_extensions(
+                        include_binary_pickle=False
+                    ),
+                )
+            else:
+                gnn_files = self._discover_gnn_files(target_dir)
+            source_hashes = (
+                {m.artifact_stem: m.sha256 for m in context.selected_models(5)}
+                if context
+                else {}
+            )
+            worker_metadata: dict[str, Any] = {
+                "requested_workers": requested_workers,
+                "effective_workers": min(requested_workers, len(gnn_files)),
+                "executor": "serial",
+                "worker_pids": [],
+            }
+            results["worker_execution"] = worker_metadata
             if not gnn_files:
                 logger.warning("No GNN files found for type checking")
                 results["success"] = False
@@ -261,44 +314,54 @@ class GNNTypeChecker:
             else:
                 results["processed_files"] = len(gnn_files)
 
-                for gnn_file in gnn_files:
-                    try:
-                        try:
-                            content = gnn_file.read_text(encoding="utf-8")
-                        except Exception as read_error:
-                            content = None
-                            validation_result = self._invalid_file_result(
-                                gnn_file, str(read_error)
-                            )
-                        else:
-                            validation_result = self.validate_single_gnn_file(
-                                gnn_file, verbose, strict=strict, content=content
-                            )
-                        results["validation_results"].append(validation_result)
-                        if not validation_result.get("valid", False):
-                            results["success"] = False
-                        if any(
-                            "[GNN-E002]" in str(error)
-                            for error in validation_result.get("errors", [])
-                        ):
-                            b_orientation_failed = True
+                jobs = (
+                    (path, verbose, strict, source_hashes.get(path.stem))
+                    for path in gnn_files
+                )
+                # The serial path preserves instance overrides; spawned workers own fresh checkers.
+                from functools import partial
 
-                        type_analysis = self._analyze_types(
-                            gnn_file, verbose, content=content
-                        )
-                        results["type_analysis"].append(type_analysis)
-
-                    except Exception as e:
+                compute = (
+                    _type_check_file_job
+                    if worker_metadata["effective_workers"] > 1
+                    else partial(_type_check_with_instance, self)
+                )
+                for gnn_file, computed in zip(
+                    gnn_files,
+                    ordered_file_map(
+                        compute,
+                        jobs,
+                        workers=min(requested_workers, len(gnn_files)),
+                        executor=executor_mode,
+                        deadline=deadline,
+                        cancel_token=cancel_token,
+                        metadata=worker_metadata,
+                    ),
+                    strict=True,
+                ):
+                    check_file_work(deadline, cancel_token)
+                    if "error" in computed:
                         results["success"] = False
                         hard_failure = True
-                        error_info: dict[str, Any] = {
-                            "file": str(gnn_file),
-                            "error": str(e),
-                            "error_type": type(e).__name__,
-                        }
-                        results["errors"].append(error_info)
-                        logger.error(f"Error processing {gnn_file}: {e}")
+                        results["errors"].append(computed["error"])
+                        logger.error(
+                            "Error processing %s: %s",
+                            gnn_file,
+                            computed["error"]["error"],
+                        )
+                        continue
+                    validation_result = computed["validation"]
+                    results["validation_results"].append(validation_result)
+                    results["type_analysis"].append(computed["analysis"])
+                    if not validation_result.get("valid", False):
+                        results["success"] = False
+                    if any(
+                        "[GNN-E002]" in str(error)
+                        for error in validation_result.get("errors", [])
+                    ):
+                        b_orientation_failed = True
 
+            check_file_work(deadline, cancel_token)
             results_file = output_dir / "type_check_results.json"
             with open(results_file, "w") as f:
                 json.dump(results, f, indent=2)
@@ -309,6 +372,7 @@ class GNNTypeChecker:
             if visual_embeddings:
                 results["visual_embeddings"] = visual_embeddings
 
+            check_file_work(deadline, cancel_token)
             summary = self._generate_type_check_summary(results)
             summary_file = output_dir / "type_check_summary.md"
             with open(summary_file, "w") as f:
@@ -319,9 +383,15 @@ class GNNTypeChecker:
             with open(summary_json_file, "w") as f:
                 json.dump(summary_json, f, indent=2)
 
-            if estimate_resources:
-                self._write_resource_estimates(target_dir, output_dir, logger)
+            check_file_work(deadline, cancel_token)
+            if estimate_resources and (context is None or gnn_files):
+                # Resource reports must use this step's immutable selection too.
+                estimate_target = (
+                    gnn_files[0].parent if context and gnn_files else target_dir
+                )
+                self._write_resource_estimates(estimate_target, output_dir, logger)
 
+            check_file_work(deadline, cancel_token)
             if results["success"]:
                 log_step_success(logger, "Type checking completed successfully")
                 return True
@@ -345,6 +415,37 @@ class GNNTypeChecker:
         except Exception as e:
             log_step_error(logger, "Type checking failed", error=str(e))
             return False
+
+    def _compute_file(
+        self, path: Path, verbose: bool, strict: bool, expected_hash: str | None
+    ) -> dict[str, Any]:
+        """Read once and compute both per-file products; never publish artifacts."""
+        try:
+            try:
+                raw = path.read_bytes()
+                if expected_hash and hashlib.sha256(raw).hexdigest() != expected_hash:
+                    raise ValueError("Model source changed after run planning")
+                # Match read_text's universal-newline behavior after hashing raw bytes.
+                content = raw.decode("utf-8").replace("\r\n", "\n").replace("\r", "\n")
+            except (OSError, UnicodeError) as exc:
+                content = None
+                validation = self._invalid_file_result(path, str(exc))
+            else:
+                validation = self.validate_single_gnn_file(
+                    path, verbose, strict=strict, content=content
+                )
+            return {
+                "validation": validation,
+                "analysis": self._analyze_types(path, verbose, content=content),
+            }
+        except Exception as exc:
+            return {
+                "error": {
+                    "file": str(path),
+                    "error": str(exc),
+                    "error_type": type(exc).__name__,
+                }
+            }
 
     def _write_resource_estimates(
         self, target_dir: Path, output_dir: Path, logger: logging.Logger
@@ -608,3 +709,9 @@ class GNNTypeChecker:
             summary += "- No errors encountered\n"
 
         return summary
+
+
+def _type_check_with_instance(
+    checker: GNNTypeChecker, job: tuple[Path, bool, bool, str | None]
+) -> dict[str, Any]:
+    return checker._compute_file(*job)

@@ -24,7 +24,7 @@ class ArgumentDefinition:
     action: str | type[argparse.Action] | None = None
     nargs: str | int | None = None
     dest: Optional[str] = None
-    # When True with store_true/store_false, default is SUPPRESS so YAML/config can supply values
+    # Suppress omitted values so YAML can supply defaults for flags and typed options.
     use_suppress: bool = False
 
     def with_default(self, default: Any) -> "ArgumentDefinition":
@@ -55,7 +55,7 @@ class ArgumentDefinition:
             kwargs["default"] = self.default
         else:
             kwargs["type"] = self.arg_type
-            kwargs["default"] = self.default
+            kwargs["default"] = argparse.SUPPRESS if self.use_suppress else self.default
 
         if self.required:
             kwargs["required"] = True

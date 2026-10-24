@@ -1,4 +1,4 @@
-# Cross-repo custody: the fep_lean and GEO_INFER pairing contracts (GNN-04)
+# Cross-repo custody: the FEP_Formal and GEO_INFER pairing contracts (GNN-04)
 
 This is the canonical statement of GNN's cross-repo custody obligations. The
 GNN side hosts paired-revision CI for the fep_lean bridge pair, mirroring
@@ -7,44 +7,46 @@ the mechanism GEO_INFER already runs for this repository: its
 `.github/gnn-pair.json`. The GEO_INFER direction (GEO_INFER pinning GNN) is
 covered in the mirror-image section below.
 
+## Current-source qualification for GNN 5.0.0
+
+The active paired workflow checks the current GNN candidate against the exact
+FEP_Formal revision in `.github/fep-lean-pair.json`. It checks out one GNN tree
+and passes that tree and its exact revision to the runtime custody runner.
+There is no accepted-scientific-baseline checkout or release-root exception in
+the active workflow.
+
+GNN 5.0.0 preparation does not itself establish a synchronized pair. Current
+pair qualification requires a reviewed companion pin, successful strict bridge
+and current-Q7 source checks, fresh separately validated native evidence and
+the repository/release gates described below. Until those checks finish, any
+current-pair or publication claim remains unqualified. The workflow's source
+checks retain `native_claim_ready: false`; numerical witnesses and frontend
+displays do not establish native proof or generated-runner execution.
+
 <a id="fixed-baseline-for-gnn-421"></a>
 
-## Fixed baseline for GNN 4.3.0
+## Historical fixed baseline for GNN 4.2.1 and 4.3.0
 
-Introduced for GNN 4.2.1 and retained for 4.3.0, this policy targets the
-FEP_Formal revision already accepted with GNN 4.2.0,
-recorded in `.github/fep-lean-pair.json`. It does not wait for, modify or claim
-acceptance of newer FEP_Formal work. Full synchronization of both repositories
-is deferred to their next major release.
+GNN 4.2.1 and 4.3.0 used a bounded compatibility policy against the FEP_Formal
+revision accepted with GNN 4.2.0. Its exact 4.3.0 policy bytes are preserved in
+[`fep_4_3_0_baseline.json`](../releases/fep_4_3_0_baseline.json). This archival
+record is not an active workflow input; `.github/fep-release-baseline.json`
+is absent in the current release tree.
 
-The explicit policy in
-[`.github/fep-release-baseline.json`](../../.github/fep-release-baseline.json)
-binds that FEP revision, its exact GNN scientific baseline, the current package
-version and the reviewed dependency-lock hash. CI checks out **both** GNN
-revisions. The existing strict bridge status, finite/continuous emission and
-Q7 source checks run on the accepted scientific baseline. Separate current-release
-bookends verify every covered owner and reject additions, deletions or scientific
-code changes. Only the canonical package-version replacement in `pyproject.toml`
-and `src/gnn/__init__.py`, plus the explicitly reviewed frozen lock, may differ.
-The 4.3.0 numerical witnesses add test/reference and documentation surfaces;
-they do not change covered scientific runtime owners or renew formal proofs.
-The current GNN dependency/runtime matrix is qualified independently by ordinary,
-comprehensive-native, all-extras and installed-wheel workflows.
+The historical workflow checked both the accepted GNN scientific baseline and
+the current release. The declared delta allowed only canonical package-version
+replacements and the reviewed frozen lock. Owner additions, deletions,
+scientific changes, unrelated metadata changes and unreviewed locks were
+rejected. Historical receipts retained both GNN revisions, companion and owner
+hashes, the approved delta and `current_pair_synchronized: false`.
 
-Receipts retain both GNN revisions, the exact companion, all source/lock hashes,
-the approved delta and `current_pair_synchronized: false`. A green fixed-baseline
-run means **current release compatibility with the accepted scientific baseline**.
-It does not mean a fresh formal proof, current-release Q7 native compilation or
-full synchronization. Historical native receipts keep their original source pair.
-The controls reject scientific changes, added owners, metadata changes beyond the
-version, initializer code changes and an unreviewed lock, in addition to the
-existing interpreter/source/receipt mutation controls.
-
-This release policy supersedes the simultaneous re-pin requirement below only
-for the declared fixed-baseline delta. A scientific owner change requires a fresh
-paired synchronization; it cannot be admitted by adding an exception to the gate.
-At the next major release, remove the temporary baseline mode after normal paired
-source/native qualification succeeds. Preserve its historical release receipts.
+A passing historical fixed-baseline run established release compatibility with
+that accepted scientific baseline. It did not establish full synchronization,
+a fresh formal proof or current-release Q7 native compilation. Historical
+native and publication receipts retain their original source epochs. Runtime
+validation and mutation controls for these retained fixtures remain available;
+the active current-source workflow cannot use the archived policy to admit a
+new release.
 
 ## What is pinned
 
@@ -134,7 +136,7 @@ revisions — never a floating main.
 
 ## What the workflow proves and does NOT prove
 
-In synchronized mode (the procedure below), the workflow is a **drift-detection** surface. It proves that the pinned
+A passing current-source workflow is a **drift-detection** result. It establishes that the pinned
 fep_lean checkout and this GNN checkout still agree on the bridge's source
 binding (owner rosters and content digests), finite/continuous freshness, the
 syntax surface, the contract mirror, and the formal projection with no drift.
@@ -147,8 +149,9 @@ in the state fep_lean reviewed", nothing about the truth of formal claims.
 
 ## Closeout ordering (canonical)
 
-Except for the explicitly declared [4.2.1 fixed baseline](#fixed-baseline-for-gnn-421),
-changes touching files the bridge's source binding covers close out in this order:
+Changes touching files the bridge's source binding covers close out in this
+order. The [historical fixed-baseline policy](#fixed-baseline-for-gnn-421) does
+not exempt a current release from this sequence:
 
 1. **All content edits land first** — never after the ritual. Any later
    owner-file edit re-drifts the pair.

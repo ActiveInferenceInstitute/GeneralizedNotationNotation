@@ -51,9 +51,22 @@ class TestCollectionBehavior:
 
         assert _normalize_website_step_status(None) is None
         assert _normalize_website_step_status("PARTIAL SUCCESS") == "error"
+        for raw, expected in {
+            "RUNNING": "running",
+            "PENDING": "pending",
+            "QUEUED": "pending",
+            "SUCCESS_WITH_WARNINGS": "warning",
+            "WARNING": "warning",
+            "UNSUPPORTED": "skip",
+        }.items():
+            assert _normalize_website_step_status(raw) == expected
 
-    def test_generator_collects_through_collection_module(self, tmp_path: Any) -> None:
+    def test_generator_collects_through_collection_module(
+        self, tmp_path: Any, monkeypatch: Any
+    ) -> None:
+        from gnn.pipeline.run_context import build_run_context
         from gnn.website import WebsiteGenerator
+        from gnn.website.collection import _collect_step_statuses
 
         input_dir = tmp_path / "input"
         input_dir.mkdir()
@@ -68,6 +81,13 @@ class TestCollectionBehavior:
         assert len(data["step_statuses"]) == 25
         assert data["processed_files"] == 0
         assert data["gui_navigation"] is False
+        (tmp_path / "3_gnn_output").mkdir()
+        context = build_run_context(input_dir, tmp_path, "website-run", [20], {})
+        context_file = context.write(tmp_path / "context.json")
+        monkeypatch.setenv("GNN_RUN_CONTEXT_FILE", str(context_file))
+        monkeypatch.setenv("GNN_RUN_ID", context.run_id)
+        # Missing current evidence cannot promote an inherited output directory.
+        assert set(_collect_step_statuses(tmp_path).values()) == {"pending"}
 
 
 class TestPipelineSummaryKey:

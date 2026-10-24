@@ -1,6 +1,7 @@
 """Saved Step 3 models reach native public network artifacts without data loss."""
 
 import json
+from html.parser import HTMLParser
 from pathlib import Path
 
 import numpy as np
@@ -154,10 +155,12 @@ def test_public_interactive_dashboard_preserves_direction_counts_and_node_identi
     import plotly.graph_objects as go
 
     figures = {}
+    runtime_inclusions = []
     original = go.Figure.to_html
 
     def observe(figure, *args, **kwargs):
         figures[figure.layout.title.text] = figure
+        runtime_inclusions.append(kwargs.get("include_plotlyjs"))
         return original(figure, *args, **kwargs)
 
     monkeypatch.setattr(go.Figure, "to_html", observe)
@@ -169,6 +172,17 @@ def test_public_interactive_dashboard_preserves_direction_counts_and_node_identi
     html = path.read_text()
     assert "GNN Model Dashboard: authored_network" in html
     assert "Adjacency Matrix" in html and "3D Network Structure" in html
+    scripts = []
+    parser = HTMLParser()
+    parser.handle_starttag = lambda tag, attrs: (
+        scripts.append(dict(attrs)) if tag == "script" else None
+    )
+    parser.feed(html)
+    assert scripts and all("src" not in script for script in scripts)
+    assert runtime_inclusions == [True, False, False]
+    assert '<html lang="en">' in html and "<main>" in html
+    assert '"x":["sensor","belief","prior"]' in html
+    assert "plotly.js" in html
     pie = figures["Variable Type Distribution"].data[0]
     assert dict(zip(pie.labels, pie.values, strict=True)) == {
         "observation": 1,

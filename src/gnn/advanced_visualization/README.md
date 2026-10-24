@@ -250,6 +250,8 @@ generated_files = visualizer.generate_visualizations(
 - Network graph interaction
 - Model statistics tables
 - HTML output when Plotly support is available and requested
+- The network dashboard embeds the Plotly JavaScript runtime once; its three
+  plots remain interactive offline and after copying into the Step 20 website.
 
 ### 8. Matrix Visualizations
 - Heatmap representations

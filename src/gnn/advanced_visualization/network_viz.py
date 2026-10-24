@@ -10,6 +10,7 @@ Extracted from processor.py for maintainability.
 import json
 import logging
 import time
+from html import escape
 from pathlib import Path
 from typing import Any, Dict, List, cast
 
@@ -212,7 +213,7 @@ def _generate_interactive_dashboard(
     dependencies: Dict[str, bool],
     logger: logging.Logger,
 ) -> AdvancedVisualizationAttempt:
-    """Generate interactive dashboard"""
+    """Generate a self-contained interactive dashboard with one Plotly runtime."""
     model_name = safe_output_stem(model_name)
     attempt = AdvancedVisualizationAttempt(
         viz_type="dashboard", model_name=model_name, status="skipped"
@@ -338,19 +339,23 @@ def _generate_interactive_dashboard(
 
             output_file = output_dir / f"{model_name}_interactive_dashboard.html"
 
-            with open(output_file, "w") as f:
+            with open(output_file, "w", encoding="utf-8") as f:
                 f.write(
-                    f"<html><head><title>GNN Dashboard: {model_name}</title></head><body>"
+                    '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
+                    '<meta name="viewport" content="width=device-width, initial-scale=1">'
+                    f"<title>GNN Dashboard: {escape(model_name)}</title></head><body><main>"
                 )
-                f.write(f"<h1>GNN Model Dashboard: {model_name}</h1>")
+                f.write(f"<h1>GNN Model Dashboard: {escape(model_name)}</h1>")
                 f.write("<hr>")
                 f.write("<h2>Variable Distribution</h2>")
-                f.write(fig_types.to_html(full_html=False, include_plotlyjs="cdn"))
+                # Embed the runtime once so the dashboard remains interactive
+                # after copying into a website bundle or opening offline.
+                f.write(fig_types.to_html(full_html=False, include_plotlyjs=True))
                 f.write("<h2>Adjacency Matrix</h2>")
                 f.write(fig_adj.to_html(full_html=False, include_plotlyjs=False))
                 f.write("<h2>3D Network Structure</h2>")
                 f.write(fig_3d.to_html(full_html=False, include_plotlyjs=False))
-                f.write("</body></html>")
+                f.write("</main></body></html>")
 
             attempt.status = "success"
             attempt.output_files.append(str(output_file))

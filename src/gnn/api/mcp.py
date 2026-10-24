@@ -44,6 +44,8 @@ def gnn_submit_job_mcp(
     parallel: bool = False,
     consolidated_steps: bool = False,
     output_dir: str | None = None,
+    file_workers: int = 1,
+    step_workers: int | None = None,
 ) -> Dict[str, Any]:
     """Create a pending GNN pipeline job record via MCP.
 
@@ -66,6 +68,8 @@ def gnn_submit_job_mcp(
             parallel=parallel,
             consolidated_steps=consolidated_steps,
             output_dir=output_dir,
+            file_workers=file_workers,
+            step_workers=step_workers,
         )
         return {
             "status": "success",
@@ -187,6 +191,20 @@ _MCP_TOOL_DEFINITIONS: tuple[Dict[str, Any], ...] = (
                 "strict": {"type": "boolean", "default": False},
                 "parallel": {"type": "boolean", "default": False},
                 "consolidated_steps": {"type": "boolean", "default": False},
+                "file_workers": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 256,
+                    "default": 1,
+                    "description": "Requested file worker limit for Steps 3/5",
+                },
+                "step_workers": {
+                    "type": ["integer", "null"],
+                    "minimum": 1,
+                    "maximum": 256,
+                    "default": None,
+                    "description": "Concurrent step limit; null selects automatically when parallel",
+                },
             },
             "required": ["target_dir"],
             "additionalProperties": False,

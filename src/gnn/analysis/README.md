@@ -6,6 +6,12 @@ This module provides comprehensive statistical analysis, performance profiling, 
 
 The shared result adapter validates categorical rows and Gaussian means/covariances while preserving native agent/factor views. Numerical comparisons require compatible, source-bound model and inference identities. Missing bindings or unavailable scientific quantities retain reasons; shape agreement and display names cannot establish agreement. Operational timing/counts remain descriptive unless the attempted models, configuration and environment admit a comparison. See [the v4 migration](../../../docs/development/run_ownership_migration.md#scientific-comparison-admission).
 
+Explicit transition-action sequences, first-observation timing, conditioning
+horizons and ordered state/observation IDs must also agree. A declaration on only
+one side is unavailable for alignment; it cannot be silently discarded. Results
+with those optional declarations absent on both sides retain their
+existing admission requirements.
+
 ## Module Structure
 
 ```

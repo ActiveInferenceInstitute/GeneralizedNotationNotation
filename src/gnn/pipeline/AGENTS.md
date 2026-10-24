@@ -255,6 +255,16 @@ execution uses explicit child environments. Other pipeline behavior is configure
 `input/config.yaml` (loaded by `src/gnn/main.py` via `gnn.utils.arguments.arg_parsing`) and
 CLI flags.
 
+`file_workers` (default 1; `--file-workers`, Steps 3/5) bounds spawned CPU
+file jobs. Parents publish in selection order, and multiworker steps retain
+the supervised subprocess boundary even with consolidated execution requested.
+`step_workers` (`--step-workers`, default automatic) bounds topological tiers
+under `--parallel`, retaining memory throttling and the eight-step ceiling.
+Both admit exact integers from 1 to 256; omitted `step_workers` is automatic.
+`execution_resources` and `parallel_tiers` in the summary retain configured
+limits and actual admitted tier widths. These do not claim CPU affinity,
+quotas or that every available worker executed a file.
+
 ### Configuration Files
 
 - `pipeline_config.yaml` - Optional project-local pipeline configuration

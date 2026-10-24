@@ -3,7 +3,7 @@
 **Describe an Active Inference generative model once. Validate its structure,
 render framework-specific code, execute admitted models and inspect the evidence.**
 
-[![Version: 4.3.0](https://img.shields.io/badge/version-4.3.0-00a6b8.svg)](../CHANGELOG.md#430---2026-10-21)
+[![Version: 5.0.0](https://img.shields.io/badge/version-5.0.0-00a6b8.svg)](../CHANGELOG.md#500---2026-10-23)
 [![CI](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/actions/workflows/ci.yml)
 [![CI Python: 3.11–3.14](https://img.shields.io/badge/CI%20Python-3.11%E2%80%933.14-3776ab.svg)](workflows/ci.yml)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-lightgrey.svg)](../LICENSE.md)
@@ -28,14 +28,16 @@ scientific workflow** spanning parsing, validation, visualization, simulation,
 analysis and publication. Start with the CLI below, or explore the
 [Python and service interfaces](#interfaces).
 
-**Software:** 4.3.0. [Published release records](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases) own accepted tags and assets.
+**Software:** 5.0.0. [Published release records](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases) own accepted tags and assets.
 
-FEP_Formal compatibility targets the fixed companion revision accepted with
-GNN 4.2.0. Full synchronization is planned for the next major release of both
-projects; see the [baseline policy](../docs/development/fep_lean_paired_revision.md#fixed-baseline-for-gnn-421).
-[Release notes](../CHANGELOG.md#420---2026-10-21) describe the changes;
+This major version adds replayable numerical witnesses, interactive evidence
+inspection and configurable file workers. It targets coordinated FEP_Formal
+2.0.0 qualification against the current scientific sources; see the
+[paired release procedure](../docs/development/fep_lean_paired_revision.md).
+Version metadata does not establish publication or completed pairing.
+[Candidate release notes](../CHANGELOG.md#500---2026-10-23) describe the changes;
 [package metadata](../pyproject.toml) owns version and dependency requirements.
-**Page updated:** 2026-10-21.
+**Page updated:** 2026-10-23.
 
 ## Start here
 
@@ -146,6 +148,13 @@ run concurrently; native, manuscript and paired acceptance retain their full sco
 Read the [release notes](../CHANGELOG.md#420---2026-10-21),
 [migration guide](../docs/development/run_ownership_migration.md) and
 [workflow guide](workflows/README.md).
+
+The **5.0.0 implementation** adds `gnn witness` for independent source-bound replay,
+offline evidence filters and posterior/residual trace controls, and bounded
+per-file process workers in Steps 3 and 5. The numerical and scalar Lean
+evidence have separate assumptions; they do not establish universal
+translation equivalence. See the [candidate changes](../CHANGELOG.md#500---2026-10-23)
+and [CPU worker controls](../README.md#cpu-workers-for-multiple-files).
 
 ## From model source to evidence
 

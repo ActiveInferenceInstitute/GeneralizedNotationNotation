@@ -24,6 +24,8 @@ def authored_configuration(tmp_path: Path) -> dict:
             "pipeline_summary_file": str(tmp_path / "caller-summary.json"),
             "recursive": False,
             "verbose": False,
+            "file_workers": 4,
+            "step_workers": 2,
             "enable_round_trip": False,
             "enable_cross_format": True,
             "skip_steps": [13, 14],
@@ -56,6 +58,8 @@ def test_saved_configuration_reaches_public_argument_projection(tmp_path, suffix
         assert projected[name] == Path(authored["pipeline"][name])
     assert projected["recursive"] is False
     assert projected["verbose"] is False
+    assert projected["file_workers"] == 4
+    assert projected["step_workers"] == 2
     assert projected["enable_round_trip"] is False
     assert projected["enable_cross_format"] is True
     assert projected["skip_steps"] == "13,14"

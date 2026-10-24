@@ -3,7 +3,7 @@
 **Describe an Active Inference generative model in Markdown, validate it, render
 framework-specific code, and inspect the evidence from its execution.**
 
-[![Version: 4.3.0](https://img.shields.io/badge/version-4.3.0-00a6b8.svg)](pyproject.toml)
+[![Version: 5.0.0](https://img.shields.io/badge/version-5.0.0-00a6b8.svg)](pyproject.toml)
 [![CI](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/actions/workflows/ci.yml)
 [![Python 3.11–3.14](https://img.shields.io/badge/python-3.11%E2%80%933.14-blue.svg)](pyproject.toml)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](LICENSE.md)
@@ -13,12 +13,14 @@ framework-specific code, and inspect the evidence from its execution.**
 [Documentation](#documentation) · [Examples](#examples) ·
 [Contributing](#contributing)
 
-**Software:** 4.3.0. [Published release records](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases) own accepted tags and assets.
+**Software:** 5.0.0. [Published release records](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases) own accepted tags and assets.
 
-FEP_Formal compatibility targets the fixed companion revision accepted with
-GNN 4.2.0. Full synchronization is planned for the next major release of both
-projects; see the [baseline policy](docs/development/fep_lean_paired_revision.md#fixed-baseline-for-gnn-421).
-**Page updated:** 2026-10-21. [Package metadata](pyproject.toml) owns the version
+This major version adds replayable numerical witnesses, interactive evidence
+inspection and configurable file workers. It targets coordinated FEP_Formal
+2.0.0 qualification against the current scientific sources; see the
+[paired release procedure](docs/development/fep_lean_paired_revision.md).
+Version metadata does not establish publication or completed pairing.
+**Page updated:** 2026-10-23. [Package metadata](pyproject.toml) owns the version
 and dependency requirements; [CHANGELOG.md](CHANGELOG.md) owns release history.
 
 ## Overview
@@ -33,7 +35,7 @@ provides the language, curated model sources, an installed Python package and a
 *Five conceptual stages in the 25-step workflow. Backend admission depends on
 the model contract; the illustration contains no measured results.*
 
-The current release includes RxInfer 6.1 / ReactiveMP 7 support, secure aiohttp
+The historical 4.2.0 release includes RxInfer 6.1 / ReactiveMP 7 support, secure aiohttp
 and Pillow profiles, installed-wheel acceptance across Linux, macOS and Windows,
 and independent qualification of source, native execution, manuscript and companion
 custody. Read the [release notes and source-bound assets](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0)
@@ -189,6 +191,31 @@ The main-script parser also exposes `--llm-tasks` (comma-separated task names)
 and `--pipeline-summary-file` (summary path); consult its help for parser defaults.
 The tracked `output/` tree retains publication evidence from its recorded source;
 directory presence cannot establish completion of a new run.
+
+### CPU workers for multiple files
+
+```bash
+uv run --frozen --no-sync gnn run --only-steps 3 5 --file-workers 4
+uv run --frozen --no-sync gnn run --parallel --step-workers 2 --file-workers 4
+```
+
+`--file-workers` limits CPU process workers within parsing/serialization (Step 3)
+and type checking (Step 5). Each worker handles one file at a time; the parent
+publishes outputs in selection order. The default is one worker. `--step-workers`
+limits independent pipeline steps under `--parallel`; existing memory throttling
+and the eight-step ceiling still apply. Step 12 retains its separate
+`--execution-workers` option on the main-script interface. These are concurrency
+limits, not CPU affinity or an operating-system CPU quota. More workers can be
+slower for small files because starting processes costs time.
+The file limit applies separately to each running step; concurrent steps can
+each create their own pool, so the two limits are not a shared global CPU budget.
+
+The same limits are available as `file_workers` and `step_workers` in the Python
+pipeline API and the `pipeline` section of `input/config.yaml`; explicit CLI
+values take precedence. Summaries record requested limits, available logical
+CPUs and actual step-tier widths. Step 3/5 results record effective file-worker
+limits and the PIDs that returned results. For the isolated Python 3.15
+lightweight interface, use `just backend-json --workers 4 --executor process`.
 
 ## Tools and Utilities
 

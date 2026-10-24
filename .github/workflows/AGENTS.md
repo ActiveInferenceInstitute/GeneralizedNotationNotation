@@ -37,7 +37,8 @@ Defines behavior and guardrails for workflows in this directory. Human index of 
 ## Standards
 
 - Pin every third-party action to a full commit SHA with the version as a trailing comment (e.g. `uses: actions/checkout@<sha> # v7.0.1`) for supply-chain hardening; Dependabot reads the version comment. Resolve SHAs with `git ls-remote` — never guess.
-- Pin `astral-sh/setup-uv` steps with `version: "0.13.4"` (the exact Dockerfile/uv.toml requirement).
+- Pin GNN-owned `astral-sh/setup-uv` steps with `version: "0.13.4"` (the exact Dockerfile/uv.toml requirement).
+- The paired GEO installation has a named companion-only exception: exact uv 0.13.1 satisfies GEO_INFER's own `uv.toml`. Use separate pinned setup steps for the two repositories; select GNN's uv 0.13.4 again before GNN installation or `uv run` checks.
 - Use explicit `timeout-minutes`.
 - Apply least-privilege `permissions` globally and per job.
 - Use deterministic dependency operations (`uv sync --frozen`, `uv export --frozen`).

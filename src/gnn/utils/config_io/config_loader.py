@@ -31,6 +31,8 @@ class PipelineConfig:
     # Processing options
     recursive: bool = True
     verbose: bool = True
+    file_workers: int = 1
+    step_workers: Optional[int] = None
 
     # Enhanced validation options (enabled by default for comprehensive testing)
     enable_round_trip: bool = True  # Enable round-trip testing across all 21 formats
@@ -48,6 +50,12 @@ class PipelineConfig:
 
     def __post_init__(self) -> Any:
         """Post-initialization validation and path resolution."""
+        from gnn.pipeline.admission import validate_worker_count
+
+        validate_worker_count(self.file_workers, field_name="file_workers")
+        validate_worker_count(
+            self.step_workers, field_name="step_workers", allow_none=True
+        )
         # Ensure Path objects
         if isinstance(self.target_dir, str):
             self.target_dir = Path(self.target_dir)
@@ -159,6 +167,19 @@ class GNNPipelineConfig:
             config.pipeline.output_dir = Path(pipeline_data.get("output_dir", "output"))
             config.pipeline.recursive = pipeline_data.get("recursive", True)
             config.pipeline.verbose = pipeline_data.get("verbose", True)
+            from gnn.pipeline.admission import validate_worker_count
+
+            for name in ("file_workers", "step_workers"):
+                if name in pipeline_data:
+                    setattr(
+                        config.pipeline,
+                        name,
+                        validate_worker_count(
+                            pipeline_data[name],
+                            field_name=name,
+                            allow_none=name == "step_workers",
+                        ),
+                    )
             config.pipeline.enable_round_trip = pipeline_data.get(
                 "enable_round_trip", True
             )
@@ -232,6 +253,8 @@ class GNNPipelineConfig:
             "output_dir": self.pipeline.output_dir,
             "recursive": self.pipeline.recursive,
             "verbose": self.pipeline.verbose,
+            "file_workers": self.pipeline.file_workers,
+            "step_workers": self.pipeline.step_workers,
             "enable_round_trip": self.pipeline.enable_round_trip,
             "enable_cross_format": self.pipeline.enable_cross_format,
             "skip_steps": ",".join(str(s) for s in self.pipeline.skip_steps)

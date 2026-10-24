@@ -83,6 +83,20 @@ ARGUMENT_DEFINITIONS = MappingProxyType(
             default=False,
             help_text="Execute independent steps within topological tiers in parallel",
         ),
+        "file_workers": ArgumentDefinition(
+            flag="--file-workers",
+            arg_type=int,
+            default=1,
+            use_suppress=True,
+            help_text="Maximum CPU process workers for files in Steps 3/5 (1-256; default 1)",
+        ),
+        "step_workers": ArgumentDefinition(
+            flag="--step-workers",
+            arg_type=int,
+            default=None,
+            use_suppress=True,
+            help_text="Maximum concurrent steps with --parallel (1-256; default automatic)",
+        ),
         "autonomous": ArgumentDefinition(
             flag="--autonomous",
             action="store_true",
@@ -497,6 +511,7 @@ STEP_ARGUMENTS = MappingProxyType(
             "enable_round_trip",
             "enable_cross_format",
             "serialize_preset",
+            "file_workers",
         ],
         "4_model_registry.py": [
             "target_dir",
@@ -513,6 +528,7 @@ STEP_ARGUMENTS = MappingProxyType(
             "verbose",
             "strict",
             "estimate_resources",
+            "file_workers",
         ],
         "6_validation.py": [
             "target_dir",

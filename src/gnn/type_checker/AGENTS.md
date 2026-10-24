@@ -1,5 +1,13 @@
 # Type Checker Agent Documentation
 
+`validate_gnn_files(..., file_workers=N)` uses bounded spawned file jobs for
+validation and type analysis. The default remains 1. Each process owns its
+checker; the parent preserves ordered aggregation and exclusively writes
+receipts, plots and resource reports. Keep the immutable selected view and
+source hashes authoritative, and check cancellation/deadlines before
+scheduling and publication. Multiworker pipeline steps use their supervised
+subprocess so descendant cleanup precedes output lease release.
+
 ## Agent Identity
 **Name**: GNNTypeChecker
 **Role**: Structural Analyst & Resource Forecaster

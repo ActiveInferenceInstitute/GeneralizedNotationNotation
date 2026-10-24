@@ -2,15 +2,15 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/5_type_checker.py` (73 lines)
+**Orchestrator**: `src/gnn/5_type_checker.py` (80 lines)
 **Implementation Layer**: `src/gnn/type_checker/`
-**Canonical Entry Point**: `type_checker.processor.GNNTypeChecker`
+**Canonical Entry Point**: `gnn.type_checker.GNNTypeChecker` (implemented in `checking/core.py`)
 
 ## Module Description
 
-Step 5 is the pipeline's static-analysis and validation gate. It ingests parsed
-GNN specifications from Step 3, validates each model's structural, dimensional,
-and ontological consistency, estimates computational resources required for
+Step 5 is the pipeline's static-analysis and validation gate. It reads the
+selected authored GNN sources, validates each model's structural and dimensional
+consistency, estimates computational resources required for
 downstream execution, and emits per-model "trading card" visualizations that
 summarize the findings.
 
@@ -20,11 +20,10 @@ the first hard validation stage for every GNN file, prior to code generation
 
 ```mermaid
 graph TD
-    Pipeline[5_type_checker.py] --> Orchestrator[processor.py: GNNTypeChecker]
+    Pipeline[5_type_checker.py] --> Orchestrator[checking/core.py: GNNTypeChecker]
     Orchestrator --> Syntax[syntax validation]
     Orchestrator --> Dims[dimensional consistency]
-    Orchestrator --> Ontology[ontology cross-check]
-    Orchestrator --> Estim[estimation_strategies.py]
+    Orchestrator --> Estim[estimation/estimator.py]
     Orchestrator --> Viz[visualizer.py]
     Viz --> Cards[visualizations/cards/*.png]
     Orchestrator --> Summary[type_check_summary.md]
@@ -32,6 +31,10 @@ graph TD
 ```
 
 ## CLI
+
+`--file-workers N` runs per-file validation and analysis in up to N CPU
+processes. The parent retains report and visualization publication; selection,
+source hashes and the invocation deadline remain authoritative.
 
 Step 5 is invoked through the standard pipeline orchestrator:
 

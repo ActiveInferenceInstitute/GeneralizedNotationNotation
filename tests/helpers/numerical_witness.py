@@ -74,14 +74,9 @@ def _array(value: Any, name: str) -> np.ndarray:
 
 def read_source(source: bytes) -> dict[str, Any]:
     """Read only the declared witness subset, independently of GNN extraction."""
+    if len(source) > 1024 * 1024:
+        raise ValueError("source byte budget exceeded")
     text = source.decode("utf-8").replace("\r\n", "\n")
-    sections = {}
-    parts = re.split(r"(?m)^## ([A-Za-z]+)\s*\n", text)
-    for index in range(1, len(parts), 2):
-        name = parts[index]
-        if name in sections:
-            raise ValueError(f"duplicate section: {name}")
-        sections[name] = parts[index + 1].strip()
     required = {
         "ModelName",
         "GNNSection",
@@ -91,6 +86,19 @@ def read_source(source: bytes) -> dict[str, Any]:
         "Equations",
         "NumericalWitness",
     }
+    for heading in re.findall(r"(?m)^[ \t]*##(?!#)[^\n]*", text):
+        match = re.fullmatch(r"## ([A-Za-z]+)[ \t]*", heading)
+        if match is None or match.group(1) not in required:
+            raise ValueError(
+                "reference grammar: malformed or unsupported source heading"
+            )
+    sections = {}
+    parts = re.split(r"(?m)^## ([A-Za-z]+)\s*\n", text)
+    for index in range(1, len(parts), 2):
+        name = parts[index]
+        if name in sections:
+            raise ValueError(f"duplicate section: {name}")
+        sections[name] = parts[index + 1].strip()
     if set(sections) != required:
         raise ValueError("reference grammar: missing or unsupported source section")
     declaration = _json(sections["NumericalWitness"])

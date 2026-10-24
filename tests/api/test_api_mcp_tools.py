@@ -101,6 +101,13 @@ class TestAPIMCPTools:
         }
         submit = next(t for t in manifest["tools"] if t["name"] == "gnn_submit_job")
         assert submit["inputSchema"]["required"] == ["target_dir"]
+        properties = submit["inputSchema"]["properties"]
+        assert properties["file_workers"]["default"] == 1
+        assert properties["step_workers"]["default"] is None
+        assert properties["step_workers"]["type"] == ["integer", "null"]
+        for field in ("file_workers", "step_workers"):
+            assert properties[field]["minimum"] == 1
+            assert properties[field]["maximum"] == 256
 
     @pytest.mark.unit
     def test_manifest_and_live_registry_are_identical_and_executable(
@@ -152,7 +159,7 @@ class TestAPIMCPTools:
         happens only via explicit caller start on the gnn.api.server routes
         (POST /api/v1/process, POST /api/v1/tools/{step}) or a direct
         execute_job_async call."""
-        result = api_mcp.gnn_submit_job_mcp("input")
+        result = api_mcp.gnn_submit_job_mcp("input", file_workers=3, step_workers=2)
         assert result["status"] == "success"
         job_id = result["job_id"]
         try:
@@ -161,6 +168,8 @@ class TestAPIMCPTools:
             job = processor_get_job(job_id)
             assert job is not None
             assert job["status"] == "pending"
+            assert job["file_workers"] == 3
+            assert job["step_workers"] == 2
         finally:
             from gnn.api.processor import _JOBS
 

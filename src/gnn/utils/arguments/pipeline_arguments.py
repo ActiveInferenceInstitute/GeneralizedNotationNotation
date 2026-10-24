@@ -43,6 +43,8 @@ class PipelineArguments:
     skip_steps: Optional[str] = None
     only_steps: Optional[str] = None
     parallel: bool = False
+    file_workers: int = 1
+    step_workers: Optional[int] = None
     autonomous: bool = False
     # V4-STAGE (S2-11): opt-in consolidated in-process execution
     # (docs/decisions/0001-consolidated-pipeline-execution.md)
@@ -163,6 +165,18 @@ class PipelineArguments:
     def validate(self) -> List[str]:
         """Validate argument values and return list of errors."""
         errors: list[Any] = []
+
+        from gnn.pipeline.admission import validate_worker_count
+
+        for name in ("file_workers", "step_workers"):
+            try:
+                validate_worker_count(
+                    getattr(self, name),
+                    field_name=name,
+                    allow_none=name == "step_workers",
+                )
+            except ValueError as exc:
+                errors.append(str(exc))
 
         # Check that target directory exists when it is a real filesystem path.
         if not str(self.target_dir).startswith("<"):

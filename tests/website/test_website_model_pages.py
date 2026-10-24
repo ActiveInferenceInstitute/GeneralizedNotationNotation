@@ -301,6 +301,93 @@ class TestModelPageGeneration:
         assert "Xstate" in page
         assert "Yobs" in page
 
+        # Interactive assets follow the exact model identity even when titles
+        # collide, and their model-page URLs preserve reserved filename bytes.
+        from gnn.website import WebsiteGenerator
+
+        interactive_site = tmp_path / "interactive-site"
+        assets = interactive_site / "assets"
+        assets.mkdir(parents=True)
+        artifact = assets / "panel #1.html"
+        artifact.write_text("<html><body>Interactive model output</body></html>")
+        result = WebsiteGenerator().generate_website(
+            {
+                "output_dir": interactive_site,
+                "models": [
+                    {
+                        "model_id": "alpha-source",
+                        "name": "Alpha Model",
+                        "source_name": "model_alpha.md",
+                        "source": tmp_path / "input/model_alpha.md",
+                    }
+                ],
+                "visualizations": [
+                    {
+                        "model_id": "alpha-source",
+                        "title": "Shared & interactive",
+                        "path": artifact.name,
+                        "type": "html",
+                    },
+                    {
+                        "model_id": "another-source",
+                        "title": "Shared & interactive",
+                        "path": "unrelated.html",
+                        "type": "html",
+                    },
+                ],
+            },
+            filesystem=False,
+        )
+        assert result["success"], result["errors"]
+        interactive = (interactive_site / result["model_pages"][0]).read_text()
+        assert 'href="../assets/panel%20%231.html"' in interactive
+        assert 'src="../assets/panel%20%231.html"' in interactive
+        assert 'title="Shared &amp; interactive"' in interactive
+        assert 'loading="lazy" sandbox="allow-scripts"' in interactive
+        assert "unrelated.html" not in interactive
+        assert "open the visualization using the link above" in interactive
+
+        # Native artifacts use source stems even when ModelName differs.
+        # Repeated source basenames cannot safely identify either model.
+        from gnn.website.model_navigation import _attach_model_viz_assets
+
+        associations = {
+            "models": [
+                {
+                    "name": "Static_Perception_Model",
+                    "source_name": "static_perception.md",
+                },
+                {"name": "First display name", "source_name": "first/shared.md"},
+                {"name": "Second display name", "source_name": "second/shared.md"},
+                {
+                    "name": "Bound display",
+                    "source_name": "bound.md",
+                    "model_id": "exact-id",
+                },
+            ],
+            "visualizations": [
+                {
+                    "title": "static_perception_network",
+                    "path": "static.png",
+                    "type": "image",
+                },
+                {
+                    "title": "static_perception_interactive_dashboard",
+                    "path": "static.html",
+                    "type": "html",
+                },
+                {"title": "shared_network", "path": "ambiguous.png", "type": "image"},
+                {"title": "bound_network", "path": "unbound.png", "type": "image"},
+            ],
+        }
+        _attach_model_viz_assets(associations)
+        static, first, second, bound = associations["models"]
+        assert static["images"] == ["static.png"]
+        assert [item["path"] for item in static["interactive_visualizations"]] == [
+            "static.html"
+        ]
+        assert first["images"] == second["images"] == bound["images"] == []
+
     @pytest.mark.unit
     def test_model_page_without_edges_has_explicit_none_row(
         self, tmp_path: Any
@@ -412,6 +499,12 @@ class TestBreadcrumbs:
         for rel in ("index.html", "model/beta-model.html"):
             html = (site / rel).read_text(encoding="utf-8")
             assert ".breadcrumbs" in html, rel
+            assert '<details class="mobile-nav">' in html
+            assert "<summary>Navigate results</summary>" in html
+            assert 'aria-label="Mobile navigation"' in html
+            assert 'href="#main-content">Skip to results</a>' in html
+            assert 'id="main-content" tabindex="-1"' in html
+            assert "prefers-reduced-motion: reduce" in html
 
 
 class TestSearchIndex:
@@ -467,7 +560,11 @@ class TestSearchIndex:
         site, _ = _build_multi_model_site(tmp_path)
         listing = (site / "gnn_files.html").read_text(encoding="utf-8")
 
-        assert '<input id="gnn-site-search" type="search">' in listing
+        assert '<input id="gnn-site-search" type="search"' in listing
+        assert '<label for="gnn-site-search">Search pages and models</label>' in listing
+        assert 'aria-controls="gnn-search-results"' in listing
+        assert 'id="gnn-search-status"' in listing
+        assert 'role="status" aria-live="polite"' in listing
         assert re.search(r'<ul id="gnn-search-results"[^>]*\bhidden', listing)
         assert '<script type="application/json" id="gnn-search-data">' in listing
 

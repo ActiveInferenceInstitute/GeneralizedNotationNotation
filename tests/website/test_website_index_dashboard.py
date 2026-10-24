@@ -10,9 +10,12 @@ http(s) resource references.
 """
 
 import json
+import os
+import re
 import sys
 from pathlib import Path
 from typing import Any
+from urllib.parse import unquote
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
@@ -111,7 +114,70 @@ class TestIndexDashboardFold:
         assert "96.5 MB" in html  # per-step memory receipt value
         assert "—</td>" in html  # null memory renders as an em-dash cell
 
-    def test_artifact_found_without_summary_output_dir_key(self, tmp_path: Any) -> None:
+    def test_worker_receipts_distinguish_limits_from_recorded_concurrency(
+        self, tmp_path: Path
+    ) -> None:
+        from gnn.website import WebsiteGenerator
+
+        summary = {
+            **_SUMMARY,
+            "execution_resources": {
+                "logical_cpus_available": 12,
+                "file_workers_requested": 4,
+                "step_workers_requested": None,
+                "execution_workers_requested": 1,
+            },
+            "parallel_tiers": [
+                {
+                    "tier_index": 2,
+                    "step_names": ["3_gnn", "5_type_checker <recorded>"],
+                    "workers_used": 2,
+                    "memory_estimate_mb": 48.5,
+                },
+                None,
+            ],
+        }
+        result = WebsiteGenerator().generate_website(
+            {"output_dir": tmp_path / "site", "pipeline_summary": summary},
+            filesystem=False,
+        )
+        assert result["success"]
+        html = (tmp_path / "site/index.html").read_text()
+        assert "CPU and Worker Receipts" in html
+        assert "File worker limit (Steps 3/5)" in html
+        assert "Execution worker limit (Step 12)" in html
+        assert 'class="dash-meta__value">Automatic</span>' in html
+        assert "Recorded concurrent step tiers" in html
+        assert "5_type_checker &lt;recorded&gt;" in html
+        assert "<td>2</td><td>48.5 MB</td>" in html
+        assert "neither establishes actual per-file worker use or speedup" in html
+
+        # Missing receipts cannot inherit this machine's CPU count or limits.
+        result = WebsiteGenerator().generate_website(
+            {"output_dir": tmp_path / "empty"}, filesystem=False
+        )
+        assert result["success"]
+        assert (
+            "CPU and Worker Receipts" not in (tmp_path / "empty/index.html").read_text()
+        )
+
+        summary["execution_resources"] = {
+            "file_workers_requested": True,
+            "step_workers_requested": "<invalid>",
+        }
+        summary["parallel_tiers"] = "invalid"
+        result = WebsiteGenerator().generate_website(
+            {"output_dir": tmp_path / "malformed", "pipeline_summary": summary},
+            filesystem=False,
+        )
+        assert result["success"]
+        html = (tmp_path / "malformed/index.html").read_text()
+        assert "<invalid>" not in html and ">True<" not in html
+        assert "Recorded concurrent step tiers" not in html
+
+    def test_artifact_found_without_summary_output_dir_key(
+        self, tmp_path: Any, monkeypatch: Any
+    ) -> None:
         payload = dict(_SUMMARY)
         _write_summary(tmp_path, payload)
         _numbered_output_dirs(tmp_path)
@@ -123,6 +189,44 @@ class TestIndexDashboardFold:
         # records carry no output_dir keys at all.
         assert "gnn_report.json" in html
         assert "env_report.txt" in html
+        assert "filesystem census" in html
+
+        # A bound run must not promote inherited files into its artifact view.
+        from gnn.pipeline.run_context import build_run_context
+        from gnn.website import WebsiteGenerator
+        from gnn.website.collection import website_data_from_dict
+
+        context = build_run_context(tmp_path / "input", tmp_path, "site-run", [20], {})
+        context_path = tmp_path / "run_context.json"
+        context.write(context_path)
+        monkeypatch.setenv("GNN_RUN_CONTEXT_FILE", str(context_path))
+        monkeypatch.setenv("GNN_RUN_ID", context.run_id)
+        current = tmp_path / "00_pipeline_summary/current_summary.json"
+        current.write_text(
+            json.dumps(
+                {
+                    "run_id": context.run_id,
+                    "steps": [
+                        {"artifacts": [{"path": "3_gnn_output/gnn_report.json"}]}
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+        data = website_data_from_dict(
+            {"pipeline_output_root": Path(os.path.relpath(tmp_path, Path.cwd()))},
+            output_dir=tmp_path / "site",
+        )
+        data["step_statuses"] = {1: "ok", 3: "warning"}
+        current_html = WebsiteGenerator()._page_index(data)
+        assert "Current run artifacts" in current_html
+        assert "gnn_report.json" in current_html
+        assert "env_report.txt" not in current_html
+        assert "nested.log" not in current_html
+        assert "No current run artifacts recorded." in current_html
+        assert re.search(
+            r"Steps Complete</div>\s*<div class=\"value\">2</div>", current_html
+        )
 
     def test_missing_summary_keeps_truthful_pending_state(self, tmp_path: Any) -> None:
         _numbered_output_dirs(tmp_path)
@@ -144,12 +248,29 @@ class TestIndexDashboardFold:
         target.mkdir(parents=True)
         for i in range(14):
             (target / f"artifact_{i:02d}.txt").write_text("x", encoding="utf-8")
+        special = target / "part #1 ? é.json"
+        special.write_text("{}", encoding="utf-8")
+        outside = tmp_path.parent / f"outside-{tmp_path.name}.txt"
+        outside.write_text("outside", encoding="utf-8")
+        (target / "external-link.txt").symlink_to(outside)
         result, index = _generate(tmp_path)
 
         assert result["success"] is True
         html = index.read_text(encoding="utf-8")
-        assert html.count("artifact_") == 10  # capped preview
-        assert "…+4 more" in html  # explicit truncation marker
+        assert "Show 5 more files" in html
+        assert '<details class="dash-more">' in html
+        assert "external-link.txt" not in html
+        links = re.findall(r'<li><a href="([^"]+)">', html)
+        assert len(links) == 15
+        resolved = {(index.parent / unquote(href)).resolve() for href in links}
+        assert resolved == {
+            path.resolve()
+            for path in target.iterdir()
+            if path != target / "external-link.txt"
+        }
+        assert any(
+            "%23" in href and "%3F" in href and "%C3%A9" in href for href in links
+        )
 
     def test_no_external_http_references(self, tmp_path: Any) -> None:
         _write_summary(tmp_path, _SUMMARY)

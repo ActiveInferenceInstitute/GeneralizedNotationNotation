@@ -62,10 +62,10 @@ jobs:
           path: gnn
           persist-credentials: false
 
-      - name: Check out fep_lean default branch with full history
+      - name: Check out FEP_Formal default branch with full history
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          repository: ActiveInferenceInstitute/fep_lean
+          repository: ActiveInferenceInstitute/fep_formal
           path: fep-lean
           fetch-depth: 0
           persist-credentials: false

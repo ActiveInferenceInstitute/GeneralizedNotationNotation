@@ -18,6 +18,116 @@ from .commands import preflight_severities, publish_pipeline_report
 from .helpers import EXIT_ERROR, EXIT_SUCCESS, EXIT_WARNING, _print_envelope
 
 logger = logging.getLogger(__name__)
+MAX_WITNESS_RECEIPT_BYTES = 96 * 1024 * 1024
+
+
+def _cmd_witness(args: argparse.Namespace) -> int:
+    """Compare identified artifacts, or replay an existing numerical receipt."""
+    try:
+        return _run_witness(args)
+    except (
+        OSError,
+        ValueError,
+        TypeError,
+        KeyError,
+        OverflowError,
+        RecursionError,
+    ) as exc:
+        logger.error("Witness refused: %s", exc)
+        if args.json:
+            _print_envelope("error", error=str(exc), command="witness")
+        return EXIT_ERROR
+
+
+def _witness_bytes(path: Path, limit: int) -> bytes:
+    """Read within an explicit budget before allocating the whole artifact."""
+    with path.open("rb") as handle:
+        content = handle.read(limit + 1)
+    if len(content) > limit:
+        raise ValueError("witness input byte budget exceeded")
+    return content
+
+
+def _run_witness(args: argparse.Namespace) -> int:
+    """Compose the bounded comparison and its standard CLI projection."""
+    import json
+
+    from gnn.validation.semantic_witness import (
+        MAX_ARTIFACT_BYTES,
+        build_semantic_witness,
+        verify_semantic_witness,
+    )
+    from gnn.validation.witness_source import _json
+
+    if args.verify is not None:
+        if (
+            args.source is not None
+            or args.results is not None
+            or args.program is not None
+            or args.output is not None
+        ):
+            raise ValueError(
+                "--verify cannot be combined with source, results, program or output"
+            )
+        receipt = _json(
+            _witness_bytes(args.verify, MAX_WITNESS_RECEIPT_BYTES).decode("utf-8")
+        )
+        if not isinstance(receipt, dict):
+            raise ValueError("witness receipt must be a JSON object")
+        errors = verify_semantic_witness(receipt)
+    else:
+        if args.source is None or args.results is None:
+            raise ValueError("witness requires a source and --results, or --verify")
+        if args.output is not None:
+            for input_path in (args.source, args.results, args.program):
+                if input_path is not None and (
+                    args.output.resolve() == input_path.resolve()
+                    or (
+                        args.output.exists()
+                        and input_path.exists()
+                        and args.output.samefile(input_path)
+                    )
+                ):
+                    raise ValueError(
+                        "witness output must not overwrite source, results or program inputs"
+                    )
+        receipt = build_semantic_witness(
+            _witness_bytes(args.source, 1024 * 1024),
+            _witness_bytes(args.results, MAX_ARTIFACT_BYTES),
+            _witness_bytes(args.program, MAX_ARTIFACT_BYTES)
+            if args.program is not None
+            else None,
+        )
+        errors = []
+    serialized = json.dumps(receipt, indent=2, allow_nan=False) + "\n"
+    if len(serialized.encode("utf-8")) > MAX_WITNESS_RECEIPT_BYTES:
+        raise ValueError("serialized witness receipt byte budget exceeded")
+    if args.verify is None and args.output is not None:
+        from gnn.pipeline._io import atomic_write_text
+
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        atomic_write_text(args.output, serialized)
+    accepted = not errors and receipt.get("status") == "passed"
+    if args.json:
+        _print_envelope(
+            "success" if accepted else "error",
+            data=receipt,
+            error=errors or None,
+            command="witness",
+        )
+    else:
+        print(
+            json.dumps(
+                {
+                    "status": receipt.get("status"),
+                    "replay_errors": errors,
+                    "receipt": receipt,
+                },
+                indent=2,
+                allow_nan=False,
+            )
+        )
+    return EXIT_SUCCESS if accepted else EXIT_ERROR
 
 
 def _cmd_report(args: argparse.Namespace) -> int:

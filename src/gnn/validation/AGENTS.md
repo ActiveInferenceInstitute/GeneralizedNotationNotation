@@ -40,6 +40,15 @@ src/gnn/validation/
 3. Performance profiling and optimization
 4. Cross-format consistency verification
 5. Quality assurance and compliance checking
+6. Restricted source-bound numerical witness generation and raw-artifact replay
+
+`witness_source.py` owns the independent restricted source reader, finite path
+reference and joint-Gaussian reference. `semantic_witness.py` owns v2 receipt
+construction/replay. It must never stamp expected metadata onto a native result,
+trust cached reference arrays or infer native execution/Lean proof from matching
+numbers. Scientific bounds and explicit evidence limits live in the
+[E4 contract](../../../docs/development/remaining_roadmap_contracts.md#e4-replayable-semantic-evidence-v2).
+`tests/helpers/numerical_witness.py` remains a separate test-only oracle.
 
 ### Key Capabilities
 - Comprehensive model validation

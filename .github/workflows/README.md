@@ -8,9 +8,13 @@ compatibility or evidence profiles. Existing acceptance receipts retain their
 original source, runtime and tool identities; this configuration change does
 not renew those receipts.
 
-GEO qualification controls reuse the installed Python 3.11 environment with
-`--frozen --no-sync`; they do not let the local default replace its H3-enabled
-runtime. Manuscript audit artifacts retain the full render output and the render
+The GEO pair installs each repository with its own exact tool: uv 0.13.1 is
+a companion-only exception for GEO_INFER, while GNN retains uv 0.13.4.
+Separate pinned setup steps install GEO first and GNN last, so the later GNN
+qualification controls also use uv 0.13.4. These controls reuse the installed
+Python 3.11 environment with `--frozen --no-sync`; the local default does not
+replace its H3-enabled runtime. The [local paired-runtime procedure](../../docs/development/geo_infer_2026_09.md#independent-uv-toolchains)
+uses the same split. Manuscript audit artifacts retain the full render output and the render
 step outcome even when strict comparison rejects the older committed chain.
 Those diagnostic artifacts require normal verification and an artifact commit
 before they become accepted publication evidence.

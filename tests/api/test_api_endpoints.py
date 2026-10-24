@@ -189,13 +189,24 @@ def test_api_submit_run_stores_normalized_output_dir(monkeypatch: Any) -> None:
     async def _complete_pipeline_immediately(*args: Any, **kwargs: Any) -> None:
         return None
 
-    monkeypatch.setattr(pipeline.hasher, "compute_run_hash", lambda *a, **k: run_hash)
+    hashed_settings: dict[str, Any] = {}
+
+    def record_hash(*args: Any, config: dict, **kwargs: Any) -> str:
+        hashed_settings.update(config)
+        return run_hash
+
+    monkeypatch.setattr(pipeline.hasher, "compute_run_hash", record_hash)
     monkeypatch.setattr(api_app, "_execute_pipeline", _complete_pipeline_immediately)
 
     try:
         response = client.post(
             "/api/v1/run",
-            json={"target_dir": ".", "output_dir": output_dir},
+            json={
+                "target_dir": ".",
+                "output_dir": output_dir,
+                "file_workers": 4,
+                "step_workers": 2,
+            },
         )
 
         assert response.status_code == 200
@@ -204,6 +215,13 @@ def test_api_submit_run_stores_normalized_output_dir(monkeypatch: Any) -> None:
             Path(stored_output).resolve()
             == (Path(__file__).resolve().parents[2] / output_dir).resolve()
         )
+        assert hashed_settings["file_workers"] == 4
+        assert hashed_settings["step_workers"] == 2
+        stored = api_app._runs[run_hash]["request"]
+        assert stored["file_workers"] == 4 and stored["step_workers"] == 2
+        assert response.json()["data"]["file_workers"] == 4
+        polled = client.get(f"/api/v1/runs/{run_hash}").json()["data"]
+        assert polled["file_workers"] == 4 and polled["step_workers"] == 2
     finally:
         api_app._runs.pop(run_hash, None)
         if orig_hasher:
@@ -236,7 +254,13 @@ async def test_job_processor_uses_requested_output_dir(monkeypatch: Any) -> None
     )
 
     requested_output = "output/job_contract_test"
-    job_id = job_mgr.create_job(target_dir=".", output_dir=requested_output, steps=[3])
+    job_id = job_mgr.create_job(
+        target_dir=".",
+        output_dir=requested_output,
+        steps=[3],
+        file_workers=3,
+        step_workers=2,
+    )
     try:
         await job_mgr.execute_job_async(job_id)
         output_arg = captured_cmd[captured_cmd.index("--output-dir") + 1]
@@ -244,6 +268,8 @@ async def test_job_processor_uses_requested_output_dir(monkeypatch: Any) -> None
             Path(output_arg).resolve()
             == (Path(__file__).resolve().parents[2] / requested_output).resolve()
         )
+        assert captured_cmd[captured_cmd.index("--file-workers") + 1] == "3"
+        assert captured_cmd[captured_cmd.index("--step-workers") + 1] == "2"
     finally:
         job_mgr._JOBS.pop(job_id, None)
 
@@ -319,12 +345,16 @@ async def test_run_api_executes_real_main_subprocess_and_preserves_warning_exit(
         output_dir=str(output_dir),
         skip_steps=[4],
         skip_llm=True,
+        file_workers=4,
+        step_workers=3,
     )
     try:
         await api_app._execute_pipeline(run_hash, request)
         entry = api_app._runs[run_hash]
         assert captured_command[1:4] == ["-P", "-m", "gnn.main"]
         assert captured_command[captured_command.index("--skip-steps") + 1] == "4,13"
+        assert captured_command[captured_command.index("--file-workers") + 1] == "4"
+        assert captured_command[captured_command.index("--step-workers") + 1] == "3"
         assert entry["status"] == "completed"
         assert entry["exit_code"] == 2
         assert entry["process_id"] == _NO_SUCH_PID

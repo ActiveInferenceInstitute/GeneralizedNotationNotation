@@ -29,7 +29,7 @@ from gnn.api.pipeline_runner import (
     LLM_STEP_NUMBERS,
     PIPELINE_STEP_COUNT,
 )
-from gnn.pipeline.admission import validate_steps
+from gnn.pipeline.admission import validate_steps, validate_worker_count
 
 
 def validate_step_numbers(
@@ -58,7 +58,36 @@ class JobStatus(str, Enum):
     CANCELLED = "cancelled"
 
 
-class ProcessRequest(BaseModel):
+class _WorkerSettings(BaseModel):
+    """Strict requested limits shared by every pipeline-submitting request."""
+
+    file_workers: int = Field(
+        default=1,
+        ge=1,
+        le=256,
+        strict=True,
+        description="Requested file worker limit for Steps 3/5; one is serial",
+    )
+    step_workers: Optional[int] = Field(
+        default=None,
+        ge=1,
+        le=256,
+        strict=True,
+        description="Requested concurrent step limit; null selects automatically when parallel",
+    )
+
+    @field_validator("file_workers", "step_workers", mode="before")
+    @classmethod
+    def validate_workers(cls, value: Any, info: ValidationInfo) -> int | None:
+        """Use pipeline admission without Boolean or numeric coercion."""
+        return validate_worker_count(
+            value,
+            field_name=str(info.field_name),
+            allow_none=info.field_name == "step_workers",
+        )
+
+
+class ProcessRequest(_WorkerSettings):
     """Request to process GNN files through pipeline steps."""
 
     target_dir: str = Field(
@@ -119,7 +148,7 @@ class ProcessRequest(BaseModel):
         return self
 
 
-class ToolRequest(BaseModel):
+class ToolRequest(_WorkerSettings):
     """Request to invoke a single pipeline step/tool."""
 
     target_dir: str = Field(
@@ -156,6 +185,8 @@ class JobResponse(BaseModel):
     status: JobStatus = Field(description="Current job status")
     created_at: datetime = Field(description="Job creation timestamp")
     steps_requested: Optional[List[int]] = Field(default=None)
+    file_workers: int = 1
+    step_workers: Optional[int] = None
     message: str = Field(default="Job queued for execution")
 
 
@@ -175,6 +206,8 @@ class JobStatusResponse(BaseModel):
     exit_code: Optional[int] = None
     error_message: Optional[str] = None
     output_dir: Optional[str] = None
+    file_workers: int = 1
+    step_workers: Optional[int] = None
     process_cleanup: Optional[Dict[str, Any]] = Field(
         default=None, description="Supervisor cleanup and observed containment receipt"
     )
@@ -206,7 +239,7 @@ class HealthResponse(BaseModel):
     timestamp: datetime = Field(default_factory=datetime.now)
 
 
-class RunRequest(BaseModel):
+class RunRequest(_WorkerSettings):
     """Pipeline run request (``api.app`` run surface)."""
 
     target_dir: str = Field(default="input/gnn_files", min_length=1)
@@ -261,6 +294,8 @@ class RunStatus(BaseModel):
     steps_completed: int = 0
     total_steps: int = PIPELINE_STEP_COUNT
     errors: List[str] = Field(default_factory=list)
+    file_workers: int = 1
+    step_workers: Optional[int] = None
     process_cleanup: Optional[Dict[str, Any]] = Field(
         default=None, description="Supervisor cleanup and observed containment receipt"
     )

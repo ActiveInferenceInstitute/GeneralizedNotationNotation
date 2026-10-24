@@ -9,7 +9,7 @@
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Last Updated**: 2026-09-25
 
-The CLI module provides the `gnn` command-line tool — a unified interface to the entire GNN pipeline. It acts as a thin dispatcher, routing 20 subcommands to their respective module APIs. Public exits are `0` for success, `1` for errors, and `2` for completed commands with warnings or degraded readiness.
+The CLI module provides the `gnn` command-line tool — a unified interface to the entire GNN pipeline. Its thin dispatcher routes the registered subcommands to their module APIs. Public exits are `0` for success, `1` for errors, and `2` for completed commands with warnings or degraded readiness.
 
 ## Architecture
 
@@ -20,6 +20,7 @@ The CLI module provides the `gnn` command-line tool — a unified interface to t
 ## Capabilities
 
 - **Pipeline execution** via `gnn run` with skip/only-steps, log-format, and skip-llm options
+- **Worker limits** via `gnn run --file-workers N` for Step 3/5 CPU file jobs and `--parallel --step-workers N` for concurrent step tiers; values are exact integers from 1 to 256.
 - **File validation** via `gnn validate` (section, state-space, connection, dimension checks)
 - **JSON/YAML parsing** via `gnn parse` with format and summary modes
 - **Code generation** via `gnn render` (PyMDP, RxInfer, ActiveInference.jl, JAX, NumPyro, Stan, PyTorch, DisCoPy, bnlearn)
@@ -28,6 +29,7 @@ The CLI module provides the `gnn` command-line tool — a unified interface to t
 - **Static complexity bounds** via `gnn complexity <model|dir>` — one `[ESTIMATE]`-labeled BOUNDS row per backend as a terminal table plus the `gnn.complexity_estimate/v1` receipt as stable sorted-key JSON (`--json` standard envelope; `--output PATH` writes the receipt file). No execution, no measurement — estimates are arguments over declared structure, never numbers.
 - **Empirical benchmark + calibration** via `gnn benchmark <dir> --frameworks ... --repeats K` — corpus harness through the existing execution envelope (`--frameworks` comma-separated, default `all`; `--repeats` int, default 3; `--json` envelope; `--output-dir` default `output/cross_framework`). Writes `complexity_benchmark.json` (`gnn.complexity_benchmark/v1`, per-run rows with K-rep timing and the environment block) and `complexity_calibration.json` (`gnn.complexity_calibration/v1`, static-vs-measured join on `(source_sha256, framework)` with a factual `calibration_note` per row). Unavailable backends are recorded `available: false`, never skipped silently.
 - **Environment checks** via `gnn preflight` and `gnn health`
+- **Source-bound numerical witnesses** via `gnn witness SOURCE --results RESULT --program PROGRAM --output RECEIPT`, or `gnn witness --verify RECEIPT`. The restricted source reader, reference calculation and whole-receipt replay live in `gnn.validation`; numerical agreement does not authenticate execution or establish a Lean proof.
 - **Live development** via `gnn watch` (file monitoring with 250ms debounce)
 - **Dependency graphs** via `gnn graph` (Mermaid/text output)
 - **API server** via `gnn serve --surface` (`runs` → `api/app.py`, `jobs` → `api/server.py`, `both` starts the jobs surface on port+1 in a daemon thread, `website` → `gnn/website/serve.py` loopback static server + optional live reload, port 8090)

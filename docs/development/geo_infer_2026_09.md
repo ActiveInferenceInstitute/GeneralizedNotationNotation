@@ -81,3 +81,35 @@ an explicitly provided, already-synced GEO checkout and GNN interpreter), the
 GEO_INFER side's own paired CI against its pin of this repository, and
 hosted confirmation of this new workflow's own first runs. Local success —
 including the local run recorded above — does not establish hosted success.
+
+## Independent uv toolchains
+
+GNN requires exact uv 0.13.4. The GEO companion has a named installation-only
+exception, exact uv 0.13.1, required by its own `uv.toml`. Do not use one uv
+version to install both repositories. The GNN paired workflow installs GEO
+first with uv 0.13.1, then GNN with uv 0.13.4; its later GNN qualification
+commands retain uv 0.13.4. Each setup action remains pinned independently.
+
+For a local paired run, select both executable paths explicitly and use a real
+GEO checkout of the revision in GNN's committed pair pin. Install the GEO
+workspace with its uv 0.13.1 executable, locked dependencies, all packages and
+extras, and the existing cupy, mayavi, vaex and vaex-core exclusions. Select
+Python 3.11 and 3.12 in separate GEO environments to cover both hosted rows.
+Install GNN with its uv 0.13.4 executable, locked dependencies, Python 3.11,
+and the dev and geo-infer extras.
+
+The [paired workflow](../../.github/workflows/geo-infer-interchange.yml) owns
+the exact installation and runner command lines. Those options belong to uv
+and the standalone interchange runner, rather than GNN's pipeline CLI.
+Adapt the workflow's checkout paths to the local directories. Invoke
+`scripts/run_geo_interchange_checks.py` with GNN's installed interpreter,
+both checkout roots, both installed interpreter paths and a new receipt
+directory. Its help describes those standalone arguments:
+
+```bash
+.venv/bin/python scripts/run_geo_interchange_checks.py --help
+```
+
+After installation, invoke each environment's Python directly or select its
+repository's required uv explicitly. The runner's revision and receipt checks
+still apply; selecting the correct tools does not establish paired acceptance.

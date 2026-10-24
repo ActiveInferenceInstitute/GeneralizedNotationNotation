@@ -10,12 +10,11 @@ name: Paired fep_formal revision
 #   - both revisions plus the pin are retained as receipts, and
 #   - the read-only fep_formal bridge surface runs against this checkout.
 #
-# GNN 4.3.0 retains the 4.2.1 policy and deliberately targets the last accepted fixed FEP pair. Strict
-# bridge/Q7 checks run against its exact GNN scientific baseline; the runner
-# additionally binds the current release and rejects scientific source changes.
-# Only the canonical version bump and explicitly reviewed frozen lock may differ.
-# This proves baseline compatibility, not a newly synchronized formal pair.
-# Full synchronization is deferred to the next major release of both projects.
+# GNN 5.0 uses the current GNN source and the exact pinned FEP companion.
+# Historical 4.2.1/4.3.0 fixed-baseline policy bytes are archived under
+# docs/releases; they cannot admit a current release through this workflow.
+# Pair qualification requires these current-source bridge/Q7 checks to pass.
+# Native proof, generated-runner execution and release acceptance remain separate.
 
 on:
   push:
@@ -61,22 +60,12 @@ jobs:
           assert re.fullmatch('[0-9a-f]{40}', pair['revision'])
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write('revision=' + pair['revision'] + '\n')
-              policy = json.loads(Path('.github/fep-release-baseline.json').read_text())
-              assert policy['fep_revision'] == pair['revision']
-              assert re.fullmatch('[0-9a-f]{40}', policy['gnn_revision'])
-              output.write('gnn_baseline=' + policy['gnn_revision'] + '\n')
           PY
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: ActiveInferenceInstitute/fep_formal
           ref: ${{ steps.pair.outputs.revision }}
           path: fep-lean
-          persist-credentials: false
-      - name: Check out the accepted GNN scientific baseline
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          path: gnn-baseline
-          ref: ${{ steps.pair.outputs.gnn_baseline }}
           persist-credentials: false
       - name: Set up Python ${{ matrix.python }}
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -96,8 +85,6 @@ jobs:
           git -C gnn rev-parse HEAD > receipts/gnn-revision.txt
           git -C fep-lean rev-parse HEAD > receipts/fep-lean-revision.txt
           cp gnn/.github/fep-lean-pair.json receipts/pair.json
-          cp gnn/.github/fep-release-baseline.json receipts/release-baseline.json
-          git -C gnn-baseline rev-parse HEAD > receipts/gnn-baseline-revision.txt
       - name: Runtime custody negative controls
         run: python gnn/.github/test_fep_paired_runtime.py -v
       - name: Install independent frozen runtime
@@ -115,25 +102,21 @@ jobs:
               python gnn/.github/fep_paired_runtime.py "$stage" \
               --expected-python "$UV_PYTHON" \
               --environment "$UV_PROJECT_ENVIRONMENT" \
-              --gnn-root "$GITHUB_WORKSPACE/gnn-baseline" \
-              --gnn-release-root "$GITHUB_WORKSPACE/gnn" \
-              --gnn-release-revision "${{ github.event.pull_request.head.sha || github.sha }}" \
-              --gnn-revision "${{ steps.pair.outputs.gnn_baseline }}" \
+              --gnn-root "$GITHUB_WORKSPACE/gnn" \
+              --gnn-revision "${{ github.event.pull_request.head.sha || github.sha }}" \
               --fep-root "$GITHUB_WORKSPACE/fep-lean" \
               --fep-revision "${{ steps.pair.outputs.revision }}" \
               --receipts "$GITHUB_WORKSPACE/receipts"
           done
-      - name: Fixed-baseline Q7 provenance and scaffold freshness
+      - name: Current-source Q7 provenance and scaffold freshness
         if: matrix.python == '3.14'
         run: |
           uv run --project fep-lean --frozen --no-sync --python "$UV_PYTHON" \
             python gnn/.github/fep_paired_runtime.py q7-source \
             --expected-python "$UV_PYTHON" \
             --environment "$UV_PROJECT_ENVIRONMENT" \
-            --gnn-root "$GITHUB_WORKSPACE/gnn-baseline" \
-            --gnn-release-root "$GITHUB_WORKSPACE/gnn" \
-            --gnn-release-revision "${{ github.event.pull_request.head.sha || github.sha }}" \
-            --gnn-revision "${{ steps.pair.outputs.gnn_baseline }}" \
+            --gnn-root "$GITHUB_WORKSPACE/gnn" \
+            --gnn-revision "${{ github.event.pull_request.head.sha || github.sha }}" \
             --fep-root "$GITHUB_WORKSPACE/fep-lean" \
             --fep-revision "${{ steps.pair.outputs.revision }}" \
             --receipts "$GITHUB_WORKSPACE/receipts"

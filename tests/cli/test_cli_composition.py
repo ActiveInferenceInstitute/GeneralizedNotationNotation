@@ -65,7 +65,8 @@ class TestBuildParser:
 
     def test_subcommands_sorted_and_complete(self) -> None:
         assert cli.SUBCOMMANDS == tuple(sorted(cli.SUBCOMMANDS))
-        assert len(cli.SUBCOMMANDS) == 20
+        assert len(cli.SUBCOMMANDS) == 21
+        assert "witness" in cli.SUBCOMMANDS
 
     def test_extract_flags_introspectable(self) -> None:
         parser = cli.build_parser()
@@ -109,6 +110,7 @@ class TestDispatchTable:
             "graph",
             "gui",
             "mcp",
+            "witness",
         ],
     )
     def test_handler_attr_exists_and_is_callable(self, command: str) -> None:
@@ -138,6 +140,7 @@ class TestDispatchTable:
             "lsp",
             "complexity",
             "benchmark",
+            "witness",
         }
         assert set(cli.COMMAND_HANDLERS) == expected
 
@@ -474,6 +477,14 @@ def argparse_namespace_for(command: str, *, missing_file: bool) -> argparse.Name
             "only_steps": None,
         },
         "validate": {"file": file_arg, "strict": False, "json": False},
+        "witness": {
+            "source": file_arg,
+            "results": file_arg,
+            "verify": None,
+            "program": None,
+            "output": None,
+            "json": False,
+        },
         "parse": {"file": file_arg, "format": "json", "json": False},
         "extract": {"file": file_arg, "strict": True, "compact": False, "json": False},
         "render": {

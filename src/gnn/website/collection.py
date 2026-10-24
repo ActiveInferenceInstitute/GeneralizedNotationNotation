@@ -9,6 +9,7 @@ step-21 MCP page data — into the plain dict consumed by
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
@@ -115,14 +116,20 @@ def _load_pipeline_summary(p_root: Path) -> dict[str, Any]:
 def _normalize_website_step_status(raw: Any) -> str | None:
     """Map a recorded pipeline step status to the site badge vocabulary.
 
-    Returns ``ok``/``skip``/``error``, or ``None`` for an empty/unusable
+    Returns a completion, warning, running or pending badge, or ``None`` for an empty
     status (the step then stays ``pending``).
     """
     normalized = str(raw or "").strip().upper()
     if not normalized:
         return None
-    if "SKIP" in normalized:
+    if normalized in ("PENDING", "QUEUED", "NOT_RUN", "NOT_STARTED"):
+        return "pending"
+    if normalized in ("RUNNING", "IN_PROGRESS"):
+        return "running"
+    if "SKIP" in normalized or normalized == "UNSUPPORTED":
         return "skip"
+    if normalized in ("SUCCESS_WITH_WARNINGS", "WARNING", "WARNINGS"):
+        return "warning"
     if "SUCCESS" in normalized and "PARTIAL" not in normalized:
         return "ok"
     if normalized in ("PASS", "PASSED", "OK", "COMPLETED"):
@@ -153,13 +160,13 @@ def _step_statuses_from_summary(summary: dict[str, Any]) -> dict[int, str]:
 
 
 def _collect_step_statuses(p_root: Path) -> dict[int, str]:
-    """Map each step number to ``ok``/``skip``/``error``/``pending``.
+    """Map each step to completion, warning, failure, running or pending badges.
 
     Primary source is the durable ``pipeline_execution_summary.json`` written
     by the orchestrator: a step whose output dir exists but whose recorded
     status is ``FAILED`` or ``SKIPPED`` must not be advertised as complete.
-    Falls back to the numbered-output-dir heuristic only when the summary is
-    absent, malformed, or carries no parseable per-step records.
+    Standalone browsing falls back to directory discovery when no summary is
+    available. An active run never derives completion from directory presence.
     """
     pending = {step.number: "pending" for step in PIPELINE_STEPS}
     if not p_root.exists():
@@ -169,6 +176,10 @@ def _collect_step_statuses(p_root: Path) -> dict[int, str]:
         from_summary = _step_statuses_from_summary(summary)
         if from_summary:
             return {**pending, **from_summary}
+    from gnn.pipeline.run_context import current_run_context
+
+    if current_run_context() is not None:
+        return pending
     dir_names = [d.name for d in p_root.iterdir() if d.is_dir()]
     statuses: dict[int, str] = {}
     for step in PIPELINE_STEPS:
@@ -178,6 +189,62 @@ def _collect_step_statuses(p_root: Path) -> dict[int, str]:
         )
         statuses[step.number] = "ok" if found else "pending"
     return statuses
+
+
+def _selected_semantic_evidence(receipt: dict[str, Any]) -> bool:
+    """Bind known evidence receipts to the run's selected original source bytes.
+
+    Neutral receipt filenames cannot identify a model. Generic analysis keeps
+    its existing path-based admission; standalone receipts remain unverified
+    display data. This check establishes selection identity, not numerical or
+    formal acceptance.
+    """
+    from gnn.pipeline.run_context import current_run_context
+
+    context = current_run_context()
+    if context is None:
+        return True
+    schema = receipt.get("schema")
+    if not isinstance(schema, str) or schema not in {
+        "gnn-semantic-witness-v2",
+        "gnn-independent-numerical-witness-v1",
+        "fep-semantic-witness-audit-v1",
+    }:
+        return True
+    witness = receipt
+    if schema == "fep-semantic-witness-audit-v1":
+        nested = receipt.get("gnn_witness")
+        if (
+            not isinstance(nested, dict)
+            or nested.get("schema") != "gnn-semantic-witness-v2"
+        ):
+            return False
+        witness = nested
+        schema = "gnn-semantic-witness-v2"
+    contract = witness.get("source_contract")
+    if not isinstance(contract, dict):
+        return False
+    digest = contract.get("source_sha256")
+    if (
+        not isinstance(digest, str)
+        or re.fullmatch(r"[0-9a-f]{64}", digest) is None
+        or digest not in {model.sha256 for model in context.selected_models(20)}
+    ):
+        return False
+    if schema == "gnn-semantic-witness-v2":
+        artifacts = witness.get("artifacts")
+        source = artifacts.get("source") if isinstance(artifacts, dict) else None
+        if (
+            not isinstance(source, dict)
+            or source.get("sha256") != digest
+            or not isinstance(source.get("utf8"), str)
+        ):
+            return False
+        try:
+            return hashlib.sha256(source["utf8"].encode("utf-8")).hexdigest() == digest
+        except UnicodeError:
+            return False
+    return True
 
 
 def _collect_analysis_results(p_root: Path) -> list[Any]:
@@ -204,6 +271,11 @@ def _collect_analysis_results(p_root: Path) -> list[Any]:
                 continue
             if not isinstance(loaded, dict):
                 logger.debug(f"Skipped non-dict analysis file {jf.name}")
+                continue
+            if not _selected_semantic_evidence(loaded):
+                logger.debug(
+                    "Skipped evidence outside selected source identity: %s", jf.name
+                )
                 continue
             results.append(loaded)
 
@@ -269,7 +341,10 @@ def _load_registered_tools(p_root: Path) -> list[dict[str, str]]:
 
 
 def _collect_visualizations(
-    viz_dirs: list[Path], assets_dir: Path
+    viz_dirs: list[Path],
+    assets_dir: Path,
+    *,
+    pipeline_output_root: Path | None = None,
 ) -> tuple[list[dict[str, Any]], list[str]]:
     """Copy PNG/HTML visualization artifacts into ``assets_dir`` and describe them.
 
@@ -288,7 +363,8 @@ def _collect_visualizations(
     used_names: set[str] = set()
     from gnn.pipeline.artifact_ownership import owned_artifact_paths
 
-    inventory = owned_artifact_paths(assets_dir.parent.parent)
+    output_root = (pipeline_output_root or assets_dir.parent.parent).resolve()
+    inventory = owned_artifact_paths(output_root)
     for viz_dir in viz_dirs:
         if not viz_dir.exists():
             continue
@@ -296,7 +372,7 @@ def _collect_visualizations(
             for artifact in viz_dir.rglob(pattern):
                 if (
                     inventory is not None
-                    and artifact.relative_to(assets_dir.parent.parent).as_posix()
+                    and artifact.resolve().relative_to(output_root).as_posix()
                     not in inventory
                 ):
                     continue
@@ -308,7 +384,7 @@ def _collect_visualizations(
                             artifact,
                             viz_dir,
                             assets_dir,
-                            assets_dir.parent.parent,
+                            output_root,
                             inventory,
                         )
                     except (OSError, ValueError) as error:
@@ -391,7 +467,12 @@ def _collect_reports(p_root: Path) -> list[dict[str, Any]]:
             continue
         from gnn.pipeline.artifact_ownership import current_artifact_files
 
-        for jf in current_artifact_files(entry, "*.json")[:5]:  # cap per dir
+        admitted = [
+            path
+            for path in current_artifact_files(entry, "*.json")
+            if selected_website_asset(path)
+        ]
+        for jf in admitted[:5]:  # cap after selection, never before it
             try:
                 content = jf.read_text(encoding="utf-8", errors="replace")
                 reports.append(
@@ -419,14 +500,18 @@ def collect_website_data(
 
     Pure with respect to the repository state except for copying
     visualization assets into ``assets_dir``. Step statuses come from the
-    durable ``pipeline_execution_summary.json`` written by the orchestrator
-    (numbered-output-dir heuristic only as a fallback when the summary is
-    absent). The MCP page data comes from the step-21 artifacts:
+    current summary snapshot during an active run, or the durable
+    ``pipeline_execution_summary.json`` during standalone browsing. Only
+    standalone browsing falls back to directory presence without a summary.
+    The MCP page data comes from the step-21 artifacts:
     ``21_mcp_output/mcp_processing_summary.json`` for the summary and
     ``registered_tools.json`` for the tool inventory, so the site reflects
     what steps actually recorded.
     """
-    p_root = Path(pipeline_output_root)
+    p_root = Path(pipeline_output_root).resolve()
+    from gnn.pipeline.artifact_ownership import current_artifact_files
+
+    gui_navigation = p_root / "22_gui_output" / "navigation.html"
     data: dict[str, Any] = {
         "p_root": p_root,
         "output_dir": Path(output_dir) if output_dir is not None else None,
@@ -440,7 +525,8 @@ def collect_website_data(
         "mcp_summary": {},
         "step_statuses": {},
         "processed_files": 0,
-        "gui_navigation": (p_root / "22_gui_output" / "navigation.html").is_file(),
+        "gui_navigation": gui_navigation
+        in current_artifact_files(gui_navigation.parent, "navigation.html"),
     }
     if user_data:
         data.update(
@@ -466,6 +552,7 @@ def collect_website_data(
             p_root / "9_advanced_viz_output",
         ],
         assets_dir,
+        pipeline_output_root=p_root,
     )
     data["visualizations"].extend(viz_entries)
     data["warnings"].extend(viz_warnings)

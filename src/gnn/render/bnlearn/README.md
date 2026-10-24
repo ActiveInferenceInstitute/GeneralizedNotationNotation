@@ -16,6 +16,11 @@ code = generate_bnlearn_code(parsed_spec, "output/model_bnlearn.py")
 Step 12 sets `BNLEARN_OUTPUT_DIR`. The program writes `simulation_results.json`
 containing all timestep beliefs, observations, transition actions, source and
 canonical parameters, matrix provenance, model digest and generated-script digest.
+Native results declare `bnlearn_fixed_action_filter_v1`, the actual NumPy array
+dtype, canonical matrix/posterior axes, prior-first initial timing, each filtering
+conditioning horizon, and child Python/NumPy/framework versions. These declarations
+describe the executed finite filter; ordered state/observation labels are not
+invented when the source has not provided them.
 Within a pipeline run, source identity also binds the selected source digest.
 The source timestep count and seed are retained. CLI flags `--observations-json`
 and `--transition-actions-json` accept complete integer sequences. Without them,

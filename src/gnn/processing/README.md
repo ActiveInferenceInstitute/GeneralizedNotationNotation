@@ -143,6 +143,25 @@ None of these symbols are CLI subcommands. The pipeline entry is
 
 ## Headless processing and performance
 
+Both directory APIs accept keyword-only `workers=N` (1–256) and
+`executor="process"|"thread"`. An explicit count defaults to spawned processes;
+the default stays serial and `parallel=True` retains thread behavior. The
+effective pool is capped by the selected file count. Windows process pools
+also cap effective concurrency at 61, preserving the requested count in
+receipts; thread limits retain the requested count within the selection.
+Each input is one job,
+results retain discovery order, and only the parent publishes JSON. Explicit
+controls add `worker_execution` with requested/effective limits, actual executor
+and observed process IDs. Spawned library calls belong in the usual
+`if __name__ == "__main__":` guard. Use `python -m gnn.processing --workers 4`
+for a ready-to-run command.
+
+Step 3 accepts the pipeline `file_workers` option, using the same bounded
+process scheduler for parsing and serialization. Its parent writes the parsed
+models, serialized files and aggregate receipts. Current-run model selection and
+source hashes remain authoritative. Multiworker pipeline runs use the supervised
+step subprocess so its process-group cleanup and output lease cover the pool.
+
 The public facade resolves each export lazily. Lightweight parsing, validation
 and directory processing require only the standard library. Explicit heavy
 engine/serialization requests still load their actual owners and dependencies.

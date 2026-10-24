@@ -241,3 +241,8 @@ This module is part of the GeneralizedNotationNotation project. See the main rep
 
 Step 7 accepts `--formats` and `--geo-infer-options-file`; argument definitions,
 step configuration and `PipelineArguments` preserve these through orchestration.
+
+[`file_workers.py`](file_workers.py) provides bounded ordered per-file computation.
+Explicit worker counts choose spawned CPU processes by default; callers retain
+artifact publication. Thread mode remains available for I/O workloads. Worker
+limits, deadlines and cancellation are separate from CPU affinity or quotas.

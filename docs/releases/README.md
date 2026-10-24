@@ -21,13 +21,17 @@ The accepted Git tag and directly verified public assets define each release.
 ## Repeatable release qualification
 
 The package version is owned by `pyproject.toml` and mirrored by
-`gnn.__version__`, the frozen lock and citation metadata. Prepare a minor release
-on an isolated branch; finish content first, then perform the
+`gnn.__version__`, the frozen lock and citation metadata. Prepare a release
+candidate on an isolated branch; finish content first, then perform the
 [manuscript and companion ritual](../development/fep_lean_paired_revision.md#closeout-ordering-canonical).
-GNN 4.3.0 retains the explicitly bounded
-[fixed FEP baseline](../development/fep_lean_paired_revision.md#fixed-baseline-for-gnn-421)
-instead of a simultaneous companion release; full pairing is planned for the next
-major release of both repositories. Keep original producer commits reachable. Never renew receipts by editing hashes.
+GNN 5.0.0 uses strict current-source pairing with its reviewed FEP_Formal pin.
+A candidate version or workflow migration does not establish synchronized-pair
+qualification or publication; the actual source, native, manuscript and hosted
+gates must pass. The historical 4.2.1/4.3.0
+[fixed-baseline policy](../development/fep_lean_paired_revision.md#fixed-baseline-for-gnn-421)
+and its exact [4.3.0 policy bytes](fep_4_3_0_baseline.json) remain archival
+evidence, without an active release exception. Keep original producer commits
+reachable. Never renew receipts by editing hashes.
 
 After provisioning the exact uv version from README, run `just release-preflight`
 before publishing a candidate. It installs the frozen dev profile once, then

@@ -16,6 +16,10 @@ import pytest
 from gnn.extract.pomdp_extractor import extract_pomdp_from_file
 from gnn.render.jax.jax_renderer import render_gnn_to_jax
 from gnn.render.pomdp_processor import pomdp_to_gnn_spec
+from gnn.validation.semantic_witness import (
+    build_semantic_witness,
+    verify_semantic_witness,
+)
 from tests.helpers.numerical_witness import (
     FINITE_AXES,
     GAUSSIAN_AXES,
@@ -166,11 +170,19 @@ def save_native_receipt(tmp_path, contract, expected, actual, script, result):
     }
     path = tmp_path / "numerical-witness.json"
     path.write_text(json.dumps(receipt, indent=2) + "\n")
+    semantic = build_semantic_witness(source_bytes, result_bytes, script_bytes)
+    assert semantic["status"] == "passed", semantic["comparisons"]
+    assert verify_semantic_witness(semantic) == []
+    semantic_path = tmp_path / "semantic-witness-v2.json"
+    semantic_path.write_text(json.dumps(semantic, indent=2, allow_nan=False) + "\n")
     destination = os.environ.get("GNN_NUMERICAL_WITNESS_DIR")
     if destination:
         out = Path(destination)
         out.mkdir(parents=True, exist_ok=True)
         (out / f"e4-{contract['model']}-filtering.json").write_bytes(path.read_bytes())
+        (out / f"e4-{contract['model']}-semantic-v2.json").write_bytes(
+            semantic_path.read_bytes()
+        )
 
 
 def test_finite_source_filtering_and_smoothing_have_distinct_conditioning(tmp_path):
@@ -323,6 +335,47 @@ def test_finite_counterexamples_name_the_incompatible_quantity(mutation):
         wrong["quantities"]["beliefs"] = wrong_values.tolist()
         with pytest.raises(AssertionError, match="beliefs"):
             compare_records(expected, wrong)
+        if mutation == "transition":
+            # A cached expected/candidate pair can be altered coherently while
+            # retaining its passed comparisons. Replay must rebuild the source
+            # reference and candidate from immutable artifact bytes instead.
+            program = b"# retained native program bytes\n"
+            payload = {
+                "framework": "bnlearn",
+                "schema_version": "bnlearn_fixed_action_filter_v1",
+                "inference_contract": "bnlearn_fixed_action_filter_v1",
+                "inference_mode": "exact_categorical_filtering",
+                "control_mode": "fixed_transition_actions",
+                "dtype": "float64",
+                "initial_time": contract["initial_time"],
+                "axes": contract["axes"],
+                "conditioning_horizon": [1, 2, 3, 4],
+                "num_timesteps": 4,
+                "num_states": 2,
+                "num_observations": 3,
+                "random_seed": 19,
+                "action_semantics": "transition_into_next_state",
+                "parameters": {
+                    key: contract["parameters"][key] for key in ("A", "B", "D")
+                },
+                "observations": observations,
+                "transition_actions": actions,
+                "beliefs": values.tolist(),
+                "generated_script_sha256": hashlib.sha256(program).hexdigest(),
+            }
+            semantic = build_semantic_witness(
+                authored_source(), json.dumps(payload).encode(), program
+            )
+            assert semantic["status"] == "passed"
+            assert verify_semantic_witness(semantic) == []
+            altered = deepcopy(semantic)
+            altered["reference"]["quantities"]["beliefs"] = wrong_values.tolist()
+            altered["candidate"]["quantities"]["beliefs"] = wrong_values.tolist()
+            assert (
+                altered["reference"]["quantities"] == altered["candidate"]["quantities"]
+            )
+            assert altered["comparisons"]["beliefs"]["status"] == "passed"
+            assert verify_semantic_witness(altered)
     else:
         field, value = {
             "horizon": ("conditioning_horizon", [4, 4, 4, 4]),

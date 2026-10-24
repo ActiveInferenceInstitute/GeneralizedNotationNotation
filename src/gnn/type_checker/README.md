@@ -42,6 +42,17 @@ A bespoke analytical graphic utility rendering four distinct visual abstractions
 4.  **Model Baseball Cards**: Generating hyper-isolated trading-cards per model logging explicit structural complexities and validation scores (Located at `output/5_type_checker_output/visualizations/cards/`).
 
 ## Execution
+
+`validate_gnn_files(..., file_workers=N)` accepts a positive worker limit up to
+256 (default 1). Each selected input has a separate validation/analysis job;
+spawned processes are capped by the selected file count and return results in
+input order. The parent writes receipts and renders plots and resource reports.
+`worker_execution` records the requested/effective limits and observed process
+IDs. Current-run jobs retain their frozen selection and source hashes. A shared
+deadline or cancellation stops scheduling and publication and terminates the
+pool. Pipeline multiworker runs use the supervised step subprocess, preserving
+process-group cleanup and output ownership.
+
 ```bash
 # General invocation via master orchestration
 python src/gnn/main.py --only-steps=5 --verbose

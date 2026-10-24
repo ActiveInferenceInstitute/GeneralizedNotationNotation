@@ -156,7 +156,12 @@ Discover pipeline artifacts grouped by step output directory (the step
 table is the registry-derived `PIPELINE_OUTPUT_SECTIONS` constant, built
 from `gnn.pipeline.step_registry.STEPS`). Returns `(sections,
 total_files)`; `file_count` counts every discovered file while `files` is
-capped at `MAX_FILES_PER_SECTION` (20). Missing step directories are skipped.
+capped at `MAX_FILES_PER_SECTION` (20). Pass `max_files_per_section=None` to
+return every matching file; navigation uses this complete listing with native
+**More files** disclosure and offline filename/path/step and type filters.
+An active pipeline run admits only indexed artifacts for the Step 22 model
+selection. Standalone discovery remains a filesystem census, labelled separately
+from current-run evidence. Missing step directories are skipped.
 
 #### Shared internals
 - `gui/runner.py` — `resolve_output_root()` (delegates to the shared
@@ -170,8 +175,11 @@ capped at `MAX_FILES_PER_SECTION` (20). Missing step directories are skipped.
   covered by `tests/gui/test_websocket_bridge.py`.
 - `process_gui(**kwargs)` now honors a caller-provided `logger=` kwarg
   (documented in the API table above); without it the module logger is used.
-- `navigation.html` escapes file names/paths with `html.escape`, so artifacts
-  with HTML-special characters render correctly.
+- `navigation.html` escapes file names/paths with `html.escape`, URL-encodes
+  links relative to its actual destination, and renders dashboard/report
+  crosslinks only for available artifacts. Artifact names containing `#`, `?`
+  or `%` remain navigable. All files remain accessible without JavaScript;
+  filters provide a live match count, empty state and keyboard focus styles.
 - `gui_3/processor.py` uses the same `detect_gradio_backend()` recovery
   semantics as gui_1/gui_2 (a broken gradio install degrades to headless
   artifacts instead of raising).

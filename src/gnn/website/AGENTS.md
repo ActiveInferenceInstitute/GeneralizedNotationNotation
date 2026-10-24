@@ -31,7 +31,47 @@
 isolation and publication. `templates.py` owns the shared offline page shell,
 styles, client search script and escaping. It consumes `pages.py` directly and
 does not import the generator or collectors. Existing generator imports and
-signatures remain available; this separation changes no generated markup.
+signatures remain available. The shell owns native mobile navigation, keyboard
+focus, reduced-motion styles and accessible search feedback. Artifact links
+are relative to the actual site destination and percent-encode filenames.
+
+`evidence.py` is the stdlib-only presentation leaf for recorded numerical
+witnesses and FEP semantic audit wrappers in `analysis.html`. It performs no
+receipt validation, scientific replay, native execution or proof checking.
+Keep reported quantity outcomes, assumptions, source identity, reference/native
+provenance, formal references, compilation, execution and pair custody distinct.
+Unknown or malformed optional fields must not establish a pass or fail the page.
+The seven-page catalogue, current artifact filtering and pure-dict seam remain
+unchanged.
+For recognized v1/v2 witnesses and FEP audit wrappers, `collection.py` also binds
+the receipt's declared source digest to Step 20's selected original-model hashes.
+V2 and wrapped-v2 retained source bytes must reproduce that digest. Filename
+ownership alone cannot admit evidence for another model. This collection check
+does not certify numerical replay, execution or formal proof; generic analysis
+datasets and standalone/pure-dict presentation keep their existing contracts.
+The `fep-gnn-semantic-native-v1` adapter presents global retained compiler
+receipts separately from model numerical witnesses. Accepted negative controls
+record expected false-claim rejections. Preserve compiler and axiom output,
+proof hole diagnostics, source/toolchain identity and the explicit finite-weight
+and scalar prior-measurement scope; do not infer matrix/translation proofs or
+source-model bindings from global native compilation.
+The numerical trace explorer consumes retained v2 reference/candidate arrays,
+never a backend or scientific replay. Guard recorded identity admission,
+metadata alignment and finite nonboolean shapes at eight prefixes/four state
+axes. Unavailable/refused identity records produce no SVG; failed numerical
+quantities retain a diagnostic label. Preserve accessible SVG title/description,
+state/quantity/residual selectors and the full table alternative. Covariance
+diagonal variance is a separate quantity from means, without inferred confidence
+bands. Rendering a trace does not certify the saved receipt.
+Large retained artifact bodies appear once in the complete saved-receipt
+disclosure. Provenance keeps digests and UTF-8 byte counts, with an explicit
+pointer to that disclosure. Text-node JSON escaping preserves complete data
+without unnecessary quote expansion. Preserve this distinction when adding
+receipt fields; do not drop raw records to make rendering faster.
+The dashboard consumes recorded `execution_resources` and `parallel_tiers`
+only. Requested limits, recorded tier concurrency and actual file-worker use
+are separate facts; missing summary metadata cannot inherit local machine
+settings or imply acceleration.
 
 ### Key Capabilities
 - Static website generation from pipeline artifacts
@@ -90,7 +130,16 @@ success = process_website(
 Additional exports (see `__init__.py`): `WebsiteGenerator`, `WebsiteRenderer`, `generate_website`, `embed_text_file`, `embed_json_file`, `embed_html_file`, `get_module_info`, `get_supported_file_types`, `validate_website_config`, `collect_website_data`, `get_pipeline_steps`, `PIPELINE_STEPS`, `StepInfo`, `inspect_website`, `list_website_pages`, and the page catalogue from `pages.py` (`SITE_PAGES`, `page_names`, `is_valid_page`, `page_count`; `PageSpec`/`page_filenames` importable from `gnn.website.pages`).
 
 #### `collect_website_data(pipeline_output_root, input_dir, assets_dir, *, output_dir=None, user_data=None) -> dict`
-**Description**: Pure aggregation of every artifact the pages render (GNN files, step statuses, analysis JSON, visualization assets, reports, MCP page data). Step statuses come from the durable `output/00_pipeline_summary/pipeline_execution_summary.json` (per-step `status` records; a step whose output dir exists but whose recorded status is FAILED/SKIPPED is not advertised complete), falling back to the numbered-output-dir heuristic only when the summary is absent. MCP page data is sourced from the step-21 artifacts — `21_mcp_output/mcp_processing_summary.json` for the summary and `21_mcp_output/registered_tools.json` for the tool inventory — so the site reflects what step 21 actually recorded and degrades to a truthful empty state when step 21 did not run.
+**Description**: Aggregates GNN sources, step outcomes, analysis, visualizations,
+reports and MCP data. Active runs require the matching
+`output/00_pipeline_summary/current_summary.json` and current owned artifacts;
+missing current evidence stays pending. Standalone browsing reads the durable
+`pipeline_execution_summary.json` with a directory-discovery fallback.
+Running, warning, skipped and failed records retain distinct badges. Directory
+presence and file counts do not establish current-run completion. Step-21
+`mcp_processing_summary.json` and `registered_tools.json` supply MCP data;
+absent artifacts produce an explicit empty state. Interactive bundles preserve
+relative dependencies even when the site destination is outside the output root.
 
 #### `get_pipeline_steps() -> tuple[StepInfo, ...]`
 **Description**: Returns the immutable 25-step catalogue derived from `gnn.pipeline.step_registry.STEPS` (`StepInfo(number, name, description)` with a `script_name` display property that matches the real orchestrator scripts) used to render the index and pipeline pages.
@@ -166,7 +215,10 @@ output/20_website_output/
 
 ## Performance Characteristics
 
-Generation is fast (seconds) for typical pipeline output; no published benchmarks. Measure on demand if needed.
+The README records a bounded local 15/150-receipt rendering measurement with
+source/input hashes and separate timing, allocation and profile artifacts.
+Measure on demand; these results do not establish whole-pipeline or worker
+scaling behavior.
 
 ---
 ## Error Handling

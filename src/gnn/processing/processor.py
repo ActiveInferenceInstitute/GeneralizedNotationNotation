@@ -7,7 +7,6 @@ import json
 import os
 import re
 import tempfile
-from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
@@ -54,6 +53,9 @@ def process_gnn_directory_lightweight(
     output_dir: Optional[Path] = None,
     recursive: bool = True,
     parallel: bool = False,
+    *,
+    workers: int | None = None,
+    executor: str | None = None,
 ) -> Dict[str, Any]:
     """
     Lightweight GNN directory processing without heavy dependencies.
@@ -63,11 +65,18 @@ def process_gnn_directory_lightweight(
         output_dir: Directory to save results (optional)
         recursive: Whether to process subdirectories
         parallel: Whether to process discovered files concurrently
+        workers: Explicit CPU worker limit (1..256); defaults to serial.
+        executor: ``process`` (explicit workers) or ``thread`` (existing parallel option).
 
     Returns:
         Dictionary with processing results
     """
     try:
+        from gnn.utils.file_workers import ordered_file_map, resolve_file_workers
+
+        requested_workers, executor_mode = resolve_file_workers(
+            workers, executor, parallel=parallel
+        )
         target_dir = Path(target_dir)
         if not target_dir.exists():
             raise FileNotFoundError(f"Input path does not exist: {target_dir}")
@@ -120,13 +129,20 @@ def process_gnn_directory_lightweight(
                         }
                     )
 
-        if parallel and len(gnn_files) > 1:
-            with ThreadPoolExecutor() as executor:
-                for file_result in executor.map(_process_single_gnn_file, gnn_files):
-                    record_file_result(file_result)
-        else:
-            for file_path in gnn_files:
-                record_file_result(_process_single_gnn_file(file_path))
+        worker_metadata: dict[str, Any] = {
+            "requested_workers": requested_workers,
+            "effective_workers": min(requested_workers, len(gnn_files)),
+        }
+        if workers is not None or executor is not None:
+            results["worker_execution"] = worker_metadata
+        for file_result in ordered_file_map(
+            _process_single_gnn_file,
+            gnn_files,
+            workers=max(1, min(requested_workers, len(gnn_files))),
+            executor=executor_mode,
+            metadata=worker_metadata,
+        ):
+            record_file_result(file_result)
 
         if output_dir:
             try:
@@ -205,11 +221,13 @@ def _extract_variables_lightweight(content: str) -> List[str]:
     variables: list[Any] = []
     seen: set[str] = set()
 
-    # Look for variable definitions
+    # Names start at a word boundary and consume a complete word. Delimiters
+    # cannot be word characters, so suffix retries and name backtracking add no
+    # matches. Possessive quantifiers are available on every supported Python.
     var_patterns: list[Any] = [
-        r"(\w+)\s*:\s*(\w+)",  # name: type
-        r"(\w+)\s*=\s*([^;\n]+)",  # name = value
-        r"(\w+)\s*\[([^\]]+)\]",  # name[dimensions]
+        r"(?<!\w)(\w++)\s*:\s*(\w+)",  # name: type
+        r"(?<!\w)(\w++)\s*=\s*([^;\n]+)",  # name = value
+        r"(?<!\w)(\w++)\s*\[([^\]]+)\]",  # name[dimensions]
     ]
 
     for pattern in var_patterns:
@@ -406,6 +424,9 @@ def process_gnn_directory(
     output_dir: Union[str, Path, None] = None,
     recursive: bool = True,
     parallel: bool = False,
+    *,
+    workers: int | None = None,
+    executor: str | None = None,
 ) -> Dict[str, Any]:
     """
     Process all GNN files in a directory.
@@ -420,6 +441,8 @@ def process_gnn_directory(
             If provided, creates 'gnn_processing_results.json' in this location.
         recursive: Whether to search subdirectories for GNN files.
         parallel: Whether to process discovered files concurrently.
+        workers: Explicit worker limit, choosing processes by default.
+        executor: Select ``process`` or ``thread`` for file computation.
 
     Returns:
         Dictionary containing:
@@ -454,6 +477,8 @@ def process_gnn_directory(
         _dir_path,
         recursive=recursive,
         parallel=parallel,
+        workers=workers,
+        executor=executor,
     )
     # Extract actual file paths from parsed file results
     parsed_files = lightweight_result.get("parsed_files", [])
@@ -469,6 +494,8 @@ def process_gnn_directory(
         "files": file_paths,
         "processed_files": processed_paths,
     }
+    if "worker_execution" in lightweight_result:
+        result["worker_execution"] = lightweight_result["worker_execution"]
     if lightweight_result.get("errors"):
         result["errors"] = lightweight_result["errors"]
         result["error"] = "; ".join(error["error"] for error in result["errors"])

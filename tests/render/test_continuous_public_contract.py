@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -90,6 +91,27 @@ def test_public_jax_runner_executes_nonstationary_prediction(tmp_path: Path) -> 
     result = json.loads((output / "simulation_results.json").read_text())
     assert result["validation"]["all_valid"] is True
     assert result["model_kind"] == "continuous"
+    assert (
+        result["schema_version"]
+        == result["inference_contract"]
+        == "gnn_lgssm_filter_v1"
+    )
+    assert result["inference_mode"] == "gaussian_filtering"
+    assert result["dtype"] == "float64"
+    assert result["initial_time"] == "first_observation_uses_prior"
+    assert result["conditioning_horizon"] == [1, 2, 3]
+    assert result["axes"] == {
+        "F": ["next_state", "previous_state"],
+        "H": ["observation", "state"],
+    }
+    assert result["belief_axes"] == ["timestep", "state"]
+    assert result["parameters"] == continuous_spec()["initialparameterization"]
+    assert (
+        result["generated_script_sha256"]
+        == hashlib.sha256(Path(artifacts[0]).read_bytes()).hexdigest()
+    )
+    assert result["python_version"] and result["numpy_version"]
+    assert result["random_seed"] == continuous_spec()["model_parameters"]["random_seed"]
     variances = [2 / 3, 11 / 23, 20 / 43]
     assert [row[0][0] for row in result["posterior_cov"]] == pytest.approx(variances)
     mean = 1.0
@@ -101,3 +123,20 @@ def test_public_jax_runner_executes_nonstationary_prediction(tmp_path: Path) -> 
         assert result["beliefs"][index][0] == pytest.approx(mean)
     assert result["control_mode"] == "passive"
     assert result["actions"] == []
+    # Reporting must observe runtime arrays, even when a generated program's
+    # actual precision differs from the normal x64 renderer configuration.
+    float32_script = tmp_path / "float32_jax.py"
+    original = Path(artifacts[0]).read_text()
+    changed = original.replace("dtype=jnp.float64", "dtype=jnp.float32")
+    assert changed != original
+    float32_script.write_text(changed)
+    float32_output = tmp_path / "execution_float32"
+    assert execute_jax_script(float32_script, output_dir=float32_output, timeout=60)
+    float32_result = json.loads(
+        (float32_output / "simulation_results.json").read_text()
+    )
+    assert float32_result["dtype"] == "float32"
+    assert (
+        float32_result["generated_script_sha256"]
+        == hashlib.sha256(float32_script.read_bytes()).hexdigest()
+    )

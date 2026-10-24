@@ -376,6 +376,26 @@ def test_validate_gnn_files_writes_summary_json_envelope(
     assert envelope["files_processed"] == 1
     assert envelope["valid_files"] == 1
     assert envelope["invalid_files"] == 0
+    parallel_source = tmp_path / "worker_inputs"
+    parallel_source.mkdir()
+    for name in ("probe.gnn", "second.gnn"):
+        (parallel_source / name).write_text(_VALID_MINIMAL, encoding="utf-8")
+    parallel_out = tmp_path / "parallel"
+    assert (
+        GNNTypeChecker().validate_gnn_files(
+            parallel_source, parallel_out, file_workers=2
+        )
+        is True
+    )
+    parallel = json.loads((parallel_out / "type_check_results.json").read_text())
+    assert parallel["processed_files"] == 2
+    assert [Path(r["file_path"]).name for r in parallel["validation_results"]] == [
+        "probe.gnn",
+        "second.gnn",
+    ]
+    assert all(r["valid"] for r in parallel["validation_results"])
+    assert parallel["worker_execution"]["executor"] == "process"
+    assert parallel["worker_execution"]["effective_workers"] == 2
 
 
 def test_validate_single_gnn_file_never_raises_on_content_error(

@@ -25,7 +25,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-from gnn.pipeline.admission import validate_boolean, validate_steps
+from gnn.pipeline.admission import (
+    validate_boolean,
+    validate_steps,
+    validate_worker_count,
+)
 from gnn.pipeline.step_registry import STEPS, get_llm_steps
 from gnn.utils.pipeline_orchestration.pipeline_step_dependencies import (
     resolve_step_dependencies,
@@ -72,6 +76,8 @@ def build_pipeline_command(
     strict: bool = False,
     parallel: bool = False,
     consolidated_steps: bool = False,
+    file_workers: int = 1,
+    step_workers: int | None = None,
     repo_root: Optional[Path] = None,
 ) -> List[str]:
     """Return the argv for one real ``src/gnn/main.py`` orchestrator invocation.
@@ -87,6 +93,8 @@ def build_pipeline_command(
         skip_steps: Steps to skip.
         verbose: Enable orchestrator verbose output.
         strict: Treat orchestrator warnings as errors.
+        file_workers: Requested Steps 3/5 worker limit (one is serial).
+        step_workers: Requested concurrent tier limit (None selects automatically).
         repo_root: Explicit checkout script override. By default module execution
             preserves the API workspace cwd for configuration and relative paths.
 
@@ -99,6 +107,8 @@ def build_pipeline_command(
     validate_boolean(strict, field_name="strict")
     validate_boolean(parallel, field_name="parallel")
     validate_boolean(consolidated_steps, field_name="consolidated_steps")
+    validate_worker_count(file_workers, field_name="file_workers")
+    validate_worker_count(step_workers, field_name="step_workers", allow_none=True)
     if set(only_steps or ()) & set(skip_steps or ()):
         raise ValueError("Pipeline steps cannot be both requested and skipped")
     command: List[str] = (
@@ -111,7 +121,11 @@ def build_pipeline_command(
         str(target_dir),
         "--output-dir",
         str(output_dir),
+        "--file-workers",
+        str(file_workers),
     ]
+    if step_workers is not None:
+        command += ["--step-workers", str(step_workers)]
     if only_steps:
         command += ["--only-steps", ",".join(str(step) for step in sorted(only_steps))]
     if skip_steps:

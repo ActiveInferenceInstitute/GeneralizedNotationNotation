@@ -21,6 +21,8 @@ descriptor or replacing the stream.
 | `gnn extract <file>` | Extract the POMDP state space as structured JSON (`--strict`/`--no-strict`, `--compact`, `--json` standard envelope) |
 | `gnn render <file>` | Render a GNN file to a specific framework (pymdp, rxinfer, jax, etc.); `--json` emits the standard envelope |
 | `gnn report` | Generate pipeline report from existing outputs |
+| `gnn witness <file> --results <result> --program <script>` | Compare independently read source semantics with native reported values; optional `--output` writes a v2 receipt |
+| `gnn witness --verify <receipt>` | Recompute all numerical evidence from retained bytes; refuse altered or nonpassing records |
 | `gnn reproduce <hash>` | Re-run from a previous run hash (content-addressable) |
 | `gnn preflight` | Run environment & config checks |
 | `gnn health` | Show renderer generator-module availability and environment preflight status |
@@ -40,7 +42,8 @@ descriptor or replacing the stream.
 Exit codes follow one contract: `0` is success, `1` is error, and `2` is a
 completed command with warnings, validation findings, or degraded readiness.
 
-`gnn run` accepts `--parallel`, `--consolidated-steps` and `--strict` and delegates
+`gnn run` accepts `--parallel`, `--consolidated-steps`, `--strict`, `--file-workers`
+and `--step-workers` and delegates
 to the shared owned invocation. `--only-steps` must contain unique registered
 integers; an empty option, unknown steps and duplicates fail before dispatch.
 Omit it to select all steps. Required prerequisites are included automatically.

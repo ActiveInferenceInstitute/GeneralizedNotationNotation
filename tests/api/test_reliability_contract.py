@@ -109,6 +109,64 @@ def test_request_step_numbers_reject_coercion(value: object) -> None:
         RunRequest(skip_steps=[cast("int", value)])
 
 
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("file_workers", None),
+        ("file_workers", True),
+        ("step_workers", False),
+        ("file_workers", 0),
+        ("step_workers", -1),
+        ("file_workers", 257),
+        ("step_workers", 257),
+        ("file_workers", "2"),
+        ("step_workers", 2.0),
+    ],
+)
+def test_worker_limits_reject_coercion_and_bounds_before_job_creation(
+    field: str, value: object
+) -> None:
+    from gnn.api.mcp import gnn_submit_job_mcp
+    from gnn.api.models import ProcessRequest, ToolRequest
+    from gnn.api.pipeline_runner import build_pipeline_command
+
+    settings = {field: value}
+    before = set(processor._JOBS)
+    for model in (ProcessRequest, RunRequest, ToolRequest):
+        with pytest.raises(ValueError, match="integer between 1 and 256"):
+            model(**settings)
+    with pytest.raises(ValueError, match="integer between 1 and 256"):
+        build_pipeline_command("not-admitted", "unused", **settings)
+    with pytest.raises(ValueError, match="integer between 1 and 256"):
+        processor.create_job("not-admitted", **settings)
+    result = gnn_submit_job_mcp("not-admitted", **settings)
+    assert result["status"] == "error"
+    assert "integer between 1 and 256" in result["message"]
+    assert set(processor._JOBS) == before
+
+
+def test_worker_limit_defaults_and_argv_preserve_requested_limits() -> None:
+    from gnn.api.models import ProcessRequest, ToolRequest
+    from gnn.api.pipeline_runner import build_pipeline_command
+
+    for model in (ProcessRequest, RunRequest, ToolRequest):
+        assert model().file_workers == 1
+        assert model().step_workers is None
+        assert model(file_workers=256, step_workers=256).file_workers == 256
+        properties = model.model_json_schema()["properties"]
+        assert properties["file_workers"]["minimum"] == 1
+        assert properties["file_workers"]["maximum"] == 256
+    default = build_pipeline_command("input", "output")
+    assert default[default.index("--file-workers") + 1] == "1"
+    assert "--step-workers" not in default
+    configured = build_pipeline_command(
+        "input", "output", file_workers=3, step_workers=2, parallel=True
+    )
+    assert configured[configured.index("--file-workers") + 1] == "3"
+    assert configured[configured.index("--step-workers") + 1] == "2"
+    assert "--parallel" in configured
+
+
 def test_summary_ignores_previous_invocation(tmp_path: Path) -> None:
     import time
 

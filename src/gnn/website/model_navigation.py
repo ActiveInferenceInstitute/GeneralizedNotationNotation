@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import re
+from collections import Counter
 from datetime import datetime
+from pathlib import Path
 from typing import Any
 
 from gnn.website.pages import SITE_PAGES
@@ -63,19 +65,43 @@ def _model_snippet(model: dict[str, Any]) -> str:
 
 
 def _attach_model_viz_assets(data: dict) -> None:
-    """Attach matching collected image assets to each parsed model."""
+    """Attach exact identities, or unambiguous standalone source/display names."""
+    from gnn.pipeline.run_context import current_run_context
+
     visuals = data.get("visualizations") or []
-    for model in data.get("models") or []:
+    models = data.get("models") or []
+    source_slugs = [
+        _model_slug(Path(str(model["source_name"])).stem)
+        if model.get("source_name")
+        else None
+        for model in models
+    ]
+    source_counts = Counter(source_slugs)
+    standalone = current_run_context() is None
+    for model, source_slug in zip(models, source_slugs, strict=True):
         slug = model.get("slug") or _model_slug(str(model.get("name") or ""))
-        model["images"] = [
-            v["path"]
+        matched = [
+            v
             for v in visuals
-            if v.get("type") == "image"
-            and (
+            if (
                 v.get("model_id") == model.get("model_id")
                 if model.get("model_id")
-                else _artifact_matches_model(str(v.get("title") or ""), str(slug))
+                else standalone
+                and (
+                    _artifact_matches_model(str(v.get("title") or ""), str(slug))
+                    or (
+                        source_slug is not None
+                        and source_counts[source_slug] == 1
+                        and _artifact_matches_model(
+                            str(v.get("title") or ""), source_slug
+                        )
+                    )
+                )
             )
+        ]
+        model["images"] = [v["path"] for v in matched if v.get("type") == "image"]
+        model["interactive_visualizations"] = [
+            v for v in matched if v.get("type") == "html"
         ]
 
 

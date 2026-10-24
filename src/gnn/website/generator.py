@@ -26,6 +26,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional
+from urllib.parse import quote
 
 from gnn.website.collection import collect_website_data, website_data_from_dict
 from gnn.website.model_navigation import (
@@ -81,16 +82,22 @@ _BADGE_CLASS: dict[str, str] = {
     "ok": "badge-ok",
     "error": "badge-error",
     "skip": "badge-skip",
+    "warning": "badge-warning",
+    "running": "badge-running",
 }
 _STEP_BADGE_LABEL: dict[str, str] = {
     "ok": "✓ Complete",
     "error": "✗ Error",
     "skip": "⊘ Skipped",
+    "warning": "⚠ Complete with warnings",
+    "running": "◉ Running",
 }
 _PIPELINE_BADGE_LABEL: dict[str, str] = {
     "ok": "Complete",
     "error": "Error",
     "skip": "Skipped",
+    "warning": "Complete with warnings",
+    "running": "Running",
 }
 
 
@@ -160,25 +167,34 @@ def _overall_badge(status: Any) -> str:
 
 
 def _step_dir_stats(
-    step: StepInfo, p_root: Path, cap: int = 10
+    step: StepInfo, p_root: Path, cap: int | None = 10
 ) -> tuple[bool, int, int, list[str], bool]:
     """Filesystem facts for one registry step's output directory.
 
-    Registry + filesystem only — per-step ``output_dir`` summary fields are
-    never consulted. Returns ``(exists, file_count, total_bytes, preview,
-    truncated)`` where ``preview`` holds up to ``cap`` sorted relative names.
+    During a bound run, only current, selected artifacts are admitted. A
+    standalone site shows a filesystem census. Returns ``(exists, file_count,
+    total_bytes, preview, truncated)``; ``cap=None`` retains every name.
     """
-    directory = p_root / step.output_dir_name
+    directory = (p_root / step.output_dir_name).resolve()
     if not directory.is_dir():
         return False, 0, 0, [], False
-    files = sorted(p for p in directory.rglob("*") if p.is_file())
+    from gnn.pipeline.artifact_ownership import current_artifact_files
+    from gnn.website.asset_transport import selected_website_asset
+
+    files = [
+        path
+        for path in current_artifact_files(directory)
+        if path.is_file()
+        and path.resolve().is_relative_to(p_root.resolve())
+        and selected_website_asset(path)
+    ]
     preview = [f.relative_to(directory).as_posix() for f in files[:cap]]
     return (
         True,
         len(files),
         sum(f.stat().st_size for f in files),
         preview,
-        len(files) > cap,
+        cap is not None and len(files) > cap,
     )
 
 
@@ -361,7 +377,7 @@ class WebsiteGenerator:
 
     def _page_index(self, data: dict) -> str:
         """Render the dashboard landing page."""
-        n_ok = sum(1 for s in data["step_statuses"].values() if s == "ok")
+        n_ok = sum(1 for s in data["step_statuses"].values() if s in ("ok", "warning"))
         n_steps = len(PIPELINE_STEPS)
         n_files = data["processed_files"]
         mcp_summary = data.get("mcp_summary")
@@ -440,6 +456,65 @@ class WebsiteGenerator:
   </div>
 </div>"""
 
+        resources = summary.get("execution_resources")
+        tiers = summary.get("parallel_tiers")
+        resource_rows = ""
+        if isinstance(resources, dict):
+            for key, label in (
+                ("logical_cpus_available", "Logical CPUs available"),
+                ("file_workers_requested", "File worker limit (Steps 3/5)"),
+                ("step_workers_requested", "Step worker limit"),
+                ("execution_workers_requested", "Execution worker limit (Step 12)"),
+            ):
+                if key not in resources:
+                    continue
+                value = resources[key]
+                shown = (
+                    "Automatic"
+                    if key == "step_workers_requested" and value is None
+                    else str(value)
+                    if type(value) is int and value > 0
+                    else "—"
+                )
+                resource_rows += (
+                    f'<div class="dash-meta__item"><span class="dash-meta__label">{label}</span>'
+                    f'<span class="dash-meta__value">{shown}</span></div>'
+                )
+        tier_rows = ""
+        for tier in tiers if isinstance(tiers, list) else []:
+            if not isinstance(tier, dict):
+                continue
+            names = tier.get("step_names")
+            names = (
+                ", ".join(str(name) for name in names)
+                if isinstance(names, list)
+                else "—"
+            )
+            workers = tier.get("workers_used")
+            workers_shown = (
+                str(workers) if type(workers) is int and workers > 0 else "—"
+            )
+            tier_rows += (
+                f"<tr><td>{_esc(tier.get('tier_index', '—'))}</td><td>{_esc(names)}</td>"
+                f"<td>{workers_shown}</td><td>{_fmt_mb(tier.get('memory_estimate_mb'))}</td></tr>"
+            )
+        worker_receipts = ""
+        if resource_rows or tier_rows:
+            tier_table = (
+                '<div class="table-wrap"><table><caption>Recorded concurrent step tiers</caption>'
+                '<thead><tr><th scope="col">Tier</th><th scope="col">Steps</th>'
+                '<th scope="col">Workers used</th><th scope="col">Estimated memory</th></tr></thead>'
+                f"<tbody>{tier_rows}</tbody></table></div>"
+                if tier_rows
+                else ""
+            )
+            worker_receipts = (
+                '<div class="section"><div class="section-title">CPU and Worker Receipts</div>'
+                '<p class="subtitle">Recorded limits describe configuration. Tier rows describe '
+                "recorded step concurrency; neither establishes actual per-file worker use or speedup.</p>"
+                f'<div class="dash-meta">{resource_rows}</div>{tier_table}</div>'
+            )
+
         # Memory receipts — rows joined to the step grid by step number.
         summary_steps: dict[int, dict[str, Any]] = {}
         raw_steps = summary.get("steps")
@@ -482,10 +557,9 @@ class WebsiteGenerator:
   <p>The pipeline execution summary did not run or recorded no per-step memory data for this pipeline run.</p></div>
 </div>"""
 
-        # Artifact browser — registry + filesystem only; the summary's
-        # per-step ``output_dir`` fields are never consulted. Missing
-        # directories render as an explicit empty state instead of being
-        # dropped.
+        # Artifact browser: the live run's owned selection, or a standalone
+        # filesystem census. Neither directory presence nor a file listing
+        # establishes successful pipeline execution.
         p_root = data.get("p_root")
         if p_root is None:
             artifacts = """
@@ -494,9 +568,34 @@ class WebsiteGenerator:
   <div class="card"><p>No pipeline output root available.</p></div>
 </div>"""
         else:
+            from gnn.pipeline.run_context import current_run_context
+
+            bound_run = current_run_context() is not None
+            artifact_scope = (
+                "Current run artifacts"
+                if bound_run
+                else "Files on disk (filesystem census)"
+            )
+            scope_note = (
+                "Only artifacts recorded for this run and model selection are listed."
+                if bound_run
+                else "This listing describes files on disk; step outcomes come from the recorded pipeline summary."
+            )
+            site_dir = data.get("output_dir")
+
+            def file_item(step: StepInfo, name: str) -> str:
+                """Link a census entry relative to the actual website location."""
+                label = _esc(name)
+                if site_dir is None:
+                    return f"<li>{label}</li>"
+                target = p_root / step.output_dir_name / name
+                relative = os.path.relpath(target, Path(site_dir))
+                href = _esc(quote(Path(relative).as_posix(), safe="/"))
+                return f'<li><a href="{href}">{label}</a></li>'
+
             art_cards = ""
             for step in PIPELINE_STEPS:
-                exists, count, size, names, truncated = _step_dir_stats(step, p_root)
+                exists, count, size, names, _ = _step_dir_stats(step, p_root, cap=None)
                 if not exists:
                     count_label, body_html = (
                         "not produced",
@@ -505,16 +604,23 @@ class WebsiteGenerator:
                 elif not names:
                     count_label, body_html = (
                         f"{count} files · {size} bytes",
-                        '<p class="dash-empty">Output directory exists but holds no files.</p>',
+                        '<p class="dash-empty">No current run artifacts recorded.</p>'
+                        if bound_run
+                        else '<p class="dash-empty">Output directory exists but holds no files.</p>',
                     )
                 else:
                     count_label = (
                         f"{count} file{'s' if count != 1 else ''} · {size} bytes"
                     )
-                    items = "".join(f"<li>{_esc(name)}</li>" for name in names)
+                    preview = names[:10]
+                    items = "".join(file_item(step, name) for name in preview)
                     more = (
-                        f'<p class="dash-more">…+{count - len(names)} more</p>'
-                        if truncated
+                        '<details class="dash-more">'
+                        f"<summary>Show {count - len(preview)} more files</summary>"
+                        '<div class="details-body"><ul class="dash-files">'
+                        + "".join(file_item(step, name) for name in names[10:])
+                        + "</ul></div></details>"
+                        if len(names) > len(preview)
                         else ""
                     )
                     body_html = f'<ul class="dash-files">{items}</ul>{more}'
@@ -530,6 +636,7 @@ class WebsiteGenerator:
             artifacts = f"""
 <div class="section">
   <div class="section-title">Artifacts</div>
+  <p class="subtitle">{artifact_scope}. {scope_note}</p>
   {art_cards}
 </div>"""
 
@@ -540,6 +647,7 @@ class WebsiteGenerator:
 </div>
 {stats}
 {run_header}
+{worker_receipts}
 <div class="section">
   <div class="section-title">Pipeline Steps</div>
   <div class="step-grid">{cards}</div>
@@ -631,7 +739,9 @@ class WebsiteGenerator:
         payload = json.dumps(search_data, indent=2).replace("</", "<\\/")
         return f"""
 <div class="section site-search">
-  <input id="gnn-site-search" type="search">
+  <label for="gnn-site-search">Search pages and models</label>
+  <input id="gnn-site-search" type="search" aria-controls="gnn-search-results" aria-describedby="gnn-search-status">
+  <p id="gnn-search-status" class="search-status" role="status" aria-live="polite" aria-atomic="true"></p>
   <ul id="gnn-search-results" hidden></ul>
   <script type="application/json" id="gnn-search-data">{payload}</script>
 </div>"""
@@ -763,19 +873,37 @@ class WebsiteGenerator:
 
     @staticmethod
     def _model_images_html(model: dict) -> str:
-        """Collected image assets for this model, at the depth-correct assets/ path."""
+        """Image and interactive artifacts linked to this model's identity."""
         images = model.get("images") or []
-        if not images:
+        interactive = model.get("interactive_visualizations") or []
+        if not images and not interactive:
             return ""
         cards = ""
         for image in images:
             stem = Path(str(image)).stem
             cards += f"""
 <div class="viz-card">
-  <img src="../assets/{_esc(image)}" alt="{_esc(stem)}" loading="lazy">
+  <a href="../assets/{_esc(quote(str(image), safe="/"))}" target="_blank" rel="noopener"><img src="../assets/{_esc(quote(str(image), safe="/"))}" alt="{_esc(stem)}" loading="lazy"></a>
   <div class="viz-info">
     <div class="viz-title">{_esc(stem)}</div>
     <div class="viz-desc">Visualization artifact</div>
+  </div>
+</div>"""
+        for artifact in interactive:
+            title = _esc(artifact.get("title") or "Interactive visualization")
+            href = "../assets/" + _esc(quote(str(artifact["path"]), safe="/"))
+            cards += f"""
+<div class="viz-card">
+  <div class="viz-info">
+    <div class="viz-title">{title}</div>
+    <p><a href="{href}" target="_blank" rel="noopener">Open interactive visualization: {title}</a></p>
+    <details>
+      <summary>Preview {title}</summary>
+      <div class="details-body">
+        <iframe src="{href}" title="{title}" loading="lazy" sandbox="allow-scripts" style="width:100%;height:420px;border:0"></iframe>
+        <p>If the embedded viewer cannot load its data, open the visualization using the link above.</p>
+      </div>
+    </details>
   </div>
 </div>"""
         return f"""
@@ -785,12 +913,21 @@ class WebsiteGenerator:
 </div>"""
 
     def _page_analysis(self, data: dict) -> str:
-        """Render the analysis metrics page."""
-        if not data["analysis"]:
+        """Render analysis metrics and read-only recorded numerical evidence."""
+        from gnn.website.evidence import is_evidence_artifact, render_evidence_section
+
+        supplied = data.get("analysis")
+        analysis = (
+            [item for item in supplied if isinstance(item, dict)]
+            if isinstance(supplied, list)
+            else []
+        )
+        ordinary = [item for item in analysis if not is_evidence_artifact(item)]
+        if not analysis:
             inner = '<div class="card"><p>No analysis results found. Run step 16 (Analysis) to generate results.</p></div>'
         else:
             inner = ""
-            for item in data["analysis"]:
+            for item in ordinary:
                 name = item.get("file_name") or item.get("name", "Result")
                 stats_html = ""
                 for k, v in item.items():
@@ -809,8 +946,9 @@ class WebsiteGenerator:
         body = f"""
 <div class="page-header">
   <h1>📊 Analysis</h1>
-  <p class="subtitle">Statistical analysis results</p>
+  <p class="subtitle">Statistical results and recorded scientific evidence</p>
 </div>
+{render_evidence_section(analysis)}
 <div class="section">{inner}</div>"""
         return _page("Analysis", "analysis", body)
 
@@ -818,11 +956,18 @@ class WebsiteGenerator:
         """Render the visualization gallery."""
         gui_card = ""
         if data.get("gui_navigation"):
-            gui_card = """
+            gui_href = "../22_gui_output/navigation.html"
+            if data.get("p_root") is not None and data.get("output_dir") is not None:
+                relative = os.path.relpath(
+                    Path(data["p_root"]) / "22_gui_output/navigation.html",
+                    Path(data["output_dir"]),
+                )
+                gui_href = quote(Path(relative).as_posix(), safe="/")
+            gui_card = f"""
 <div class="card" style="margin-bottom:24px">
   <div class="viz-title" style="color:var(--accent-2)">Interactive GUI navigation</div>
   <p style="margin:8px 0 0">Interactive model editors and artifacts generated by Step 22.</p>
-  <p style="margin:12px 0 0"><a href="../22_gui_output/navigation.html" target="_blank" style="color:var(--accent-2)">Open GUI navigation →</a></p>
+  <p style="margin:12px 0 0"><a href="{_esc(gui_href)}" target="_blank" rel="noopener" style="color:var(--accent-2)">Open GUI navigation →</a></p>
 </div>"""
         if not data["visualizations"]:
             inner = '<div class="card"><p>No visualizations found. Run steps 8–9 to generate visualizations.</p></div>'
@@ -830,7 +975,7 @@ class WebsiteGenerator:
             cards = ""
             for v in data["visualizations"]:
                 title = _esc(v["title"])
-                path = _esc(v["path"])
+                path = _esc(quote(str(v["path"]), safe="/"))
                 kind = _esc(str(v.get("type", "image")).title())
                 if v["type"] == "image":
                     cards += f"""
@@ -845,7 +990,14 @@ class WebsiteGenerator:
                     cards += f"""
 <div class="viz-card">
   <div style="padding:16px;background:var(--bg-surface);text-align:center">
-    <a href="assets/{path}" target="_blank" style="color:var(--accent-2);font-size:13px">🔗 Open interactive: {title}</a>
+    <a href="assets/{path}" target="_blank" rel="noopener" style="color:var(--accent-2);font-size:13px">🔗 Open interactive: {title}</a>
+    <details>
+      <summary>Preview {title}</summary>
+      <div class="details-body">
+        <iframe src="assets/{path}" title="{title}" loading="lazy" sandbox="allow-scripts" style="width:100%;height:420px;border:0"></iframe>
+        <p>If the embedded viewer cannot load its data, open the visualization using the link above.</p>
+      </div>
+    </details>
   </div>
   <div class="viz-info">
     <div class="viz-title">{title}</div>

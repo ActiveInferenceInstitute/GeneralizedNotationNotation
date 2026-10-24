@@ -80,27 +80,36 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
           check-latest: true
-      - name: Install uv
-        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
-        with:
-          # Match exact uv 0.13.4 in uv.toml and the Docker bootstrap.
-          version: "0.13.4"
-          enable-cache: true
       - name: Record both checkouts before installing
         run: |
           mkdir receipts
           git -C gnn rev-parse HEAD > receipts/gnn-revision.txt
           git -C geo-infer rev-parse HEAD > receipts/geo-infer-revision.txt
           cp gnn/.github/gnn-pair.json receipts/pair.json
-      - name: Install independent locked runtimes
+      - name: Install GEO uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          # GEO owns its exact toolchain independently of GNN.
+          version: "0.13.1"
+          enable-cache: true
+          cache-dependency-glob: geo-infer/uv.lock
+      - name: Install GEO locked runtime
         env:
           GEO_PYTHON: ${{ matrix.python }}
         run: |
-          uv sync --project gnn --locked --python 3.11 --extra dev --extra geo-infer
           uv sync --project geo-infer --locked --python "$GEO_PYTHON" \
             --all-packages --all-extras \
             --no-install-package cupy --no-install-package mayavi \
             --no-install-package vaex --no-install-package vaex-core
+      - name: Install GNN uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          # Match exact uv 0.13.4 in GNN's uv.toml and Docker bootstrap.
+          version: "0.13.4"
+          enable-cache: true
+          cache-dependency-glob: gnn/uv.lock
+      - name: Install GNN locked runtime
+        run: uv sync --project gnn --locked --python 3.11 --extra dev --extra geo-infer
       - name: Cascadia export qualification controls
         working-directory: gnn
         run: uv run --frozen --no-sync --python 3.11 python -m pytest docs/other/geo_infer/test_qualify_export.py -q --no-cov

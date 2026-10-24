@@ -175,6 +175,8 @@ def run_pipeline(
     strict: bool | None = None,
     parallel: bool | None = None,
     consolidated_steps: bool | None = None,
+    file_workers: int | None = None,
+    step_workers: int | None = None,
 ) -> dict:
     """Execute pipeline steps through ``main.py`` and return a compact summary."""
     start = datetime.now()
@@ -219,6 +221,8 @@ def run_pipeline(
             "strict",
             "parallel",
             "consolidated_steps",
+            "file_workers",
+            "step_workers",
         }
         unknown = set(pipeline_data) - allowed
         if unknown:
@@ -254,6 +258,26 @@ def run_pipeline(
                 field_name=name,
             )
 
+        from gnn.pipeline.admission import validate_worker_count
+
+        resource_limits = {
+            "file_workers": validate_worker_count(
+                pipeline_data.get("file_workers", 1)
+                if file_workers is None
+                else file_workers,
+                field_name="file_workers",
+            ),
+            "step_workers": validate_worker_count(
+                pipeline_data.get("step_workers")
+                if step_workers is None
+                else step_workers,
+                field_name="step_workers",
+                allow_none=True,
+            ),
+        }
+        selected_file_workers = resource_limits["file_workers"]
+        assert selected_file_workers is not None
+
         main = _main_module()
         from gnn.utils.arguments.pipeline_arguments import PipelineArguments
 
@@ -265,6 +289,8 @@ def run_pipeline(
             strict=bool(flags["strict"]),
             parallel=bool(flags["parallel"]),
             consolidated_steps=bool(flags["consolidated_steps"]),
+            file_workers=selected_file_workers,
+            step_workers=resource_limits["step_workers"],
             skip_steps=",".join(str(step) for step in skipped) if skipped else None,
         )
         config_override: dict[str, Any] = {
@@ -418,6 +444,8 @@ def execute_pipeline_step(
         "strict",
         "parallel",
         "consolidated_steps",
+        "file_workers",
+        "step_workers",
         "script_path",
     }
     if unknown:

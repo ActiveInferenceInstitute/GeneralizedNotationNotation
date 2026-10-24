@@ -94,21 +94,27 @@ def resolve_output_root(output_dir: Path) -> Path:
 def load_first_markdown(
     target_dir: Path, prefer_patterns: Sequence[str] = ()
 ) -> str | None:
-    """Return the content of the first markdown file found in ``target_dir``.
+    """Return the first readable selected markdown model in ``target_dir``.
 
-    Patterns in ``prefer_patterns`` are consulted first (in order), then any
-    top-level ``*.md`` file, then a recursive ``**/*.md`` walk. Returns
-    ``None`` when nothing readable exists.
+    Canonical source discovery excludes documentation and template scaffolds;
+    active pipeline runs use their immutable Step 22 selection. Patterns in
+    ``prefer_patterns`` are consulted first (in order), then top-level models,
+    then nested models. Unreadable candidates do not hide later readable ones.
+    Returns ``None`` when the admitted selection has no readable markdown.
     """
-    try:
-        for pattern in prefer_patterns:
-            matches = sorted(target_dir.glob(pattern))
-            if matches:
-                return matches[0].read_text(encoding="utf-8")
-        for path in sorted(target_dir.glob("*.md")):
+    from gnn.pipeline.run_context import selected_model_sources
+
+    candidates = selected_model_sources(target_dir, 22)
+    preferred = [
+        path
+        for pattern in prefer_patterns
+        for path in candidates
+        if path.match(pattern)
+    ]
+    top_level = [path for path in candidates if path.parent == target_dir]
+    for path in dict.fromkeys([*preferred, *top_level, *candidates]):
+        try:
             return path.read_text(encoding="utf-8")
-        for path in sorted(target_dir.glob("**/*.md")):
-            return path.read_text(encoding="utf-8")
-    except (OSError, UnicodeError, ValueError):
-        return None
+        except (OSError, UnicodeError, ValueError):
+            continue
     return None

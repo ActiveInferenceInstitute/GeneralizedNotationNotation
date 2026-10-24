@@ -431,3 +431,8 @@ There is no `utils.get_performance_metrics` tool.
 
 Step 7 accepts `--formats` and `--geo-infer-options-file`; argument definitions,
 step configuration and `PipelineArguments` preserve these through orchestration.
+
+[`file_workers.py`](file_workers.py) owns bounded ordered file jobs. Explicit
+counts select spawned processes unless threads are explicitly requested.
+Workers compute and return data; parent callers own publication and selection
+identity. Step subprocess supervision remains authoritative for pipeline cleanup.

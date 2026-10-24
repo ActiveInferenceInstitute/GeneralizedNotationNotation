@@ -9,7 +9,9 @@ flag is collected, no card is rendered, and no reciprocal link is written.
 Deterministic and filesystem-only — no network, no gradio.
 """
 
+import json
 import logging
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -35,12 +37,38 @@ class TestCollectGuiNavigationFlag:
     def test_absent_navigation_html_is_false(self, tmp_path: Any) -> None:
         assert _collect(tmp_path)["gui_navigation"] is False
 
-    def test_present_navigation_html_is_true(self, tmp_path: Any) -> None:
+    def test_present_navigation_html_is_true(
+        self, tmp_path: Any, monkeypatch: Any
+    ) -> None:
+        from gnn.pipeline.run_context import build_run_context
+
         gui_dir = tmp_path / "22_gui_output"
         gui_dir.mkdir()
         (gui_dir / "navigation.html").write_text("<html></html>")
 
         assert _collect(tmp_path)["gui_navigation"] is True
+        context = build_run_context(
+            tmp_path / "input", tmp_path, "website-crosslinks", [20, 22], {}
+        )
+        context_file = context.write(tmp_path / "context.json")
+        monkeypatch.setenv("GNN_RUN_CONTEXT_FILE", str(context_file))
+        monkeypatch.setenv("GNN_RUN_ID", context.run_id)
+        assert _collect(tmp_path)["gui_navigation"] is False
+        current = tmp_path / "00_pipeline_summary/current_summary.json"
+        current.parent.mkdir(exist_ok=True)
+        current.write_text(
+            json.dumps(
+                {
+                    "run_id": context.run_id,
+                    "steps": [
+                        {"artifacts": [{"path": "22_gui_output/navigation.html"}]}
+                    ],
+                }
+            )
+        )
+        assert _collect(tmp_path)["gui_navigation"] is True
+        relative_root = Path(os.path.relpath(tmp_path, Path.cwd()))
+        assert _collect(relative_root)["gui_navigation"] is True
 
 
 class TestVisualizationPageGuiCard:
@@ -94,5 +122,8 @@ class TestNavigationReciprocalWebsiteLink:
         content = self._render(tmp_path)
         assert "../20_website_output/index.html" in content
         assert "Open Website Dashboard" in content
-        # the pre-existing report link stays untouched
-        assert "23_report_output/comprehensive_analysis_report.html" in content
+        assert "View Comprehensive Report" not in content
+        report = tmp_path / "23_report_output"
+        report.mkdir()
+        (report / "comprehensive_analysis_report.html").write_text("<html></html>")
+        assert "View Comprehensive Report" in self._render(tmp_path)
